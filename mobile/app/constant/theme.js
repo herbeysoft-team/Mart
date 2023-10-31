@@ -1,54 +1,68 @@
-import { Dimensions } from "react-native"
-const { width, height } = Dimensions.get("window")
+import { Dimensions } from "react-native";
+const { width, height } = Dimensions.get("window");
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 export const COLORS = {
-    background: "#031F2B",
-    primary: "#E65100",
-    secondary: "#D6D2D2",
-    tertiary: "#263238",
-    white: "#FFFFFF",
-    gray: "#F0F5FA",
-    black: "#32343E"
-}
+  background: "#031F2B",
+  primary: "#0AA1DD",
+  secondary: "#003D55",
+  tertiary: "#757575",
+  accent: "#343434",
+  accent2: "#616161",
+  white: "#FFFFFF",
+  gray: "#424242",
+  black: "#32343E",
+  success: "#00C247",
+  pink: "#EA1E61",
+  error: "#FF3333",
+  red: "#F54336",
+  brown: "#7A5548",
+  purple: "#9D28AC",
+  lightGreen: "#8BC255",
+  amber: "#FFC02D",
+  indigo: "#3F51B2",
+};
 
 export const SIZES = {
-    // GLOBAL SIZES
-    base: 8,
-    font: 14,
-    radius: 30,
-    padding: 8,
-    padding2: 12,
-    padding3: 16,
+  // GLOBAL SIZES
+  base: 8,
+  font: 14,
+  radius: 30,
+  padding: 8,
+  padding2: 12,
+  padding3: 16,
 
-    // FONTS SIZES
-    largeTitle: 50,
-    h1: 30,
-    h2: 22,
-    h3: 20,
-    h4: 18,
-    body1: 30,
-    body2: 20,
-    body3: 16,
-    body4: 14,
+  // FONTS SIZES
+  h1: hp(3.3),
+  h2: hp(2.8),
+  h3: hp(2.3),
+  h4: hp(1.8),
+  body1: hp(2.2),
+  body2: hp(2.0),
+  body3: hp(1.8),
+  body4: hp(1.6),
 
-    // APP DIMENSIONS
-    width,
-    height
-}
+  // APP DIMENSIONS
+  width,
+  height,
+  wp,
+  hp,
+};
 
 export const FONTS = {
-    largeTitle: { fontFamily: "bold", fontSize: SIZES.largeTitle, lineHeight: 55},
-    h1: { fontFamily: "bold", fontSize: SIZES.h1, lineHeight: 36},
-    h2: { fontFamily: "bold", fontSize: SIZES.h2, lineHeight: 30},
-    h3: { fontFamily: "bold", fontSize: SIZES.h3, lineHeight: 22},
-    h4: { fontFamily: "bold", fontSize: SIZES.h4, lineHeight: 20},
-    body1: { fontFamily: "regular", fontSize: SIZES.body1, lineHeight: 36 },
-    body2: { fontFamily: "regular", fontSize: SIZES.body2, lineHeight: 30 },
-    body3: { fontFamily: "regular", fontSize: SIZES.body3, lineHeight: 22 },
-    body4: { fontFamily: "regular", fontSize: SIZES.body4, lineHeight: 20}
+  h1: { fontFamily: "bold", fontSize: SIZES.h1 },
+  h2: { fontFamily: "regular", fontSize: SIZES.h2, fontWeight: 700 },
+  h3: { fontFamily: "regular", fontSize: SIZES.h3, fontWeight: 700 },
+  h4: { fontFamily: "regular", fontSize: SIZES.h4, fontWeight: 700 },
+  body1: { fontFamily: "medium", fontSize: SIZES.body1,  fontWeight: 400 },
+  body2: { fontFamily: "medium", fontSize: SIZES.body2,  fontWeight: 400 },
+  body3: { fontFamily: "medium", fontSize: SIZES.body3,  fontWeight: 400 },
+  body4: { fontFamily: "medium", fontSize: SIZES.body4,  fontWeight: 400 },
+};
 
-}
+const appTheme = { COLORS, SIZES, FONTS };
 
-const appTheme = { COLORS, SIZES, FONTS }
-
-export default appTheme
+export default appTheme;
