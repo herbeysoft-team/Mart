@@ -5,6 +5,7 @@ import { useFonts } from "expo-font";
 import { useCallback } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { FONTS, SIZES, COLORS } from "./app/constant";
+import StackNavigator from "./app/navigation/StackNavigator";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -29,20 +30,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
-      <View style={styles.container}>
-        <Text style={{ ...FONTS.h1, color: COLORS.accent }}>Explore</Text>
-        <Text style={{ ...FONTS.h2, color: COLORS.primary }}>Cup Cakes</Text>
-        <Text style={{ ...FONTS.h3, color: COLORS.secondary }}>Product</Text>
-        <Text style={{ ...FONTS.h4, color: COLORS.tertiary }}>3500/Ticket</Text>
-        <Text style={{ ...FONTS.body1, color: COLORS.pink }}>TrowMart App</Text>
-        <Text style={{ ...FONTS.body2, color: COLORS.lightGreen }}>
-          TrowMart App
-        </Text>
-        <Text style={{ ...FONTS.body3, color: COLORS.success }}>
-          TrowMart App
-        </Text>
-        <Text style={{ ...FONTS.body4, color: COLORS.red }}>TrowMart App</Text>
-      </View>
+      <StackNavigator/>
     </SafeAreaProvider>
   );
 }

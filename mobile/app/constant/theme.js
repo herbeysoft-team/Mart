@@ -36,6 +36,7 @@ export const SIZES = {
   padding3: 16,
 
   // FONTS SIZES
+  h0: hp(4.1),
   h1: hp(3.1),
   h2: hp(2.6),
   h3: hp(2.1),
@@ -53,14 +54,15 @@ export const SIZES = {
 };
 
 export const FONTS = {
-  h1: { fontFamily: "semi", fontSize: SIZES.h1, fontWeight:700 },
-  h2: { fontFamily: "semi", fontSize: SIZES.h2, fontWeight: 700 },
-  h3: { fontFamily: "semi", fontSize: SIZES.h3, fontWeight: 700 },
-  h4: { fontFamily: "semi", fontSize: SIZES.h4, fontWeight: 700 },
-  body1: { fontFamily: "medium", fontSize: SIZES.body1, fontWeight: 400 },
-  body2: { fontFamily: "medium", fontSize: SIZES.body2, fontWeight: 400 },
-  body3: { fontFamily: "medium", fontSize: SIZES.body3, fontWeight: 400 },
-  body4: { fontFamily: "medium", fontSize: SIZES.body4, fontWeight: 400 },
+  header: { fontFamily: "semi", fontSize: SIZES.h0, fontWeight: "700" },
+  h1: { fontFamily: "semi", fontSize: SIZES.h1, fontWeight: "700" },
+  h2: { fontFamily: "semi", fontSize: SIZES.h2, fontWeight:"700" },
+  h3: { fontFamily: "semi", fontSize: SIZES.h3, fontWeight: "700" },
+  h4: { fontFamily: "semi", fontSize: SIZES.h4, fontWeight: "700" },
+  body1: { fontFamily: "medium", fontSize: SIZES.body1, fontWeight: "400" },
+  body2: { fontFamily: "medium", fontSize: SIZES.body2, fontWeight: "400" },
+  body3: { fontFamily: "medium", fontSize: SIZES.body3, fontWeight: "400" },
+  body4: { fontFamily: "medium", fontSize: SIZES.body4, fontWeight: "400" },
 };
 
 const appTheme = { COLORS, SIZES, FONTS };
