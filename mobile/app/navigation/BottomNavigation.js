@@ -17,7 +17,7 @@ export default function BottomNavigation() {
     <Tab.Navigator
       screenOptions={{
         tabBarShowLabel: false,
-        headerShown:false,
+        headerShown: false,
         tabBarStyle: {
           position: "absolute",
           bottom: 0,
@@ -25,8 +25,8 @@ export default function BottomNavigation() {
           left: 0,
           height: SIZES.tabHeight,
           backgroundColor: COLORS.white,
-          elevation: Platform.OS === 'android' ? 0 : undefined,
-          shadowOpacity: Platform.OS === 'ios' ? 0 : undefined,
+          elevation: Platform.OS === "android" ? 0 : undefined,
+          shadowOpacity: Platform.OS === "ios" ? 0 : undefined,
         },
       }}
     >
@@ -94,32 +94,35 @@ export default function BottomNavigation() {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <View style={{alignItems:"center"}}>
-              <View
-                 style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: COLORS.primary,
-                  width: SIZES.button,
-                  height: SIZES.button,
-                  top: -SIZES.radius/2,
-                  borderRadius: SIZES.radius,
-                 }}
+              <View style={{ alignItems: "center" }}>
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: COLORS.primary,
+                    width: SIZES.button,
+                    height: SIZES.button,
+                    top: -SIZES.radius / 2,
+                    borderRadius: SIZES.radius,
+                  }}
                 >
-                  <Feather name="plus" size={24} style={{color: COLORS.white}} />
-                  
+                  <Feather
+                    name="plus"
+                    size={24}
+                    style={{ color: COLORS.white }}
+                  />
                 </View>
                 <Text
-                style={{
-                  ...FONTS.body4,
-                  color: focused ? COLORS.primary : COLORS.accent2,
-                }}
-              >
-                Add Listing
-              </Text>
-                </View>
-            )
-          }
+                  style={{
+                    ...FONTS.body4,
+                    color: focused ? COLORS.primary : COLORS.accent2,
+                  }}
+                >
+                  Add Listing
+                </Text>
+              </View>
+            );
+          },
         }}
       />
       <Tab.Screen
