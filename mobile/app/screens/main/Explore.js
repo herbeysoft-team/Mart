@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: COLORS.white
   },
   header: {
     ...FONTS.header,

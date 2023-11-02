@@ -28,12 +28,14 @@ export const COLORS = {
 
 export const SIZES = {
   // GLOBAL SIZES
-  base: 8,
+  base: hp(1),
   font: 14,
-  radius: 30,
-  padding: 8,
-  padding2: 12,
-  padding3: 16,
+  radius: hp(2.5),
+  button: hp(5),
+  padding: hp(8),
+  padding2: hp(12),
+  padding3: hp(16),
+  tabHeight: hp(10),
 
   // FONTS SIZES
   h0: hp(4.1),
@@ -44,7 +46,7 @@ export const SIZES = {
   body1: hp(2.2),
   body2: hp(2.0),
   body3: hp(1.8),
-  body4: hp(1.6),
+  body4: hp(1.4),
 
   // APP DIMENSIONS
   width,
@@ -62,7 +64,7 @@ export const FONTS = {
   body1: { fontFamily: "medium", fontSize: SIZES.body1, fontWeight: "400" },
   body2: { fontFamily: "medium", fontSize: SIZES.body2, fontWeight: "400" },
   body3: { fontFamily: "medium", fontSize: SIZES.body3, fontWeight: "400" },
-  body4: { fontFamily: "medium", fontSize: SIZES.body4, fontWeight: "400" },
+  body4: { fontFamily: "medium", fontSize: SIZES.body4 },
 };
 
 const appTheme = { COLORS, SIZES, FONTS };
