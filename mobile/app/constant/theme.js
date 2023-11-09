@@ -8,7 +8,9 @@ import {
 export const COLORS = {
   background: "#031F2B",
   primary: "#0AA1DD",
+  primaryDeep: "#006E99",
   secondary: "#003D55",
+  indicator: "#E0E0E0",
   tertiary: "#757575",
   accent: "#343434",
   accent2: "#616161",
@@ -28,7 +30,13 @@ export const COLORS = {
 
 export const SIZES = {
   // GLOBAL SIZES
+  thickness: hp(0.5),
   base: hp(1),
+  base2: hp(2),
+  base3: hp(3),
+  base4: hp(4),
+  base5: hp(5),
+  base6: hp(6),
   font: 14,
   radius: hp(2.5),
   button: hp(5),
@@ -36,6 +44,8 @@ export const SIZES = {
   padding2: hp(12),
   padding3: hp(16),
   tabHeight: hp(10),
+  onboardImageWidth: wp(67.2),
+  onboardImageHeight: hp(32.1),
 
   // FONTS SIZES
   h0: hp(4.1),

@@ -10,6 +10,7 @@ import StackNavigator from "./app/navigation/StackNavigator";
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+  
   //load the custom fonts
   const [fontsLoaded] = useFonts({
     medium: require("./assets/fonts/DMSans-Medium.ttf"),
@@ -30,6 +31,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
+      <StatusBar color="dark"/>
       <StackNavigator/>
     </SafeAreaProvider>
   );
