@@ -6,6 +6,7 @@ import Register from "../screens/auth/Register";
 import Login from "../screens/auth/Login";
 import BottomNavigation from "./BottomNavigation";
 import Onboard from "../screens/onboarding/Onboard";
+import ForgetPassword from "../screens/auth/ForgetPassword";
 
 const Stack = createNativeStackNavigator();
 const StackNavigator = () => {
@@ -20,6 +21,11 @@ const StackNavigator = () => {
         <Stack.Screen
           name="Login"
           component={Login}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="Forget-Password"
+          component={ForgetPassword}
           options={{ headerShown: false }}
         />
         <Stack.Screen

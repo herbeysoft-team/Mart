@@ -10,6 +10,7 @@ import {
 import React, { useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FONTS, SIZES, COLORS, slides } from "../../constant";
+import CustomButton from "../../components/auth/CustomButton";
 
 const Slide = ({ item }) => {
   return (
@@ -48,14 +49,14 @@ const Onboard = ({ navigation }) => {
       setCurrentSlideIndex(currentSlideIndex + 1);
     }
   };
-
-  const skip = () => {
-    const lastSlideIndex = slides.length - 1;
-    const offset = lastSlideIndex * SIZES.width;
-    ref?.current.scrollToOffset({ offset });
-    setCurrentSlideIndex(lastSlideIndex);
+  
+  const goToSignIn = () => {
+    navigation.replace("Login")
   };
 
+  const goToSignUp = () => {
+    navigation.replace("Register")
+  };
   const Footer = () => {
     return (
       <View
@@ -99,28 +100,13 @@ const Onboard = ({ navigation }) => {
                 flexDirection: "column",
                 justifyContent: "space-between",
                 gap: SIZES.base,
-                height: 100,
               }}
             >
-              <Pressable
-                style={styles.btnFill}
-                onPress={() => navigation.replace("Register")}
-              >
-                <Text style={{ ...FONTS.h4, color: COLORS.white }}>
-                  Sign Up
-                </Text>
-              </Pressable>
-              <Pressable
-                style={styles.btnOutline}
-                onPress={() => navigation.replace("Login")}
-              >
-                <Text style={{ ...FONTS.h4, color: COLORS.primary }}>
-                  Sign In
-                </Text>
-              </Pressable>
+              <CustomButton text={"Sign Up"} onPress={goToSignUp} fill={true}/>
+              <CustomButton text={"Sign In"} onPress={goToSignIn} fill={false}/>
             </View>
           ) : (
-            <View style={{ height: 50 }}>
+            <View style={{ height: SIZES.base3 }}>
               <Pressable style={styles.btnFill} onPress={goToNextSlide}>
                 <Text style={{ ...FONTS.h4, color: COLORS.white }}>Next</Text>
               </Pressable>
@@ -185,7 +171,6 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.radius,
   },
   btnFill: {
-    flex: 1,
     height: SIZES.base5,
     borderRadius: SIZES.base,
     backgroundColor: COLORS.primary,
@@ -193,7 +178,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   btnOutline: {
-    flex: 1,
     height: SIZES.base5,
     borderRadius: SIZES.base,
     borderWidth: SIZES.thickness / 3,
