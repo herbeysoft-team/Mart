@@ -67,6 +67,7 @@ import {
       flex: 1,
       paddingVertical: SIZES.base3,
       paddingHorizontal: SIZES.base3,
+      backgroundColor: COLORS.white,
     },
     subheading: {
         color: COLORS.tertiary,

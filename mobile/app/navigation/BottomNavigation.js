@@ -9,6 +9,7 @@ import Explore from "../screens/main/Explore";
 import AddListing from "../screens/main/AddListing";
 import Alerts from "../screens/main/Alerts";
 import Profile from "../screens/main/Profile";
+import ProfileNavigation from "./ProfileNavigation";
 
 const Tab = createBottomTabNavigator();
 
@@ -155,8 +156,8 @@ export default function BottomNavigation() {
         }}
       />
       <Tab.Screen
-        name="Profile"
-        component={Profile}
+        name="Profile-Main"
+        component={ProfileNavigation}
         options={{
           tabBarIcon: ({ focused }) => (
             <View

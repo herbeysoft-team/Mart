@@ -1,12 +1,811 @@
-import { StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FONTS, SIZES, COLORS } from "../../constant";
+import HeaderBig from "../../components/general/HeaderBig";
+import ProfilePic from "../../../assets/profilepic.jpeg";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Octicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { SimpleLineIcons } from "@expo/vector-icons";
+import { FontAwesome } from '@expo/vector-icons';
 
-const Profile = () => {
+const Profile = ({navigation}) => {
+
+  const gotoEditProfle = () => {
+    navigation.navigate("Edit-Profile");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Profile Screen</Text>
+      <HeaderBig />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* user section */}
+        <View style={styles.userSection}>
+          <Pressable onPress={gotoEditProfle}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <Image
+                  source={ProfilePic}
+                  style={{
+                    height: SIZES.base6,
+                    width: SIZES.base6,
+                    borderRadius: SIZES.base6,
+                  }}
+                />
+                <View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: SIZES.base,
+                    }}
+                  >
+                    <Text style={{ ...FONTS.h3, color: COLORS.gray }}>
+                      John Anderson
+                    </Text>
+                    <MaterialIcons
+                      name="verified"
+                      size={SIZES.base2}
+                      color={COLORS.primary}
+                    />
+                  </View>
+                  <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
+                    kelvin@gmail.com
+                  </Text>
+                </View>
+              </View>
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+          <View
+            style={{
+              borderBottomColor: COLORS.gray4,
+              borderBottomWidth: SIZES.thin,
+              marginTop: SIZES.base,
+            }}
+          />
+          <Pressable onPress={() => console.log("Get Verified")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingTop: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <View
+                  style={{
+                    width: SIZES.base4,
+                    height: SIZES.base4,
+                    backgroundColor: COLORS.primary,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: SIZES.base,
+                  }}
+                >
+                  <Octicons
+                    name="verified"
+                    size={SIZES.base2}
+                    color={COLORS.white}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: SIZES.base,
+                  }}
+                >
+                  <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
+                    Get Verified
+                  </Text>
+                  <View
+                    style={{
+                      borderColor: COLORS.amber,
+                      borderWidth: SIZES.thin,
+                      paddingHorizontal: SIZES.base,
+                      borderRadius: SIZES.base,
+                    }}
+                  >
+                    <Text style={{ ...FONTS.body4, color: COLORS.amber }}>
+                      Pending
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+        </View>
+
+        {/* next section */}
+        <View style={styles.userSection}>
+          <Pressable onPress={() => console.log("My Listing")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingTop: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <View
+                  style={{
+                    width: SIZES.base4,
+                    height: SIZES.base4,
+                    backgroundColor: COLORS.red,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: SIZES.base,
+                  }}
+                >
+                  <Ionicons
+                    name="grid-outline"
+                    size={SIZES.base2}
+                    color={COLORS.white}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: SIZES.base,
+                  }}
+                >
+                  <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
+                    My Listings
+                  </Text>
+                </View>
+              </View>
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+          <View
+            style={{
+              borderBottomColor: COLORS.gray4,
+              borderBottomWidth: SIZES.thin,
+              marginTop: SIZES.base,
+            }}
+          />
+          <Pressable onPress={() => console.log("My Order")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingTop: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <View
+                  style={{
+                    width: SIZES.base4,
+                    height: SIZES.base4,
+                    backgroundColor: COLORS.pink,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: SIZES.base,
+                  }}
+                >
+                  <Feather name="box" size={SIZES.base2} color={COLORS.white} />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: SIZES.base,
+                  }}
+                >
+                  <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
+                    My Orders
+                  </Text>
+                </View>
+              </View>
+
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+          <View
+            style={{
+              borderBottomColor: COLORS.gray4,
+              borderBottomWidth: SIZES.thin,
+              marginTop: SIZES.base,
+            }}
+          />
+          <Pressable onPress={() => console.log("Delivery Requests")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingTop: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <View
+                  style={{
+                    width: SIZES.base4,
+                    height: SIZES.base4,
+                    backgroundColor: COLORS.brown,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: SIZES.base,
+                  }}
+                >
+                  <Feather
+                    name="truck"
+                    size={SIZES.base2}
+                    color={COLORS.white}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: SIZES.base,
+                  }}
+                >
+                  <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
+                    Delivery Requests
+                  </Text>
+                </View>
+              </View>
+
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+          <View
+            style={{
+              borderBottomColor: COLORS.gray4,
+              borderBottomWidth: SIZES.thin,
+              marginTop: SIZES.base,
+            }}
+          />
+          <Pressable onPress={() => console.log("Insights")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingTop: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <View
+                  style={{
+                    width: SIZES.base4,
+                    height: SIZES.base4,
+                    backgroundColor: COLORS.purple,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: SIZES.base,
+                  }}
+                >
+                  <MaterialIcons
+                    name="insights"
+                    size={SIZES.base2}
+                    color={COLORS.white}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: SIZES.base,
+                  }}
+                >
+                  <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
+                    Insights
+                  </Text>
+                </View>
+              </View>
+
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+          <View
+            style={{
+              borderBottomColor: COLORS.gray4,
+              borderBottomWidth: SIZES.thin,
+              marginTop: SIZES.base,
+            }}
+          />
+          <Pressable onPress={() => console.log("Wallet")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingTop: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <View
+                  style={{
+                    width: SIZES.base4,
+                    height: SIZES.base4,
+                    backgroundColor: COLORS.lightGreen,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: SIZES.base,
+                  }}
+                >
+                  <SimpleLineIcons
+                    name="wallet"
+                    size={SIZES.base2}
+                    color={COLORS.white}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: SIZES.base,
+                  }}
+                >
+                  <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
+                    Wallet
+                  </Text>
+                </View>
+              </View>
+
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+          <View
+            style={{
+              borderBottomColor: COLORS.gray4,
+              borderBottomWidth: SIZES.thin,
+              marginTop: SIZES.base,
+            }}
+          />
+          <Pressable onPress={() => console.log("Rating and Reviews")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingTop: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <View
+                  style={{
+                    width: SIZES.base4,
+                    height: SIZES.base4,
+                    backgroundColor: COLORS.amber,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: SIZES.base,
+                  }}
+                >
+                  <Feather
+                    name="star"
+                    size={SIZES.base2}
+                    color={COLORS.white}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: SIZES.base,
+                  }}
+                >
+                  <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
+                    Ratings & Reviews
+                  </Text>
+                </View>
+              </View>
+
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+        </View>
+
+         {/* next section */}
+         <View style={styles.userSection}>
+          <Pressable onPress={() => console.log("Settings")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingTop: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <View
+                  style={{
+                    width: SIZES.base4,
+                    height: SIZES.base4,
+                    backgroundColor: COLORS.blue,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: SIZES.base,
+                  }}
+                >
+                  <Feather name="settings"   size={SIZES.base2}
+                    color={COLORS.white} />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: SIZES.base,
+                  }}
+                >
+                  <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
+                    Settings
+                  </Text>
+                </View>
+              </View>
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+          <View
+            style={{
+              borderBottomColor: COLORS.gray4,
+              borderBottomWidth: SIZES.thin,
+              marginTop: SIZES.base,
+            }}
+          />
+          <Pressable onPress={() => console.log("My Subscription")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingTop: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <View
+                  style={{
+                    width: SIZES.base4,
+                    height: SIZES.base4,
+                    backgroundColor: COLORS.cadetBlue,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: SIZES.base,
+                  }}
+                >
+                  <FontAwesome name="money" size={SIZES.base2} color={COLORS.white} />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: SIZES.base,
+                  }}
+                >
+                  <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
+                  My Subscription
+                  </Text>
+                </View>
+              </View>
+
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+          <View
+            style={{
+              borderBottomColor: COLORS.gray4,
+              borderBottomWidth: SIZES.thin,
+              marginTop: SIZES.base,
+            }}
+          />
+          <Pressable onPress={() => console.log("Help & Supports")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingTop: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <View
+                  style={{
+                    width: SIZES.base4,
+                    height: SIZES.base4,
+                    backgroundColor: COLORS.indigo,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: SIZES.base,
+                  }}
+                >
+                  <Feather name="help-circle" size={SIZES.base2}
+                    color={COLORS.white}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: SIZES.base,
+                  }}
+                >
+                  <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
+                    Help & Support
+                  </Text>
+                </View>
+              </View>
+
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+          <View
+            style={{
+              borderBottomColor: COLORS.gray4,
+              borderBottomWidth: SIZES.thin,
+              marginTop: SIZES.base,
+            }}
+          />
+          <Pressable onPress={() => console.log("Change Password")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingTop: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <View
+                  style={{
+                    width: SIZES.base4,
+                    height: SIZES.base4,
+                    backgroundColor: COLORS.tealGreen,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: SIZES.base,
+                  }}
+                >
+                  <MaterialIcons
+                    name="insights"
+                    size={SIZES.base2}
+                    color={COLORS.white}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: SIZES.base,
+                  }}
+                >
+                  <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
+                    Change Password
+                  </Text>
+                </View>
+              </View>
+
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+          <View
+            style={{
+              borderBottomColor: COLORS.gray4,
+              borderBottomWidth: SIZES.thin,
+              marginTop: SIZES.base,
+            }}
+          />
+          <Pressable onPress={() => console.log("logout")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingTop: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: SIZES.base2,
+                }}
+              >
+                <View
+                  style={{
+                    width: SIZES.base4,
+                    height: SIZES.base4,
+                    backgroundColor: COLORS.gray3,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: SIZES.base,
+                  }}
+                >
+                  <Feather name="log-out" size={SIZES.base2}
+                    color={COLORS.white} />
+                  
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: SIZES.base,
+                  }}
+                >
+                  <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
+                    Log Out
+                  </Text>
+                </View>
+              </View>
+
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={SIZES.base2}
+                color={COLORS.tertiary}
+              />
+            </View>
+          </Pressable>
+          
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -16,12 +815,16 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: COLORS.white
+    paddingVertical: SIZES.base2,
+    paddingHorizontal: SIZES.base2,
+    backgroundColor: COLORS.white,
+    marginBottom: SIZES.base3
   },
-  header: {
-    ...FONTS.header,
-    color: COLORS.accent,
+  userSection: {
+    paddingVertical: SIZES.base2,
+    paddingHorizontal: SIZES.base2,
+    backgroundColor: COLORS.gray2,
+    borderRadius: SIZES.base,
+    marginBottom: SIZES.base2,
   },
 });

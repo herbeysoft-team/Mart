@@ -29,10 +29,14 @@ export const COLORS = {
   lightGreen: "#8BC255",
   amber: "#FFC02D",
   indigo: "#3F51B2",
+  blue: "#0000FF",
+  cadetBlue: "#5F9EA0",
+  tealGreen: "#006D5B"
 };
 
 export const SIZES = {
   // GLOBAL SIZES
+  thin: hp(0.1),
   thickness: hp(0.5),
   base: hp(1),
   base2: hp(2),
