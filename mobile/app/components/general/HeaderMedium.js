@@ -1,9 +1,9 @@
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { FONTS, SIZES, COLORS } from "../../constant";
 import { AntDesign } from "@expo/vector-icons";
 
-export default function HeaderMedium({ navigation }) {
+export default function HeaderMedium({ navigation, title }) {
   return (
     <View
       style={{
@@ -14,8 +14,8 @@ export default function HeaderMedium({ navigation }) {
       }}
     >
       <TouchableOpacity
-        style={{ flex: 1 }}
-        onPress={() => navigation.navigate("Profile")}
+        style={{ flex: 1 }}    
+        onPress={() => navigation.goBack()}
       >
         <AntDesign name="arrowleft" size={SIZES.base2} color={COLORS.gray} />
       </TouchableOpacity>
@@ -24,11 +24,11 @@ export default function HeaderMedium({ navigation }) {
         style={{
           ...FONTS.h3,
           color: COLORS.secondary,
-          flex: 1,
+          flex: 3,
           textAlign: "center",
         }}
       >
-        Edit Profile
+        {title}
       </Text>
       <View style={{ flex: 1 }}></View>
     </View>

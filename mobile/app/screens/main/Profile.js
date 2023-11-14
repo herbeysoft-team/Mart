@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FONTS, SIZES, COLORS } from "../../constant";
 import HeaderBig from "../../components/general/HeaderBig";
@@ -16,14 +16,75 @@ import { Octicons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from "@expo/vector-icons";
+import GetVerifiedModel from "../../components/general/GetVerifiedModel";
+import LogOutModel from "../../components/general/LogOutModel";
 
-const Profile = ({navigation}) => {
+const Profile = ({ navigation }) => {
+  const [openGetVerified, setOpenGetVerified] = useState(false);
+  const [openLogOut, setOpenLogOut] = useState(false);
 
   const gotoEditProfle = () => {
     navigation.navigate("Edit-Profile");
   };
 
+  const gotoGetVerifiedModal = () => {
+    setOpenGetVerified(true);
+  };
+
+  const gotoLogOutModal = () => {
+    setOpenLogOut(true);
+  };
+
+  const gotoLogOut = () => {
+    navigation.navigate("Onboard");
+    setOpenLogOut(false);
+  };
+
+  const gotoGetVerified = () => {
+    navigation.navigate("Get-Verified");
+    setOpenGetVerified(false);
+  };
+
+  const gotoMyListing = () => {
+    navigation.navigate("My-Listing");
+  };
+
+  const gotoMyOrders = () => {
+    navigation.navigate("My-Order");
+  };
+
+  const gotoMyDeliveryRequests = () => {
+    navigation.navigate("Delivery-Request");
+  };
+
+  const gotoInsights = () => {
+    navigation.navigate("Insight");
+  };
+
+  const gotoWallet = () => {
+    navigation.navigate("Wallet");
+  };
+
+  const gotoRating = () => {
+    navigation.navigate("Rating");
+  };
+
+  const gotoSetting = () => {
+    navigation.navigate("Setting");
+  };
+
+  const gotoMySubscription = () => {
+    navigation.navigate("My-Subscription");
+  };
+
+  const gotoHelp = () => {
+    navigation.navigate("Help");
+  };
+
+  const gotoChangePassword = () => {
+    navigation.navigate("Change-Password");
+  };
   return (
     <SafeAreaView style={styles.container}>
       <HeaderBig />
@@ -90,7 +151,7 @@ const Profile = ({navigation}) => {
               marginTop: SIZES.base,
             }}
           />
-          <Pressable onPress={() => console.log("Get Verified")}>
+          <Pressable onPress={gotoGetVerifiedModal}>
             <View
               style={{
                 flexDirection: "row",
@@ -159,7 +220,7 @@ const Profile = ({navigation}) => {
 
         {/* next section */}
         <View style={styles.userSection}>
-          <Pressable onPress={() => console.log("My Listing")}>
+          <Pressable onPress={gotoMyListing}>
             <View
               style={{
                 flexDirection: "row",
@@ -219,7 +280,7 @@ const Profile = ({navigation}) => {
               marginTop: SIZES.base,
             }}
           />
-          <Pressable onPress={() => console.log("My Order")}>
+          <Pressable onPress={gotoMyOrders}>
             <View
               style={{
                 flexDirection: "row",
@@ -276,7 +337,7 @@ const Profile = ({navigation}) => {
               marginTop: SIZES.base,
             }}
           />
-          <Pressable onPress={() => console.log("Delivery Requests")}>
+          <Pressable onPress={gotoMyDeliveryRequests}>
             <View
               style={{
                 flexDirection: "row",
@@ -337,7 +398,7 @@ const Profile = ({navigation}) => {
               marginTop: SIZES.base,
             }}
           />
-          <Pressable onPress={() => console.log("Insights")}>
+          <Pressable onPress={gotoInsights}>
             <View
               style={{
                 flexDirection: "row",
@@ -398,7 +459,7 @@ const Profile = ({navigation}) => {
               marginTop: SIZES.base,
             }}
           />
-          <Pressable onPress={() => console.log("Wallet")}>
+          <Pressable onPress={gotoWallet}>
             <View
               style={{
                 flexDirection: "row",
@@ -459,7 +520,7 @@ const Profile = ({navigation}) => {
               marginTop: SIZES.base,
             }}
           />
-          <Pressable onPress={() => console.log("Rating and Reviews")}>
+          <Pressable onPress={gotoRating}>
             <View
               style={{
                 flexDirection: "row",
@@ -515,9 +576,9 @@ const Profile = ({navigation}) => {
           </Pressable>
         </View>
 
-         {/* next section */}
-         <View style={styles.userSection}>
-          <Pressable onPress={() => console.log("Settings")}>
+        {/* next section */}
+        <View style={styles.userSection}>
+          <Pressable onPress={gotoSetting}>
             <View
               style={{
                 flexDirection: "row",
@@ -543,8 +604,11 @@ const Profile = ({navigation}) => {
                     borderRadius: SIZES.base,
                   }}
                 >
-                  <Feather name="settings"   size={SIZES.base2}
-                    color={COLORS.white} />
+                  <Feather
+                    name="settings"
+                    size={SIZES.base2}
+                    color={COLORS.white}
+                  />
                 </View>
 
                 <View
@@ -574,7 +638,7 @@ const Profile = ({navigation}) => {
               marginTop: SIZES.base,
             }}
           />
-          <Pressable onPress={() => console.log("My Subscription")}>
+          <Pressable onPress={gotoMySubscription}>
             <View
               style={{
                 flexDirection: "row",
@@ -600,7 +664,11 @@ const Profile = ({navigation}) => {
                     borderRadius: SIZES.base,
                   }}
                 >
-                  <FontAwesome name="money" size={SIZES.base2} color={COLORS.white} />
+                  <FontAwesome
+                    name="money"
+                    size={SIZES.base2}
+                    color={COLORS.white}
+                  />
                 </View>
 
                 <View
@@ -612,7 +680,7 @@ const Profile = ({navigation}) => {
                   }}
                 >
                   <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
-                  My Subscription
+                    My Subscription
                   </Text>
                 </View>
               </View>
@@ -631,7 +699,7 @@ const Profile = ({navigation}) => {
               marginTop: SIZES.base,
             }}
           />
-          <Pressable onPress={() => console.log("Help & Supports")}>
+          <Pressable onPress={gotoHelp}>
             <View
               style={{
                 flexDirection: "row",
@@ -657,7 +725,9 @@ const Profile = ({navigation}) => {
                     borderRadius: SIZES.base,
                   }}
                 >
-                  <Feather name="help-circle" size={SIZES.base2}
+                  <Feather
+                    name="help-circle"
+                    size={SIZES.base2}
                     color={COLORS.white}
                   />
                 </View>
@@ -690,7 +760,7 @@ const Profile = ({navigation}) => {
               marginTop: SIZES.base,
             }}
           />
-          <Pressable onPress={() => console.log("Change Password")}>
+          <Pressable onPress={gotoChangePassword}>
             <View
               style={{
                 flexDirection: "row",
@@ -751,7 +821,7 @@ const Profile = ({navigation}) => {
               marginTop: SIZES.base,
             }}
           />
-          <Pressable onPress={() => console.log("logout")}>
+          <Pressable onPress={gotoLogOutModal}>
             <View
               style={{
                 flexDirection: "row",
@@ -777,9 +847,11 @@ const Profile = ({navigation}) => {
                     borderRadius: SIZES.base,
                   }}
                 >
-                  <Feather name="log-out" size={SIZES.base2}
-                    color={COLORS.white} />
-                  
+                  <Feather
+                    name="log-out"
+                    size={SIZES.base2}
+                    color={COLORS.white}
+                  />
                 </View>
 
                 <View
@@ -803,8 +875,17 @@ const Profile = ({navigation}) => {
               />
             </View>
           </Pressable>
-          
         </View>
+        <GetVerifiedModel
+          openGetVerifiedModel={openGetVerified}
+          setOpenGetVerifiedModel={setOpenGetVerified}
+          gotoGetVerified={gotoGetVerified}
+        />
+        <LogOutModel
+          openLogOutModel={openLogOut}
+          setOpenLogOutModel={setOpenLogOut}
+          gotoLogOut={gotoLogOut}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -818,7 +899,7 @@ const styles = StyleSheet.create({
     paddingVertical: SIZES.base2,
     paddingHorizontal: SIZES.base2,
     backgroundColor: COLORS.white,
-    marginBottom: SIZES.base3
+    marginBottom: SIZES.base3,
   },
   userSection: {
     paddingVertical: SIZES.base2,

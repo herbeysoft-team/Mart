@@ -26,7 +26,7 @@ export default function EditProfile({ navigation }) {
   const [phone, setPhone] = useState("");
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderMedium navigation={navigation} />
+      <HeaderMedium navigation={navigation} title={"Edit Profile"} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <KeyboardAvoidingView>
           <View

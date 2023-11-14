@@ -1,4 +1,4 @@
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { FONTS, SIZES, COLORS } from "../../constant";
 import { AntDesign } from "@expo/vector-icons";
