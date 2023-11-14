@@ -87,7 +87,7 @@ const Profile = ({ navigation }) => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderBig />
+      <HeaderBig title={"Profile"}/>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* user section */}
         <View style={styles.userSection}>
