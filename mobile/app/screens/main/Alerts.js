@@ -1,16 +1,132 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { FONTS, SIZES, COLORS } from "../../constant";
 import HeaderBig from "../../components/general/HeaderBig";
-
+import NotificationBox from "../../components/alert/NotificationBox";
+import ProfilePic from "../../../assets/profilepic.jpeg";
+import MessageBox from "../../components/alert/MessageBox";
 const FirstRoute = () => (
-  <View style={{ flex: 1, backgroundColor: COLORS.white }} />
+  <ScrollView
+    showsVerticalScrollIndicator={false}
+    style={{
+      flex: 1,
+      backgroundColor: COLORS.white,
+      paddingVertical: SIZES.base2,
+      paddingHorizontal: SIZES.base2,
+      marginBottom: SIZES.base3,
+    }}
+  >
+    <NotificationBox
+      title={"New Listing 6min away"}
+      subtitle={"Check out the existing listing now!"}
+      time={"Just Now"}
+    />
+    <NotificationBox
+      title={"New Listing 6min away"}
+      subtitle={"Check out the existing listing now!"}
+      time={"2 min ago"}
+    />
+    <NotificationBox
+      title={"New Listing 6min away"}
+      subtitle={"Check out the existing listing now!"}
+      time={"1 hour ago"}
+    />
+    <NotificationBox
+      title={"Low Stock Alert"}
+      subtitle={"Check out the existing listing now!"}
+      time={"6 days ago"}
+    />
+    <NotificationBox
+      title={"Low Stock Alert"}
+      subtitle={"Check out the existing listing now!"}
+      time={"6 days ago"}
+    />
+    <NotificationBox
+      title={"Low Stock Alert"}
+      subtitle={"Check out the existing listing now!"}
+      time={"6 days ago"}
+    />
+    <NotificationBox
+      title={"Low Stock Alert"}
+      subtitle={"Check out the existing listing now!"}
+      time={"6 days ago"}
+    />
+    <NotificationBox
+      title={"Low Stock Alert"}
+      subtitle={"Check out the existing listing now!"}
+      time={"6 days ago"}
+    />
+    <NotificationBox
+      title={"Low Stock Alert"}
+      subtitle={"Check out the existing listing now!"}
+      time={"6 days ago"}
+    />
+  </ScrollView>
 );
 
 const SecondRoute = () => (
-  <View style={{ flex: 1, backgroundColor: COLORS.white }} />
+  <ScrollView
+    showsVerticalScrollIndicator={false}
+    style={{
+      flex: 1,
+      backgroundColor: COLORS.white,
+      paddingVertical: SIZES.base2,
+      paddingHorizontal: SIZES.base2,
+      marginBottom: SIZES.base3,
+    }}
+  >
+    <MessageBox
+      profilePic={ProfilePic}
+      user={"Abiodun Adam"}
+      message={"Do you still have this?"}
+      time={"Just Now"}
+      number={2}
+    />
+     <MessageBox
+      profilePic={ProfilePic}
+      user={"Abiodun Adam"}
+      message={"Do you still have this?"}
+      time={"few minutes ago"}
+      number={1}
+    />
+     <MessageBox
+      profilePic={ProfilePic}
+      user={"Jackson Adam"}
+      message={"Do you still have this?"}
+      time={"1 hour ago"}
+      number={0}
+    />
+     <MessageBox
+      profilePic={ProfilePic}
+      user={"Abiodun Adam"}
+      message={"Do you still have this?"}
+      time={"3 days ago"}
+      number={5}
+    />
+    <MessageBox
+      profilePic={ProfilePic}
+      user={"Abiodun Adam"}
+      message={"Do you still have this?"}
+      time={"3 days ago"}
+      number={5}
+    />
+    <MessageBox
+      profilePic={ProfilePic}
+      user={"Abiodun Adam"}
+      message={"Do you still have this?"}
+      time={"3 days ago"}
+      number={5}
+    />
+    <MessageBox
+      profilePic={ProfilePic}
+      user={"Abiodun Adam"}
+      message={"Do you still have this?"}
+      time={"3 days ago"}
+      number={0}
+    />
+  </ScrollView>
 );
 
 const renderScene = SceneMap({
