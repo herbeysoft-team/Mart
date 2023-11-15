@@ -48,6 +48,10 @@ export const SIZES = {
   base8: hp(8),
   base9: hp(9),
   base10: hp(10),
+  base11: hp(11),
+  base12: hp(12),
+  base13: hp(13),
+  base14: hp(14),
   font: 14,
   radius: hp(2.5),
   button: hp(5),
@@ -86,6 +90,7 @@ export const FONTS = {
   body2: { fontFamily: "medium", fontSize: SIZES.body2, fontWeight: "400" },
   body3: { fontFamily: "medium", fontSize: SIZES.body3, fontWeight: "400" },
   body4: { fontFamily: "medium", fontSize: SIZES.body4 },
+  listHead: {fontFamily: "semi", fontSize: SIZES.body3, fontWeight: "700"}
 };
 
 const appTheme = { COLORS, SIZES, FONTS };

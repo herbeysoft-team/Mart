@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
   Pressable,
 } from "react-native";
 import React, { useState, useRef } from "react";

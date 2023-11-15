@@ -828,6 +828,7 @@ const Profile = ({ navigation }) => {
                 alignItems: "center",
                 justifyContent: "space-between",
                 paddingTop: SIZES.base,
+                marginBottom:SIZES.base3
               }}
             >
               <View

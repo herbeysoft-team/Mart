@@ -1,7 +1,6 @@
 import { View, Text, Image } from "react-native";
 import React from "react";
 import { FONTS, COLORS, SIZES } from "../../constant";
-import { Feather } from "@expo/vector-icons";
 
 const MessageBox = ({ profilePic, user, message, time, number }) => {
   return (
