@@ -16,7 +16,7 @@ export default function VendorCard({
   distance,
 }) {
   return (
-    <Pressable onPress={() => {}}>
+    <Pressable onPress={() => navigation.navigate("Vendor-Profile", {"id":id, "image":image, "name":name, "rating":rating, "address":address})}>
       <View
         style={{
           flexDirection: "row",
