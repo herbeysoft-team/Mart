@@ -7,6 +7,7 @@ import Login from "../screens/auth/Login";
 import BottomNavigation from "./BottomNavigation";
 import Onboard from "../screens/onboarding/Onboard";
 import ForgetPassword from "../screens/auth/ForgetPassword";
+import ListingDetails from "../screens/main/ListingDetails";
 
 const Stack = createNativeStackNavigator();
 const StackNavigator = () => {
@@ -36,6 +37,11 @@ const StackNavigator = () => {
         <Stack.Screen
           name="Onboard"
           component={Onboard}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="Listing-Detail"
+          component={ListingDetails}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

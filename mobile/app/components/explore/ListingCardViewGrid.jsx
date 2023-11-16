@@ -4,14 +4,13 @@ import { FONTS, COLORS, SIZES } from "../../constant";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function ListingCardView({ listing, navigation }) {
+export default function ListingCardViewGrid({ listing, navigation }) {
   return (
     <Pressable onPress={() => navigation.navigate("Listing-Detail", listing)}>
       <View
         style={{
           paddingVertical: SIZES.base,
           borderRadius: SIZES.base,
-          flexDirection: "row",
           alignItems: "flex-start",
           justifyContent: "space-between",
           gap: SIZES.base,
@@ -24,9 +23,8 @@ export default function ListingCardView({ listing, navigation }) {
         <Image
           source={listing.image[0]}
           style={{
-            height: SIZES.base14,
-            width: SIZES.base12,
-            flex: 1,
+            height: SIZES.hp(25),
+            width: SIZES.width,
             borderRadius: SIZES.base,
             resizeMode: "cover",
           }}

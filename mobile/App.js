@@ -19,9 +19,9 @@ export default function App() {
     async function loadCustomFonts() {
       try {
         await Font.loadAsync({
-          'medium': require("./assets/fonts/DMSans-Medium.ttf"),
-          'regular': require("./assets/fonts/DMSans-Regular.ttf"),
-          'semi': require("./assets/fonts/DMSans-SemiBold.ttf"),
+          medium: require("./assets/fonts/DMSans-Medium.ttf"),
+          regular: require("./assets/fonts/DMSans-Regular.ttf"),
+          semi: require("./assets/fonts/DMSans-SemiBold.ttf"),
         });
         setFontsLoaded(true);
       } catch (error) {

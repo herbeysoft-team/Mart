@@ -15,8 +15,10 @@ import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import Categories from "../../components/explore/Categories";
 import ListingCardView from "../../components/explore/ListingCardView";
+import ListingCardViewGrid from "../../components/explore/ListingCardViewGrid";
 
 const Explore = ({ navigation }) => {
+  const [gridView, setGridView] = useState(false);
   const [activeCategory, setActiveCategory] = useState({
     id: 0,
     name: "Products",
@@ -91,11 +93,16 @@ const Explore = ({ navigation }) => {
       </View>
       {/* Listing Section */}
       <FlatList
+      style={{marginBottom: SIZES.base10}}
         showsVerticalScrollIndicator={false}
         data={listing?.filter((item) => item.type == activeCategory.key)}
-        renderItem={({ item }) => (
-          <ListingCardView listing={item} navigation={navigation} />
-        )}
+        renderItem={({ item }) =>
+          gridView ? (
+            <ListingCardViewGrid listing={item} navigation={navigation} />
+          ) : (
+            <ListingCardView listing={item} navigation={navigation} />
+          )
+        }
       />
       <View
         style={{
@@ -106,7 +113,7 @@ const Explore = ({ navigation }) => {
           bottom: SIZES.base7,
           right: 0,
           left: 0,
-          borderTopWidth:SIZES.thin,
+          borderTopWidth: SIZES.thin,
           borderColor: COLORS.gray4,
           backgroundColor: COLORS.white,
           elevation: SIZES.base,
