@@ -93,7 +93,7 @@ const Explore = ({ navigation }) => {
       </View>
       {/* Listing Section */}
       <FlatList
-      style={{marginBottom: SIZES.base10}}
+        style={{ marginBottom: SIZES.base10 }}
         showsVerticalScrollIndicator={false}
         data={listing?.filter((item) => item.type == activeCategory.key)}
         renderItem={({ item }) =>
