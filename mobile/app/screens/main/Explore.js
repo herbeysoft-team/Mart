@@ -8,18 +8,31 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FONTS, SIZES, COLORS, listing } from "../../constant";
 import HeaderBig from "../../components/general/HeaderBig";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Categories from "../../components/explore/Categories";
 import ListingCardView from "../../components/explore/ListingCardView";
 import ListingCardViewGrid from "../../components/explore/ListingCardViewGrid";
 import { FlashList } from "@shopify/flash-list";
+import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import CustomButton from "../../components/auth/CustomButton";
 
 const Explore = ({ navigation }) => {
+  // ref
+  const bottomSheetRef = useRef(null);
+  // variables
+  const snapPoints = useMemo(() => ["70%"], []);
   const [gridView, setGridView] = useState(false);
   const [activeCategory, setActiveCategory] = useState({
     id: 0,
@@ -36,6 +49,19 @@ const Explore = ({ navigation }) => {
     setActiveCategory(category);
   };
 
+  const handleCloseBottomSheet = () => bottomSheetRef.current?.close();
+  const handleOpenBottomSheet = () => bottomSheetRef.current?.expand();
+
+  const renderBackdrop = useCallback(
+    (props) => (
+      <BottomSheetBackdrop
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        {...props}
+      />
+    ),
+    []
+  );
   return (
     <SafeAreaView style={styles.container}>
       <HeaderBig title={"Explore"} />
@@ -61,7 +87,7 @@ const Explore = ({ navigation }) => {
             style={{ ...FONTS.body3, color: COLORS.gray3 }}
           />
         </View>
-        <TouchableOpacity onPress={() => console.log("Options")}>
+        <TouchableOpacity onPress={handleOpenBottomSheet}>
           <View
             style={{
               paddingHorizontal: SIZES.base,
@@ -95,8 +121,8 @@ const Explore = ({ navigation }) => {
       </View>
       {/* Listing Section */}
 
-     <FlashList
-        contentContainerStyle={{paddingBottom: SIZES.base12}}
+      <FlashList
+        contentContainerStyle={{ paddingBottom: SIZES.base12 }}
         showsVerticalScrollIndicator={false}
         estimatedItemSize={200}
         data={listing?.filter((item) => item.type == activeCategory.key)}
@@ -108,7 +134,6 @@ const Explore = ({ navigation }) => {
           )
         }
       />
-
 
       <View
         style={{
@@ -128,17 +153,260 @@ const Explore = ({ navigation }) => {
         <Text
           style={{ textAlign: "center", ...FONTS.body4 }}
         >{`${listing?.length} results in your Neighborhood`}</Text>
-        <Pressable onPress={()=> {}}>
-        <Text
-          style={{ textAlign: "center", ...FONTS.body3, color: COLORS.primary }}
-        >{`Explore other Neighborhood`}</Text>
+        <Pressable onPress={() => {}}>
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.body3,
+              color: COLORS.primary,
+            }}
+          >{`Explore other Neighborhood`}</Text>
         </Pressable>
       </View>
+      {/* BottomSheet  */}
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={0}
+        snapPoints={snapPoints}
+        enablePanDownToClose={true}
+        backdropComponent={renderBackdrop}
+        handleIndicatorStyle={{ color: COLORS.primary }}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{
+            paddingVertical: SIZES.base2,
+            paddingHorizontal: SIZES.base2,
+            backgroundColor: COLORS.white,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Pressable onPress={() => {}}>
+              <Text style={{ ...FONTS.body4, color: COLORS.white, flex: 1 }}>
+                Reset
+              </Text>
+            </Pressable>
+            <Text
+              style={{
+                flex: 1,
+                ...FONTS.h3,
+                color: COLORS.accent,
+                textAlign: "center",
+              }}
+            >
+              Filter List
+            </Text>
+            <Pressable onPress={() => {}}>
+              <Text style={{ ...FONTS.body3, color: COLORS.primary, flex: 1 }}>
+                Reset
+              </Text>
+            </Pressable>
+          </View>
+          <View
+            style={{
+              paddingHorizontal: SIZES.base2,
+              paddingVertical: SIZES.base2,
+            }}
+          >
+            <Text style={{ ...FONTS.h4 }}>Price</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: SIZES.base,
+                gap: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  borderRadius: SIZES.thickness,
+                  borderWidth: SIZES.thin,
+                  borderColor: COLORS.gray4,
+                  paddingHorizontal: SIZES.base,
+                  paddingVertical: SIZES.base,
+                }}
+              >
+                <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
+                  Less than 30 min
+                </Text>
+              </View>
+              <View
+                style={{
+                  borderRadius: SIZES.thickness,
+                  borderWidth: SIZES.thin,
+                  borderColor: COLORS.gray4,
+                  paddingHorizontal: SIZES.base,
+                  paddingVertical: SIZES.base,
+                }}
+              >
+                <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
+                  More than 30 min
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View
+            style={{
+              paddingHorizontal: SIZES.base2,
+              paddingVertical: SIZES.base2,
+            }}
+          >
+            <Text style={{ ...FONTS.h4 }}>Distance from you</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: SIZES.base,
+                gap: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  borderRadius: SIZES.thickness,
+                  borderWidth: SIZES.thin,
+                  borderColor: COLORS.gray4,
+                  paddingHorizontal: SIZES.base,
+                  paddingVertical: SIZES.base,
+                }}
+              >
+                <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
+                  Less than 30 min
+                </Text>
+              </View>
+              <View
+                style={{
+                  borderRadius: SIZES.thickness,
+                  borderWidth: SIZES.thin,
+                  borderColor: COLORS.gray4,
+                  paddingHorizontal: SIZES.base,
+                  paddingVertical: SIZES.base,
+                }}
+              >
+                <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
+                  More than 30 min
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View
+            style={{
+              paddingHorizontal: SIZES.base2,
+              paddingVertical: SIZES.base2,
+            }}
+          >
+            <Text style={{ ...FONTS.h4 }}>Event Time</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: SIZES.base,
+                gap: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  borderRadius: SIZES.thickness,
+                  borderWidth: SIZES.thin,
+                  borderColor: COLORS.gray4,
+                  paddingHorizontal: SIZES.base,
+                  paddingVertical: SIZES.base,
+                }}
+              >
+                <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
+                  This Week
+                </Text>
+              </View>
+              <View
+                style={{
+                  borderRadius: SIZES.thickness,
+                  borderWidth: SIZES.thin,
+                  borderColor: COLORS.gray4,
+                  paddingHorizontal: SIZES.base,
+                  paddingVertical: SIZES.base,
+                }}
+              >
+                <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
+                  This Month
+                </Text>
+              </View>
+              <View
+                style={{
+                  borderRadius: SIZES.thickness,
+                  borderWidth: SIZES.thin,
+                  borderColor: COLORS.gray4,
+                  paddingHorizontal: SIZES.base,
+                  paddingVertical: SIZES.base,
+                }}
+              >
+                <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
+                  Next Month
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View
+            style={{
+              paddingHorizontal: SIZES.base2,
+              paddingVertical: SIZES.base2,
+            }}
+          >
+            <Text style={{ ...FONTS.h4 }}>View</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: SIZES.base,
+                gap: SIZES.base,
+              }}
+            >
+              <View
+                style={{
+                  width: SIZES.base5,
+                  height: SIZES.base5,
+                  borderRadius: SIZES.base5,
+                  borderWidth: SIZES.thin,
+                  borderColor: COLORS.gray4,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="view-list"
+                  size={SIZES.base3}
+                  color={COLORS.gray3}
+                />
+              </View>
+              <View
+                style={{
+                  width: SIZES.base5,
+                  height: SIZES.base5,
+                  borderRadius: SIZES.base5,
+                  borderWidth: SIZES.thin,
+                  borderColor: COLORS.gray4,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="view-day"
+                  size={SIZES.base3}
+                  color={COLORS.gray3}
+                />
+              </View>
+            </View>
+          </View>
+          <CustomButton
+            onPress={handleCloseBottomSheet}
+            text={"Show Result"}
+            fill={true}
+          />
+        </ScrollView>
+      </BottomSheet>
     </SafeAreaView>
   );
 };
-
-export default Explore;
 
 const styles = StyleSheet.create({
   container: {
@@ -156,3 +424,5 @@ const styles = StyleSheet.create({
     marginBottom: SIZES.base3,
   },
 });
+
+export default Explore;

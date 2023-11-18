@@ -7,6 +7,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { FONTS, SIZES, COLORS } from "./app/constant";
 import StackNavigator from "./app/navigation/StackNavigator";
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 SplashScreen.preventAutoHideAsync();
 
@@ -64,10 +65,12 @@ export default function App() {
   }
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <SafeAreaProvider onLayout={onLayoutRootView}>
       <StatusBar color="dark" />
       <StackNavigator />
     </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 
