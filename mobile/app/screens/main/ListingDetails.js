@@ -123,7 +123,7 @@ export default function ListingDetails({ navigation }) {
             }}
           >
             <CustomButton
-              onPress={() => {}}
+              onPress={() => {navigation.navigate("Checkout", route?.params)}}
               text={
                 route.params?.type == "product"
                   ? "Buy Now"

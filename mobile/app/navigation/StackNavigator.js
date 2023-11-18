@@ -9,6 +9,7 @@ import Onboard from "../screens/onboarding/Onboard";
 import ForgetPassword from "../screens/auth/ForgetPassword";
 import ListingDetails from "../screens/main/ListingDetails";
 import VendorProfile from "../screens/explore/VendorProfile";
+import Checkout from "../screens/explore/Checkout";
 
 const Stack = createNativeStackNavigator();
 const StackNavigator = () => {
@@ -48,6 +49,11 @@ const StackNavigator = () => {
         <Stack.Screen
           name="Vendor-Profile"
           component={VendorProfile}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Checkout"
+          component={Checkout}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
