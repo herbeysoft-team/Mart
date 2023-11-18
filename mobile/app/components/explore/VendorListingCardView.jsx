@@ -3,8 +3,10 @@ import React from "react";
 import { FONTS, COLORS, SIZES } from "../../constant";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
-export default function VendorListingCardView({ listing, navigation }) {
+export default function VendorListingCardView({ listing}) {
+  const navigation = useNavigation();
   return (
     <Pressable onPress={() => navigation.navigate("Listing-Detail", listing)}>
       <View

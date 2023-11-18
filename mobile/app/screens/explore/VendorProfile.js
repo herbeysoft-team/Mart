@@ -6,8 +6,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import HeaderMini from "../../components/general/HeaderMini";
-import ListingCardView from "../../components/explore/ListingCardView";
 import VendorListingCardView from "../../components/explore/VendorListingCardView";
+import VendorReviewCard from "../../components/explore/VendorReviewCard";
+
 const ListingsRoute = ({ navigation }) => (
   <ScrollView
     showsVerticalScrollIndicator={false}
@@ -16,13 +17,18 @@ const ListingsRoute = ({ navigation }) => (
       backgroundColor: COLORS.white,
       paddingVertical: SIZES.base,
       paddingHorizontal: SIZES.base2,
-      
     }}
   >
     {listing.length > 0 &&
-      listing.filter((item) => item.type === "product" && item?.price <= 4000).map((item, index) => (
-        <VendorListingCardView listing={item} navigation={navigation} />
-      ))}
+      listing
+        .filter((item) => item.type === "product" && item?.price <= 4000)
+        .map((item, index) => (
+          <VendorListingCardView
+            key={item.id}
+            listing={item}
+            navigation={navigation}
+          />
+        ))}
   </ScrollView>
 );
 
@@ -36,7 +42,14 @@ const ReviewsRoute = () => (
       paddingHorizontal: SIZES.base2,
       marginBottom: SIZES.base,
     }}
-  ></ScrollView>
+  >
+    <VendorReviewCard/>
+    <VendorReviewCard/>
+    <VendorReviewCard/>
+    <VendorReviewCard/>
+    <VendorReviewCard/>
+    <VendorReviewCard/>
+  </ScrollView>
 );
 
 const renderScene = SceneMap({
@@ -73,7 +86,6 @@ export default function VendorProfile({ navigation }) {
   ]);
 
   const { id, image, name, rating, address } = route.params;
-  console.log(address);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -121,8 +133,6 @@ export default function VendorProfile({ navigation }) {
         sceneContainerStyle={{ backgroundColor: COLORS.white }}
         renderTabBar={renderTabBar}
       />
-
-      
     </SafeAreaView>
   );
 }

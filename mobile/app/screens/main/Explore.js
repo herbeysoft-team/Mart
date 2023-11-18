@@ -16,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Categories from "../../components/explore/Categories";
 import ListingCardView from "../../components/explore/ListingCardView";
 import ListingCardViewGrid from "../../components/explore/ListingCardViewGrid";
+import { FlashList } from "@shopify/flash-list";
 
 const Explore = ({ navigation }) => {
   const [gridView, setGridView] = useState(false);
@@ -92,9 +93,11 @@ const Explore = ({ navigation }) => {
         )}
       </View>
       {/* Listing Section */}
-      <FlatList
-        style={{ marginBottom: SIZES.base10 }}
+
+     <FlashList
+        contentContainerStyle={{paddingBottom: SIZES.base12}}
         showsVerticalScrollIndicator={false}
+        estimatedItemSize={200}
         data={listing?.filter((item) => item.type == activeCategory.key)}
         renderItem={({ item }) =>
           gridView ? (
@@ -104,6 +107,8 @@ const Explore = ({ navigation }) => {
           )
         }
       />
+
+
       <View
         style={{
           position: "absolute",
@@ -121,7 +126,7 @@ const Explore = ({ navigation }) => {
       >
         <Text
           style={{ textAlign: "center", ...FONTS.body3 }}
-        >{`${listing?.length} results`}</Text>
+        >{`${listing?.length} results in your Neighborhood`}</Text>
       </View>
     </SafeAreaView>
   );
