@@ -1,5 +1,6 @@
 import {
   FlatList,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -125,8 +126,13 @@ const Explore = ({ navigation }) => {
         }}
       >
         <Text
-          style={{ textAlign: "center", ...FONTS.body3 }}
+          style={{ textAlign: "center", ...FONTS.body4 }}
         >{`${listing?.length} results in your Neighborhood`}</Text>
+        <Pressable onPress={()=> {}}>
+        <Text
+          style={{ textAlign: "center", ...FONTS.body3, color: COLORS.primary }}
+        >{`Explore other Neighborhood`}</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
