@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import * as Font from "expo-font";
+import { Provider } from 'react-redux';
+import store from './app/context/store';
 import React, { useCallback, useState, useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { FONTS, SIZES, COLORS } from "./app/constant";
@@ -67,8 +69,10 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
     <SafeAreaProvider onLayout={onLayoutRootView}>
+      <Provider  store={store}>
       <StatusBar color="dark" />
       <StackNavigator />
+      </Provider>
     </SafeAreaProvider>
     </GestureHandlerRootView>
   );

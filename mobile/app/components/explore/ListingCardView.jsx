@@ -25,7 +25,7 @@ export default function ListingCardView({ listing, navigation }) {
           source={listing.image[0]}
           style={{
             height: SIZES.base14,
-            width: SIZES.base12,
+            width: SIZES.base14,
             flex: 1,
             borderRadius: SIZES.base,
             resizeMode: "cover",
