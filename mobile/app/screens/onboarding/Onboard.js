@@ -10,6 +10,7 @@ import React, { useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FONTS, SIZES, COLORS, slides } from "../../constant";
 import CustomButton from "../../components/auth/CustomButton";
+import { setItem } from '../../utils/asyncStorage.js';
 
 const Slide = ({ item }) => {
   return (
@@ -50,11 +51,13 @@ const Onboard = ({ navigation }) => {
   };
   
   const goToSignIn = () => {
-    navigation.replace("Login")
+    navigation.replace("Login");
+    setItem('trowmartonboarded', '1');
   };
 
   const goToSignUp = () => {
-    navigation.replace("Register")
+    navigation.replace("Register");
+    setItem('trowmartonboarded', '1');
   };
   const Footer = () => {
     return (
