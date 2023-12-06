@@ -3,8 +3,25 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
 import Login from "./pages/auth/Login";
 import { Toaster } from "react-hot-toast";
+import Layout from "./pages/Layout";
+import Dashboard from "./pages/auth/Dashboard";
+import Profile from "./pages/auth/Profile";
 
 const router = createBrowserRouter([
+  {
+    path: "/home",
+    element: <Layout />,
+    children: [
+      {
+        path: "/home",
+        element: <Dashboard />,
+      },
+      {
+        path: "/home/profile",
+        element: <Profile/>,
+      },
+    ],
+  },
   {
     path: "/",
     element: <Login></Login>,

@@ -6,8 +6,12 @@ import {
   Text,
   View,
   TextInput,
+  ActivityIndicator,
+  TouchableOpacity,
+  Image,
 } from "react-native";
-import React, { useState } from "react";
+import Toast from "react-native-toast-message";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FONTS, SIZES, COLORS } from "../../constant";
 import CustomButton from "../../components/auth/CustomButton";
@@ -16,13 +20,41 @@ import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
+import { setItem, getItem, removeItem } from "../../utils/asyncStorage.js";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  verifyOTP,
+  resendOTP,
+  register,
+  completeReg,
+} from "../../context/features/authSlice";
+import * as ImagePicker from "expo-image-picker";
+import placeholder from "../../../assets/placeholder.png";
 
 export default function Register({ navigation }) {
+  const {
+    verifyloading,
+    verifyerror,
+    regloading,
+    regerror,
+    resendloading,
+    resenderror,
+    verifystatus,
+    regstatus,
+    completeregloading,
+    completeregerror,
+    completeregstatus,
+  } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const route = useRoute();
   const steps = [1, 2, 3, 4];
+
+  const [image, setImage] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [verify, setVerify] = useState("");
+  const [code, setCode] = useState("");
   const [fullname, setFullname] = useState("");
   const [businessname, setBusinessname] = useState("");
   const [industry, setIndustry] = useState("");
@@ -30,6 +62,7 @@ export default function Register({ navigation }) {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
+
   const profileOption = [
     {
       id: 1,
@@ -57,32 +90,243 @@ export default function Register({ navigation }) {
     },
   ];
 
+  useEffect(() => {
+    resenderror &&
+      Toast.show({
+        type: "error",
+        text1: resenderror.message,
+      });
+  }, [resenderror]);
+
+  useEffect(() => {
+    regerror &&
+      Toast.show({
+        type: "error",
+        text1: regerror.message,
+      });
+  }, [regerror]);
+
+  useEffect(() => {
+    verifyerror &&
+      Toast.show({
+        type: "error",
+        text1: verifyerror.message,
+      });
+  }, [verifyerror]);
+
+  useEffect(() => {
+    if (route.params?.step) {
+      setCurrentStep(route.params?.step - 1);
+    }
+    checkIfWeHaveEmail();
+  }, []);
+
+  useEffect(() => {
+    regstatus && setCurrentStep((currentStep) => currentStep + 1);
+  }, [regstatus]);
+
+  useEffect(() => {
+    verifystatus && setCurrentStep((currentStep) => currentStep + 1);
+  }, [verifystatus]);
+
+  const checkIfWeHaveEmail = async () => {
+    let tempEmail = await getItem("trowmartemail");
+    setEmail(tempEmail);
+  };
+
   const handleSignUp = () => {
-    setCurrentStep(currentStep + 1);
+    // setCurrentStep(currentStep + 1);
     const user = {
       email: email,
       password: password,
     };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^[A-Za-z0-9]{6,}$/;
+
+    if (!(email && password)) {
+      Toast.show({
+        type: "error",
+        text1: "Email & Password Required...!",
+      });
+    } else if (!email) {
+      Toast.show({
+        type: "error",
+        text1: "Email Required...!",
+      });
+    } else if (!password) {
+      Toast.show({
+        type: "error",
+        text1: "Password Required...!",
+      });
+    } else if (email.includes(" ")) {
+      Toast.show({
+        type: "error",
+        text1: "Invalid Email...!",
+      });
+    } else if (password.includes(" ")) {
+      Toast.show({
+        type: "error",
+        text1: "Invalid Password...!",
+      });
+    } else if (!emailRegex.test(email)) {
+      Toast.show({
+        type: "error",
+        text1: "Invalid Email Format...!",
+      });
+    } else if (password.length < 6) {
+      Toast.show({
+        type: "error",
+        text1: "Password must be more than 6 characters long",
+      });
+    } else if (!passwordRegex.test(password)) {
+      Toast.show({
+        type: "error",
+        text1: "Password must be Alphanumeric",
+      });
+    } else {
+      // Proceed with authentication or further actions
+      dispatch(register({ user, navigation, Toast }));
+    }
   };
 
   const handleConfirm = () => {
-    setCurrentStep(currentStep + 1);
+    const user = {
+      email: email,
+      code: code,
+    };
+
+    const verifyCodeRegex = /^\d{7}$/;
+
+    if (!verifyCodeRegex.test(code)) {
+      Toast.show({
+        type: "error",
+        text1: "Invalid Verification Code",
+        text2: "It should be a seven-digit numeric code.",
+      });
+    } else {
+      // Proceed with authentication or further actions
+      dispatch(verifyOTP({ user, navigation, Toast }));
+    }
+    verifystatus && setCurrentStep(currentStep + 1);
   };
 
   const handleResendCode = () => {
     // setCurrentStep(currentStep + 1)
+    const user = {
+      email: email,
+    };
+    if (email) {
+      dispatch(resendOTP({ user, navigation, Toast }));
+    }
   };
 
   const handleContinue = () => {
     setCurrentStep(currentStep + 1);
   };
 
-  const getStarted = () => {
-    navigation.navigate("Login");
+  const getStartedBusiness = () => {
+    const userType = "business";
+    const phoneRegex = /^\+(?:[0-9] ?){6,14}[0-9]$/;
+    if (!image || !businessname || !industry || !address || !phone) {
+      Toast.show({
+        type: "info",
+        text1: "All field required!!!",
+      });
+    } else if (phone.includes(" ")) {
+      Toast.show({
+        type: "info",
+        text1: "Wrong Phone Number...!",
+      });
+    } else if (!phoneRegex.test(phone)) {
+      Toast.show({
+        type: "info",
+        text1: "Phone Number must be international format +23480XXX",
+      });
+    } else {
+      const formData = new FormData();
+      formData.append("file", {
+        uri: image, // Local file path on the device
+        type: "image/jpeg", // Adjust the type as needed
+        name: "file.jpg",
+      });
+      formData.append("email", email);
+      formData.append("businessname", businessname);
+      formData.append("industry", industry);
+      formData.append("address", address);
+      formData.append("phone", phone);
+      formData.append("userType", userType);
+      dispatch(completeReg({ formData, navigation, Toast }));
+    }
+  };
+
+  const getStartedIndividual = () => {
+    const userType = "individual";
+    const phoneRegex = /^\+(?:[0-9] ?){6,14}[0-9]$/;
+    if (!image || !fullname || !proffession || !address || !phone) {
+      Toast.show({
+        type: "info",
+        text1: "All field required!!!",
+      });
+    } else if (phone.includes(" ")) {
+      Toast.show({
+        type: "info",
+        text1: "Wrong Phone Number...!",
+      });
+    } else if (!phoneRegex.test(phone)) {
+      Toast.show({
+        type: "info",
+        text1: "Phone Number must be international format +23480XXX",
+      });
+    } else {
+      const formData = new FormData();
+      formData.append("file", {
+        uri: image, // Local file path on the device
+        type: "image/jpeg", // Adjust the type as needed
+        name: "file.jpg",
+      });
+      formData.append("email", email);
+      formData.append("fullname", fullname);
+      formData.append("proffession", proffession);
+      formData.append("address", address);
+      formData.append("phone", phone);
+      formData.append("userType", userType);
+      dispatch(completeReg({ formData, navigation, Toast }));
+    }
   };
 
   const goBack = () => {
     setCurrentStep(currentStep - 1);
+  };
+
+  const uploadImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+        const imageSize = result.assets[0].fileSize;
+        if (imageSize > maxSize) {
+          Toast.show({
+            type: "info",
+            text1: "Selected image is too large.",
+            text2: "Please select an image smaller than 2MB",
+          });
+
+          return; // Stop further processing
+        }
+        setImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: error,
+      });
+    }
   };
 
   return (
@@ -117,6 +361,9 @@ export default function Register({ navigation }) {
         {currentStep == 0 && (
           <KeyboardAvoidingView>
             <Text style={styles.header}>{"Create your\naccount"}</Text>
+            {regloading ? (
+              <ActivityIndicator size="large" color={COLORS.tertiary} />
+            ) : null}
             <View style={{ marginTop: SIZES.base3 }}>
               <Text style={styles.inputheading}>Email</Text>
               <TextInput
@@ -193,11 +440,18 @@ export default function Register({ navigation }) {
                 "This helps us keep your account secure by verifying it’s really you."
               }
             </Text>
+            {verifyloading ? (
+              <ActivityIndicator size="large" color={COLORS.tertiary} />
+            ) : null}
+            {resendloading ? (
+              <ActivityIndicator size="large" color={COLORS.tertiary} />
+            ) : null}
             <View style={{ marginTop: SIZES.base3 }}>
               <Text style={styles.inputheading}>Verification Code</Text>
               <TextInput
-                value={verify}
-                onChangeText={(text) => setVerify(text)}
+                keyboardType="numeric"
+                value={code}
+                onChangeText={(text) => setCode(text)}
                 style={{
                   ...FONTS.body3,
                   borderWidth: SIZES.thickness / 3,
@@ -208,7 +462,7 @@ export default function Register({ navigation }) {
                   padding: SIZES.base2,
                   borderRadius: SIZES.radius / 2,
                 }}
-                placeholder="7 difgit code sent to email"
+                placeholder={`7 digit code sent to email (${email})`}
               />
             </View>
 
@@ -323,12 +577,15 @@ export default function Register({ navigation }) {
         )}
 
         {currentStep == 3 && (
-          <KeyboardAvoidingView>
+          <KeyboardAvoidingView keyboardBottomOffset={SIZES.base5}>
             {selectedOption?.id == 1 && (
               <View>
                 <Text style={styles.header}>
                   {"Tell us about\nyour business"}
                 </Text>
+                {completeregloading ? (
+                  <ActivityIndicator size="large" color={COLORS.tertiary} />
+                ) : null}
                 <View
                   style={{
                     flexDirection: "row",
@@ -337,22 +594,19 @@ export default function Register({ navigation }) {
                     marginTop: SIZES.base,
                   }}
                 >
-                  <View
-                    style={{
-                      width: SIZES.base10,
-                      height: SIZES.base10,
-                      backgroundColor: COLORS.gray4,
-                      borderRadius: SIZES.base10,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <SimpleLineIcons
-                      name="picture"
-                      size={SIZES.base4}
-                      color={COLORS.tertiary}
+                  <TouchableOpacity onPress={uploadImage}>
+                    <Image
+                      source={image ? { uri: image } : placeholder}
+                      style={{
+                        width: SIZES.base10,
+                        height: SIZES.base10,
+                        backgroundColor: COLORS.gray4,
+                        borderRadius: SIZES.base10,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
                     />
-                  </View>
+                  </TouchableOpacity>
                   <View
                     style={{
                       flexDirection: "column",
@@ -395,7 +649,7 @@ export default function Register({ navigation }) {
                 </View>
 
                 <View style={{ marginTop: SIZES.base }}>
-                  <Text style={styles.inputheading}>Profession</Text>
+                  <Text style={styles.inputheading}>Industry</Text>
 
                   <TextInput
                     value={industry}
@@ -429,7 +683,7 @@ export default function Register({ navigation }) {
                       padding: SIZES.base2,
                       borderRadius: SIZES.radius / 2,
                     }}
-                    placeholder="Enter your Address"
+                    placeholder="street address, district, city, state, country"
                   />
                 </View>
                 <View style={{ marginTop: SIZES.base }}>
@@ -461,7 +715,7 @@ export default function Register({ navigation }) {
                 >
                   <CustomButton
                     text={"Get Started"}
-                    onPress={getStarted}
+                    onPress={getStartedBusiness}
                     fill={true}
                   />
                   <CustomButton text={"Back"} onPress={goBack} fill={false} />
@@ -471,6 +725,9 @@ export default function Register({ navigation }) {
             {selectedOption?.id == 2 && (
               <View>
                 <Text style={styles.header}>{"Tell us about\nyourself"}</Text>
+                {completeregloading ? (
+                  <ActivityIndicator size="large" color={COLORS.tertiary} />
+                ) : null}
                 <View
                   style={{
                     flexDirection: "row",
@@ -479,22 +736,19 @@ export default function Register({ navigation }) {
                     marginVertical: SIZES.base,
                   }}
                 >
-                  <View
-                    style={{
-                      width: SIZES.base10,
-                      height: SIZES.base10,
-                      backgroundColor: COLORS.gray4,
-                      borderRadius: SIZES.base10,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <SimpleLineIcons
-                      name="picture"
-                      size={SIZES.base4}
-                      color={COLORS.tertiary}
+                  <TouchableOpacity onPress={uploadImage}>
+                    <Image
+                      source={image ? { uri: image } : placeholder}
+                      style={{
+                        width: SIZES.base10,
+                        height: SIZES.base10,
+                        backgroundColor: COLORS.gray4,
+                        borderRadius: SIZES.base10,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
                     />
-                  </View>
+                  </TouchableOpacity>
                   <View
                     style={{
                       flexDirection: "column",
@@ -571,7 +825,7 @@ export default function Register({ navigation }) {
                       padding: SIZES.base2,
                       borderRadius: SIZES.radius / 2,
                     }}
-                    placeholder="Enter your Address"
+                    placeholder="street address, district, city, state, country"
                   />
                 </View>
                 <View style={{ marginTop: SIZES.base }}>
@@ -603,7 +857,7 @@ export default function Register({ navigation }) {
                 >
                   <CustomButton
                     text={"Get Started"}
-                    onPress={getStarted}
+                    onPress={getStartedIndividual}
                     fill={true}
                   />
                   <CustomButton text={"Back"} onPress={goBack} fill={false} />

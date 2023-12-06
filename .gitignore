@@ -4,3 +4,4 @@ mobile/.env
 server/.node_modules
 admin/.node_modules
 mobile/.node_modules
+mobile/app.json

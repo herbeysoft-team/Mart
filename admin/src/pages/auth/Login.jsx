@@ -9,8 +9,11 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
-// import Logo from "../assets/logo.png";
-import { Link, useNavigate } from "react-router-dom";
+import Logo from "../../assets/logo.png";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../context/features/authSlice";
+
 
 const initialState = {
   phone_no: "",
@@ -20,7 +23,13 @@ const initialState = {
 /**FOOTER */
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="primary" align="center" {...props}>
+    <Typography
+      fontFamily="Poppins"
+      variant="body2"
+      color="primary"
+      align="center"
+      {...props}
+    >
       {"© "}
       TROWMART {new Date().getFullYear()}
       {"."}
@@ -33,19 +42,22 @@ export default function Login() {
   const { loading, setLoading } = useState(false);
   const [formValue, setFormValue] = useState(initialState);
   const { email, password } = formValue;
-  // const { loading, error } = useSelector((state) => ({ ...state.auth }));
-  // const dispatch = useDispatch();
+  const { loadinglogin, errorlogin } = useSelector((state) => ({
+    ...state.auth,
+  }));
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   error && toast.error(error.message);
-  // }, [error]);
+
+  useEffect(() => {
+    errorlogin && toast.error(errorlogin.message);
+  }, [errorlogin]);
 
   /**Handle Submit Function */
   const handleSubmit = (e) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^[A-Za-z0-9]{6,}$/;
+    //const passwordRegex = /^[A-Za-z0-9]{6,}$/;
 
     if (!(email && password)) {
       toast.error("Phone no & Password Required...!");
@@ -61,10 +73,12 @@ export default function Login() {
       toast.error("Password must be more than 6 charateers long");
     } else if (!emailRegex.test(email)) {
       toast.error("Phone Number must be international format +23480XXX");
-    } else if (!passwordRegex.test(password)) {
-      toast.error("Password must be Alphanumeric");
-    } else {
-      //dispatch(login({ formValue, navigate, toast }));
+    } 
+    // else if (!passwordRegex.test(password)) {
+    //   toast.error("Password must be Alphanumeric");
+    // } 
+    else {
+      dispatch(login({ formValue, navigate, toast }));
     }
   };
 
@@ -76,7 +90,7 @@ export default function Login() {
   return (
     <Container maxWidth="xs" component="div">
       <Box
-        marginTop="5rem"
+        marginTop="2rem"
         marginBottom="1rem"
         sx={{
           display: "flex",
@@ -85,9 +99,10 @@ export default function Login() {
           justifyContent: "center",
         }}
       >
+        <img src={Logo} alt="logo" />
         <Typography
           variant="heading"
-          fontFamily="DM Sans"
+          fontFamily="Poppins"
           alignItems="center"
           sx={{
             fontWeight: "bold",
@@ -96,7 +111,6 @@ export default function Login() {
             gap: 1,
           }}
         >
-          {/* <img src={Logo} alt="logo" /> */}
           TrowMart
         </Typography>
       </Box>
@@ -114,7 +128,7 @@ export default function Login() {
           paddingY: 5,
         }}
       >
-        {loading && (
+        {loadinglogin && (
           <>
             <Box
               display="flex"
@@ -159,7 +173,7 @@ export default function Login() {
           </Button>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 1 }} />
+      <Copyright sx={{ mt: 0 }} />
     </Container>
   );
 }

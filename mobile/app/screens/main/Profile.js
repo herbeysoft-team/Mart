@@ -19,6 +19,7 @@ import { SimpleLineIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import GetVerifiedModel from "../../components/general/GetVerifiedModel";
 import LogOutModel from "../../components/general/LogOutModel";
+import { setItem, getItem, removeItem } from "../../utils/asyncStorage.js";
 
 const Profile = ({ navigation }) => {
   const [openGetVerified, setOpenGetVerified] = useState(false);
@@ -37,6 +38,8 @@ const Profile = ({ navigation }) => {
   };
 
   const gotoLogOut = () => {
+    removeItem("trowmarttoken")
+    removeItem("trowmartemail")
     navigation.navigate("Onboard");
     setOpenLogOut(false);
   };

@@ -3,13 +3,14 @@ import { StyleSheet, Text, View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import * as Font from "expo-font";
-import { Provider } from 'react-redux';
-import store from './app/context/store';
+import { Provider } from "react-redux";
+import store from "./app/context/store";
 import React, { useCallback, useState, useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { FONTS, SIZES, COLORS } from "./app/constant";
 import StackNavigator from "./app/navigation/StackNavigator";
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -68,12 +69,13 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <SafeAreaProvider onLayout={onLayoutRootView}>
-      <Provider  store={store}>
-      <StatusBar color="dark" />
-      <StackNavigator />
-      </Provider>
-    </SafeAreaProvider>
+      <SafeAreaProvider onLayout={onLayoutRootView}>
+        <Provider store={store}>
+          <StatusBar color="dark" />
+          <StackNavigator />
+          <Toast position="top" topOffset={SIZES.base5} />
+        </Provider>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }

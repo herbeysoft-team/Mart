@@ -18,14 +18,33 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.herbeysoft.trowmart",
+      
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "config":{
+        "package": "com.herbeysoft.trowmart",
+        "googleMaps": {
+          "apiKey": "AIzaSyBOSZNsjlfibDcXrOnPCpwvrqET6oDqN2M"
+        }
+      },
+      "permissions":[
+        "android.permission.ACCESS_COASE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ]
   }
 }

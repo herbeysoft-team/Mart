@@ -12,6 +12,19 @@ const UserSchema = new Schema(
       type: String,
       required: false,
     },
+    verifiedEmail: {
+      type: Boolean,
+      default: false,
+    },
+    verifiedAccount: {
+      type: Boolean,
+      default: false,
+    },
+    profileCompleted: {
+      type: Boolean,
+      default: false,
+    },
+    token: String,
     fullname: {
       type: String,
       required: false,
@@ -21,6 +34,11 @@ const UserSchema = new Schema(
       required: false,
     },
     email: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+    password: {
       type: String,
       required: true,
     },
@@ -53,6 +71,12 @@ const UserSchema = new Schema(
       latitudeDelta: { type: Number },
       longitudeDelta: { type: Number },
     },
+    listings: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Listing",
+      },
+    ],
   },
   { timestamps: true }
 );
