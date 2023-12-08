@@ -13,7 +13,7 @@ const { multerMiddleware } = require("../middleware/MulterUtil");
 
 
 /**ADD LISTING */
-router.post("/addlisting", addlisting);
+router.post("/addlisting", verifyToken, addlisting);
 
 /**GET ALL LISTINGS */
 router.get("/getalllisting", getAllListings);
@@ -26,3 +26,5 @@ router.put("/updatelisting/:id", updateListing);
 
 /**DELETE LISTING*/
 router.delete("/deletelisting/:id", deleteListing);
+
+module.exports = router;

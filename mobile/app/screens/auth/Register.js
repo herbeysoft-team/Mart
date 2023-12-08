@@ -19,7 +19,6 @@ import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { SimpleLineIcons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { setItem, getItem, removeItem } from "../../utils/asyncStorage.js";
 import { useDispatch, useSelector } from "react-redux";

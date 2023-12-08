@@ -5,9 +5,9 @@ import CardItem from "../../components/CardItem";
 import PeopleIcon from "@mui/icons-material/People";
 import PagesIcon from "@mui/icons-material/Pages";
 import MoveToInboxIcon from "@mui/icons-material/MoveToInbox";
-import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
-import RedoIcon from "@mui/icons-material/Redo";
-import IosShareIcon from "@mui/icons-material/IosShare";
+// import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
+// import RedoIcon from "@mui/icons-material/Redo";
+// import IosShareIcon from "@mui/icons-material/IosShare";
 import SkeletonDashboard from "../../components/SkeletonDashboard";
 // import { allcountfordashboard } from "../context/features/userSlice";
 // import { useSelector, useDispatch } from "react-redux";
@@ -74,9 +74,9 @@ const Dashboard = () => {
               <Grid item xs={12} md={4} className="grid">
                 <Item>
                   <CardItem
-                    name="USER"
+                    name="ADMIN"
                     icon={<PeopleIcon />}
-                    number={11}
+                    number={1}
                     bgavatar="#006E99"
                     numberColor="#006E99"
                   />

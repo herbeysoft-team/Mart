@@ -14,6 +14,7 @@ const ListingSchema = new Schema({
   price: Number,
   unit: String,
   brand: String,
+  category: String,
   condition: String,
   organizer: String,
   provider: String,
@@ -33,7 +34,7 @@ const ListingSchema = new Schema({
     ref: "User",
   },
   tags: [String],
-});
+}, { timestamps: true });
 
 const ListingModel = mongoose.model("Listing", ListingSchema);
 

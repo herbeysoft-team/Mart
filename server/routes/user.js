@@ -3,25 +3,18 @@ const router = express.Router();
 
 const {
   getuserprofile,
-//   getunfollowusers,
-//   getsearchusers,
-//   updateuserprofile,
-//   updateuserprofilepic,
-//   getuserstogift,
-//   allcountfordashboard,
-//   allusersforadmin,
-//   updateuserprofilebyadmin
+  allusersforadmin
 } = require("../controller/user");
 const verifyToken = require("../middleware/VerifyToken");
-// const verifyAdmin = require("../middleware/verifyAdmin");
+const verifyAdmin = require("../middleware/verifyAdmin");
 const {multerMiddleware} = require("../middleware/MulterUtil");
 
 
 // /**GET COUNT FOR DASHBOARD*/
 // router.get("/allcountfordashboard",verifyAdmin, allcountfordashboard);
 
-// /**GET ALL USER FOR ADMIN*/
-// router.get("/allusersforadmin",verifyAdmin, allusersforadmin);
+/**GET ALL USER FOR ADMIN*/
+router.get("/allusersforadmin", verifyAdmin, allusersforadmin);
 
 // /**UPDATE USER PROFILE BY ADMIN*/
 // router.put("/updateuserprofilebyadmin", verifyAdmin, updateuserprofilebyadmin);

@@ -1,18 +1,18 @@
 import axios from "axios";
+import { getItem } from "../utils/asyncStorage.js";
 
 
 const API = axios.create({
   baseURL: "http://172.20.10.4:8002/",
 });
 
-// API.interceptors.request.use((req) => {
-//   if (AsyncStorage.getItem("trowmartAuthToken")) {
-//     req.headers.Authorization = `Bearer ${
-//       JSON.parse(AsyncStorage.getItem("trowmartAuthToken"))
-//     }`;
-//   }
-//   return req;
-// });
+API.interceptors.request.use(async (req) => {
+  const token = await getItem("trowmarttoken")
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
+  }
+  return req;
+});
 
 /**AUTHENTICATION API */
 export const login = (user) => API.post("/api/v1/auth/login", user); //sign in for all users
@@ -29,8 +29,8 @@ export const resetPassword = (user) =>
 export const completeReg = (formData) =>
   API.post("/api/v1/auth/completereg", formData); //complete Reg
 
-// /**USER API */
-// export const getUserProfile = (userId) => API.get(`/api/v1/user/getuserprofile/${userId}`); //get user profile
+/**USER API */
+export const getUserProfile = () => API.get(`/api/v1/user/getuserprofile/`); //get user profile
 // export const getUnfollowUsers = (id) => API.get(`/api/v1/user/getunfollowusers/${id}`); //get unfollow users
 // export const getSearchUsers= (searchname) => API.get(`/api/v1/user/getsearchusers/${searchname}`); //get search users
 // export const getUsersToGift= () => API.get(`/api/v1/user/getuserstogift/`); //getusers to gift

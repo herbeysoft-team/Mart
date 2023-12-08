@@ -3,7 +3,6 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors"); //safely recieve resources from another domain
 const bodyParser = require('body-parser');  //to parse the body of HTTP request
-const multer = require("multer");
 const path = require("path");
 const app = express();
 const port = 3000;
@@ -18,6 +17,7 @@ mongoose
 //routes import
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
+const listingRouter = require("./routes/listing");
 
 
 // MiddleWare
@@ -30,6 +30,7 @@ app.disable("x-powered-by"); //less hackers know your stack
 //routes
 app.use("/api/v1/auth/", authRouter);
 app.use("/api/v1/user/", userRouter);
+app.use("/api/v1/listing/", listingRouter);
 
 
 app.listen(process.env.PORT || port, () =>

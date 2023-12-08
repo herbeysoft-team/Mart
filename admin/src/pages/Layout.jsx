@@ -250,7 +250,7 @@ const Layout = () => {
                 }}
               >
                  <img src={Logo} style={{width:"4rem", height:"4rem"}} alt="logo" />
-                TrowBox
+                TrowMart
               </Typography>
               
             </Box>
