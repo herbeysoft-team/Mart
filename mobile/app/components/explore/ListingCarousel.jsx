@@ -47,7 +47,7 @@ export default function ListingCarousel({ images }) {
                   position: "absolute",
                   bottom: SIZES.base,
                   left: SIZES.base3,
-                  paddingHorizontal: SIZES.thickness,
+                  paddingHorizontal: SIZES.base,
                   paddingVertical: SIZES.thickness,
                   backgroundColor: COLORS.primary,
                   borderRadius: SIZES.base,

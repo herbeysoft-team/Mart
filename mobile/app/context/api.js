@@ -30,7 +30,7 @@ export const completeReg = (formData) =>
   API.post("/api/v1/auth/completereg", formData); //complete Reg
 
 /**USER API */
-export const getUserProfile = () => API.get(`/api/v1/user/getuserprofile/`); //get user profile
+export const getUserProfile = (userId) => API.get(`/api/v1/user/getuserprofile/${userId}`); //get user profile
 // export const getUnfollowUsers = (id) => API.get(`/api/v1/user/getunfollowusers/${id}`); //get unfollow users
 // export const getSearchUsers= (searchname) => API.get(`/api/v1/user/getsearchusers/${searchname}`); //get search users
 // export const getUsersToGift= () => API.get(`/api/v1/user/getuserstogift/`); //getusers to gift

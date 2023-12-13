@@ -30,6 +30,7 @@ import {
 } from "../../context/features/authSlice";
 import * as ImagePicker from "expo-image-picker";
 import placeholder from "../../../assets/placeholder.png";
+import CustomTextInput from "../../components/auth/CustomTextInput.jsx";
 
 export default function Register({ navigation }) {
   const {
@@ -330,7 +331,7 @@ export default function Register({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: SIZES.base10}}>
         {/* Indicator container */}
         <View
           style={{
@@ -358,55 +359,34 @@ export default function Register({ navigation }) {
 
         {/* the Pages here */}
         {currentStep == 0 && (
-          <KeyboardAvoidingView>
+          <KeyboardAvoidingView behavior="padding">
             <Text style={styles.header}>{"Create your\naccount"}</Text>
             {regloading ? (
               <ActivityIndicator size="large" color={COLORS.tertiary} />
             ) : null}
             <View style={{ marginTop: SIZES.base3 }}>
               <Text style={styles.inputheading}>Email</Text>
-              <TextInput
+              <CustomTextInput
                 value={email}
                 onChangeText={(text) => setEmail(text)}
-                style={{
-                  ...FONTS.body3,
-                  borderWidth: SIZES.thickness / 3,
-                  borderColor: COLORS.tertiary,
-                  color: COLORS.tertiary,
-                  marginVertical: SIZES.thickness,
-                  // width: SIZES.wp(90),
-                  padding: SIZES.base2,
-                  borderRadius: SIZES.radius / 2,
-                }}
                 placeholder="Enter your Email"
               />
             </View>
 
             <View style={{ marginTop: SIZES.base }}>
               <Text style={styles.inputheading}>Password</Text>
-
-              <TextInput
+              <CustomTextInput
                 value={password}
                 onChangeText={(text) => setPassword(text)}
                 secureTextEntry={true}
-                style={{
-                  ...FONTS.body3,
-                  borderWidth: SIZES.thickness / 3,
-                  borderColor: COLORS.tertiary,
-                  color: COLORS.tertiary,
-                  marginVertical: SIZES.thickness,
-                  // width: SIZES.wp(90),
-                  padding: SIZES.base2,
-                  borderRadius: SIZES.radius / 2,
-                }}
-                placeholder="***********"
+                placeholder={"***********"}
               />
             </View>
 
             <View
               style={{
                 marginTop: SIZES.base6,
-                height: SIZES.hp(25),
+                height: SIZES.hp(10),
                 alignItems: "center",
               }}
             />
@@ -432,7 +412,7 @@ export default function Register({ navigation }) {
         )}
 
         {currentStep == 1 && (
-          <KeyboardAvoidingView>
+          <KeyboardAvoidingView behavior="padding">
             <Text style={styles.header}>{"Verify email"}</Text>
             <Text style={styles.subheading}>
               {
@@ -447,20 +427,10 @@ export default function Register({ navigation }) {
             ) : null}
             <View style={{ marginTop: SIZES.base3 }}>
               <Text style={styles.inputheading}>Verification Code</Text>
-              <TextInput
+              <CustomTextInput
                 keyboardType="numeric"
                 value={code}
                 onChangeText={(text) => setCode(text)}
-                style={{
-                  ...FONTS.body3,
-                  borderWidth: SIZES.thickness / 3,
-                  borderColor: COLORS.tertiary,
-                  color: COLORS.tertiary,
-                  marginVertical: SIZES.thickness,
-                  // width: SIZES.wp(90),
-                  padding: SIZES.base2,
-                  borderRadius: SIZES.radius / 2,
-                }}
                 placeholder={`7 digit code sent to email (${email})`}
               />
             </View>
@@ -468,7 +438,7 @@ export default function Register({ navigation }) {
             <View
               style={{
                 marginTop: SIZES.base6,
-                height: SIZES.hp(35),
+                height: SIZES.hp(10),
                 alignItems: "center",
               }}
             />
@@ -562,7 +532,7 @@ export default function Register({ navigation }) {
             <View
               style={{
                 marginTop: SIZES.base6,
-                height: SIZES.hp(25),
+                height: SIZES.hp(10),
                 alignItems: "center",
               }}
             />
@@ -576,7 +546,7 @@ export default function Register({ navigation }) {
         )}
 
         {currentStep == 3 && (
-          <KeyboardAvoidingView keyboardBottomOffset={SIZES.base5}>
+          <KeyboardAvoidingView behavior="padding">
             {selectedOption?.id == 1 && (
               <View>
                 <Text style={styles.header}>
@@ -630,19 +600,9 @@ export default function Register({ navigation }) {
                 {/* form here */}
                 <View style={{ marginTop: SIZES.base }}>
                   <Text style={styles.inputheading}>Business Name</Text>
-                  <TextInput
+                  <CustomTextInput
                     value={businessname}
                     onChangeText={(text) => setBusinessname(text)}
-                    style={{
-                      ...FONTS.body3,
-                      borderWidth: SIZES.thickness / 3,
-                      borderColor: COLORS.tertiary,
-                      color: COLORS.tertiary,
-                      marginVertical: SIZES.thickness,
-                      // width: SIZES.wp(90),
-                      padding: SIZES.base2,
-                      borderRadius: SIZES.radius / 2,
-                    }}
                     placeholder="Enter Business Name"
                   />
                 </View>
@@ -650,57 +610,27 @@ export default function Register({ navigation }) {
                 <View style={{ marginTop: SIZES.base }}>
                   <Text style={styles.inputheading}>Industry</Text>
 
-                  <TextInput
+                  <CustomTextInput
                     value={industry}
                     onChangeText={(text) => setIndustry(text)}
-                    style={{
-                      ...FONTS.body3,
-                      borderWidth: SIZES.thickness / 3,
-                      borderColor: COLORS.tertiary,
-                      color: COLORS.tertiary,
-                      marginVertical: SIZES.thickness,
-                      // width: SIZES.wp(90),
-                      padding: SIZES.base2,
-                      borderRadius: SIZES.radius / 2,
-                    }}
                     placeholder="Select your Industry"
                   />
                 </View>
                 <View style={{ marginTop: SIZES.base }}>
                   <Text style={styles.inputheading}>Address</Text>
 
-                  <TextInput
+                  <CustomTextInput
                     value={address}
                     onChangeText={(text) => setAddress(text)}
-                    style={{
-                      ...FONTS.body3,
-                      borderWidth: SIZES.thickness / 3,
-                      borderColor: COLORS.tertiary,
-                      color: COLORS.tertiary,
-                      marginVertical: SIZES.thickness,
-                      // width: SIZES.wp(90),
-                      padding: SIZES.base2,
-                      borderRadius: SIZES.radius / 2,
-                    }}
                     placeholder="street address, district, city, state, country"
                   />
                 </View>
                 <View style={{ marginTop: SIZES.base }}>
                   <Text style={styles.inputheading}>Phone Number</Text>
 
-                  <TextInput
+                  <CustomTextInput
                     value={phone}
                     onChangeText={(text) => setPhone(text)}
-                    style={{
-                      ...FONTS.body3,
-                      borderWidth: SIZES.thickness / 3,
-                      borderColor: COLORS.tertiary,
-                      color: COLORS.tertiary,
-                      marginVertical: SIZES.thickness,
-                      // width: SIZES.wp(90),
-                      padding: SIZES.base2,
-                      borderRadius: SIZES.radius / 2,
-                    }}
                     placeholder="Enter your Phone number"
                   />
                 </View>
@@ -772,19 +702,9 @@ export default function Register({ navigation }) {
                 {/* form here */}
                 <View style={{ marginTop: SIZES.base }}>
                   <Text style={styles.inputheading}>Full Name</Text>
-                  <TextInput
+                  <CustomTextInput
                     value={fullname}
                     onChangeText={(text) => setFullname(text)}
-                    style={{
-                      ...FONTS.body3,
-                      borderWidth: SIZES.thickness / 3,
-                      borderColor: COLORS.tertiary,
-                      color: COLORS.tertiary,
-                      marginVertical: SIZES.thickness,
-                      // width: SIZES.wp(90),
-                      padding: SIZES.base2,
-                      borderRadius: SIZES.radius / 2,
-                    }}
                     placeholder="Your Full Name"
                   />
                 </View>
@@ -792,57 +712,27 @@ export default function Register({ navigation }) {
                 <View style={{ marginTop: SIZES.base }}>
                   <Text style={styles.inputheading}>Profession</Text>
 
-                  <TextInput
+                  <CustomTextInput
                     value={proffession}
                     onChangeText={(text) => setProffession(text)}
-                    style={{
-                      ...FONTS.body3,
-                      borderWidth: SIZES.thickness / 3,
-                      borderColor: COLORS.tertiary,
-                      color: COLORS.tertiary,
-                      marginVertical: SIZES.thickness,
-                      // width: SIZES.wp(90),
-                      padding: SIZES.base2,
-                      borderRadius: SIZES.radius / 2,
-                    }}
                     placeholder="Your Profession"
                   />
                 </View>
                 <View style={{ marginTop: SIZES.base }}>
                   <Text style={styles.inputheading}>Address</Text>
 
-                  <TextInput
+                  <CustomTextInput
                     value={address}
                     onChangeText={(text) => setAddress(text)}
-                    style={{
-                      ...FONTS.body3,
-                      borderWidth: SIZES.thickness / 3,
-                      borderColor: COLORS.tertiary,
-                      color: COLORS.tertiary,
-                      marginVertical: SIZES.thickness,
-                      // width: SIZES.wp(90),
-                      padding: SIZES.base2,
-                      borderRadius: SIZES.radius / 2,
-                    }}
                     placeholder="street address, district, city, state, country"
                   />
                 </View>
                 <View style={{ marginTop: SIZES.base }}>
                   <Text style={styles.inputheading}>Phone Number</Text>
 
-                  <TextInput
+                  <CustomTextInput
                     value={phone}
                     onChangeText={(text) => setPhone(text)}
-                    style={{
-                      ...FONTS.body3,
-                      borderWidth: SIZES.thickness / 3,
-                      borderColor: COLORS.tertiary,
-                      color: COLORS.tertiary,
-                      marginVertical: SIZES.thickness,
-                      // width: SIZES.wp(90),
-                      padding: SIZES.base2,
-                      borderRadius: SIZES.radius / 2,
-                    }}
                     placeholder="Enter your Phone number"
                   />
                 </View>

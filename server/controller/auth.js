@@ -111,7 +111,7 @@ exports.login = async (req, res) => {
     }
 
     //CREATE USER TOKEN
-    const tokenData = { userId: userExist._id, email };
+    const tokenData = { userId: userExist?._id, email, userType: userExist?.userType};
     const token = await createToken(tokenData);
 
     //ASIGN user token
@@ -271,9 +271,14 @@ exports.completereg = async (req, res) => {
         { new: true } // To return the updated user instead of the old one
       );
 
-      res.status(200).json({ updatedUser, regcompletestatus: true });
+      //CREATE USER TOKEN
+      const tokenData = { userId: updatedUser?._id, email, userType: updateUser?.userType };
+      const token = await createToken(tokenData);
+  
+      res.status(200).json({ updatedUser, regcompletestatus: true, token });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "something went wrong" });
   }
 };

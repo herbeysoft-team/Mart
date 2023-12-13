@@ -16,6 +16,7 @@ import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../context/features/authSlice";
 import { setItem, getItem, removeItem } from "../../utils/asyncStorage.js";
+import CustomTextInput from "../../components/auth/CustomTextInput.jsx";
 
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -103,53 +104,36 @@ const Login = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <KeyboardAvoidingView>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ marginBottom: SIZES.base10 }}
+      >
+        <KeyboardAvoidingView behavior="padding">
           <Text style={styles.header}>{"Sign in to your\naccount"}</Text>
           {loginloading ? (
             <ActivityIndicator size="large" color={COLORS.tertiary} />
           ) : null}
           <View style={{ marginTop: SIZES.base3 }}>
             <Text style={styles.inputheading}>Email</Text>
-            <TextInput
+            <CustomTextInput
+              placeholder={"Enter your Email"}
               value={email}
               onChangeText={(text) => setEmail(text)}
               autoCapitalize="none"
               autoCorrect={false}
-              style={{
-                ...FONTS.body3,
-                borderWidth: SIZES.thickness / 3,
-                borderColor: COLORS.tertiary,
-                color: COLORS.tertiary,
-                marginVertical: SIZES.thickness,
-                // width: SIZES.wp(90),
-                padding: SIZES.base2,
-                borderRadius: SIZES.radius / 2,
-              }}
-              placeholder="Enter your Email"
             />
           </View>
 
           <View style={{ marginTop: SIZES.base }}>
             <Text style={styles.inputheading}>Password</Text>
 
-            <TextInput
+            <CustomTextInput
               value={password}
               onChangeText={(text) => setPassword(text)}
               secureTextEntry={true}
               autoCapitalize="none"
               autoCorrect={false}
-              style={{
-                ...FONTS.body3,
-                borderWidth: SIZES.thickness / 3,
-                borderColor: COLORS.tertiary,
-                color: COLORS.tertiary,
-                marginVertical: SIZES.thickness,
-                // width: SIZES.wp(90),
-                padding: SIZES.base2,
-                borderRadius: SIZES.radius / 2,
-              }}
-              placeholder="***********"
+              placeholder={"***********"}
             />
           </View>
 
@@ -172,7 +156,7 @@ const Login = ({ navigation }) => {
           <View
             style={{
               marginTop: SIZES.base6,
-              height: SIZES.hp(25),
+              height: SIZES.hp(10),
               alignItems: "center",
             }}
           />
@@ -180,7 +164,7 @@ const Login = ({ navigation }) => {
           <CustomButton text={"Sign In"} onPress={handleLogin} fill={true} />
 
           <Pressable
-            onPress={() => navigation.navigate("Register", {step: 1})}
+            onPress={() => navigation.navigate("Register", { step: 1 })}
             style={{ marginTop: 15 }}
           >
             <Text

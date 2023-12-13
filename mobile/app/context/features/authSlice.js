@@ -14,21 +14,21 @@ export const login = createAsyncThunk(
           text1: "User does not exist!!!",
           text2: "Create an account",
         });
-        navigation.navigate("Register", { step: 1 });
+        navigation.replace("Register", { step: 1 });
       }else if (response.data.code == 2) {
         setItem("trowmartemail", user?.email);
         Toast.show({
           type: "info",
           text1: response.data.message,
         });
-        navigation.navigate("Register", { step: 2 });
+        navigation.replace("Register", { step: 2 });
       }else if (response.data.code == 3) {
         setItem("trowmartemail", user?.email);
         Toast.show({
           type: "info",
           text1: response.data.message,
         });
-        navigation.navigate("Register", { step: 3 });
+        navigation.replace("Register", { step: 3 });
       }else if (response.data.code == 4) {
         Toast.show({
           type: "error",
@@ -36,7 +36,9 @@ export const login = createAsyncThunk(
         });
       }else{
         const token = response.data.token;
+        const userId = response.data._id;
         setItem("trowmarttoken", token)
+        setItem("trowmartuserId", userId)
         navigation.replace("Main")
       }
 
@@ -156,7 +158,6 @@ export const resetPassword = createAsyncThunk(
 export const completeReg = createAsyncThunk(
   "auth/completeReg",
   async ({ formData, navigation, Toast }, { rejectWithValue }) => {
-    console.log(formData)
     try {
       const response = await api.completeReg(formData);
       if (response.data.regcompletestatus == true) {
@@ -164,7 +165,11 @@ export const completeReg = createAsyncThunk(
           type: "success",
           text1: "Registration Completed Successfully",
         });
-        navigation.navigate("Login");
+        const token = response.data?.token;
+        const userId = response.data.updatedUser?._id;
+        setItem("trowmarttoken", token)
+        setItem("trowmartuserId", userId)
+        navigation.replace("Main")
       }
       return response.data;
     } catch (err) {
@@ -291,7 +296,7 @@ const authSlice = createSlice({
       })
       .addCase(completeReg.fulfilled, (state, action) => {
         state.completeregloading = false;
-        state.completeregstatus = action.payload.passwordreset;
+        state.completeregstatus = action.payload.regcompletestatus;
       });
   },
 });

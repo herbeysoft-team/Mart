@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FONTS, SIZES, COLORS } from "../../constant";
+import { FONTS, SIZES, COLORS, URLBASE} from "../../constant";
 import HeaderBig from "../../components/general/HeaderBig";
 import ProfilePic from "../../../assets/profilepic.jpeg";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -20,15 +20,14 @@ import { FontAwesome } from "@expo/vector-icons";
 import GetVerifiedModel from "../../components/general/GetVerifiedModel";
 import LogOutModel from "../../components/general/LogOutModel";
 import { setItem, getItem, removeItem } from "../../utils/asyncStorage.js";
-import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getUserProfile
 } from "../../context/features/userSlice";
+import placeholder from "../../../assets/placeholder.png";
 
 const Profile = ({ navigation }) => {
   const [userId, setUserId] = useState("");
-  const [user, setUser] = useState();
   const dispatch = useDispatch();
   const [openGetVerified, setOpenGetVerified] = useState(false);
   const [openLogOut, setOpenLogOut] = useState(false);
@@ -37,16 +36,19 @@ const Profile = ({ navigation }) => {
   } = useSelector((state) => state.user);
 
   useEffect(() => {
-      dispatch(getUserProfile())
+    const checkUserId = async () => {
+      try {
+        const getId = await getItem("trowmartuserId");
+        if (getId) {
+          dispatch(getUserProfile(getId))
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    checkUserId();
   }, []);
 
-  console.log(userProfile)
-
-  // useEffect(() => {
-  //   if (userId) {
-  //     fetchUserProfile();
-  //   }
-  // }, [userId]);
 
   const gotoEditProfle = () => {
     navigation.navigate("Edit-Profile");
@@ -63,6 +65,7 @@ const Profile = ({ navigation }) => {
   const gotoLogOut = () => {
     removeItem("trowmarttoken");
     removeItem("trowmartemail");
+    removeItem("trowmartuserId");
     navigation.navigate("Onboard");
     setOpenLogOut(false);
   };
@@ -132,25 +135,28 @@ const Profile = ({ navigation }) => {
                   gap: SIZES.base2,
                 }}
               >
+               
                 <Image
-                  source={ProfilePic}
+                  source={ userProfile?.profile ? { uri: `${URLBASE.imageBaseUrl}${userProfile?.profile}`} : placeholder }
                   style={{
                     height: SIZES.base6,
                     width: SIZES.base6,
                     borderRadius: SIZES.base6,
+                    resizeMode:"cover"
                   }}
                 />
+              
                 <View>
                   <View
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
-                      justifyContent: "center",
+                      justifyContent: "flex-start",
                       gap: SIZES.base,
                     }}
                   >
                     <Text style={{ ...FONTS.h3, color: COLORS.gray }}>
-                      John Anderson
+                    {userProfile?.userType === "business" ? userProfile?.businessName : userProfile?.fullname}
                     </Text>
                     <MaterialIcons
                       name="verified"
@@ -159,7 +165,7 @@ const Profile = ({ navigation }) => {
                     />
                   </View>
                   <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
-                    kelvin@gmail.com
+                  `{userProfile?.email}
                   </Text>
                 </View>
               </View>

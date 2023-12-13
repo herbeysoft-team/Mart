@@ -1,6 +1,6 @@
 import {
   StyleSheet,
-  Text,
+  Platform,
   View,
   Image,
   TouchableOpacity,
@@ -73,8 +73,11 @@ const styles = StyleSheet.create({
     top: SIZES.base6,
     right: SIZES.base3,
     left: SIZES.base3,
-    elevation: SIZES.thin,
-    shadowOffset: 2,
+    elevation: SIZES.thickness,
+    shadowColor: Platform.OS === 'ios' ? COLORS.gray4 : undefined, // Shadow properties for iOS
+    shadowOffset: Platform.OS === 'ios' ? { width: 0, height: SIZES.thin } : undefined,
+    shadowOpacity: Platform.OS === 'ios' ? 0.3 : undefined,
+    shadowRadius: Platform.OS === 'ios' ? 4 : undefined,
     backgroundColor: COLORS.white,
     zIndex: 1,
     height: SIZES.base7,

@@ -26,6 +26,8 @@ export default function BottomNavigation() {
           left: 0,
           height: SIZES.tabHeight,
           backgroundColor: COLORS.white,
+          borderTopColor: COLORS.gray4,
+          borderTopWidth: SIZES.thin,
           elevation: Platform.OS === "android" ? 0 : undefined,
           shadowOpacity: Platform.OS === "ios" ? 0 : undefined,
         },

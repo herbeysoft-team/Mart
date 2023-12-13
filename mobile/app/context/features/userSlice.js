@@ -4,10 +4,9 @@ import * as api from "../api";
 export const getUserProfile = createAsyncThunk(
   "user/getUserProfile",
 
-  async (_, { rejectWithValue }) => {
-    console.log("I got here")
+  async (getId, { rejectWithValue }) => {
     try {
-      const response = await api.getUserProfile();
+      const response = await api.getUserProfile(getId);
 
       return response.data;
     } catch (err) {

@@ -96,7 +96,7 @@ const AddListing = () => {
                     borderColor:
                       selectedOption && selectedOption.id === item?.id
                         ? COLORS.primary
-                        : COLORS.gray3,
+                        : COLORS.gray4,
                     paddingVertical: SIZES.base3,
                     paddingHorizontal: SIZES.base2,
                     flexDirection: "row",
@@ -139,7 +139,7 @@ const AddListing = () => {
                       onPress={() => setSelectedOption(item)}
                       name="circle"
                       size={SIZES.base3}
-                      color="gray"
+                      color={COLORS.gray4}
                     />
                   )}
                 </Pressable>

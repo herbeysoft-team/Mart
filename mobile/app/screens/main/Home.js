@@ -6,10 +6,11 @@ import {
   Pressable,
   FlatList,
   Touchable,
+  Platform,
 } from "react-native";
 import React, { useState, useRef, useMemo, useCallback } from "react";
 import { FONTS, SIZES, COLORS, listing, vendor } from "../../constant";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, Circle, PROVIDER_GOOGLE } from "react-native-maps";
 import SearchBar from "../../components/home/SearchBar";
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -20,7 +21,28 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
+
+const customMapStyle = [
+  // Your custom map style JSON object
+  {
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: "tranparent", // Change the color as needed
+      },
+    ],
+  },
+  {
+    elementType: 'labels.text.stroke',
+    stylers: [
+      {
+        color: COLORS.gray4, // Change the color as needed
+      },
+    ],
+  },
+  // Add more style configurations as needed
+];
 
 const Home = ({ navigation }) => {
   // ref
@@ -32,14 +54,24 @@ const Home = ({ navigation }) => {
 
   const handleCloseVendor = (item) => {
     setSelectedVendor(null);
-    handleCloseBottomSheet()
+    handleCloseBottomSheet();
   };
 
   const handleOpenVendor = (item) => {
     setSelectedVendor(null);
     setSelectedVendor(item);
-    handleOpenBottomSheet()
+    handleOpenBottomSheet();
   };
+  
+  // Define different radii for the circles
+  const circleData = [
+    { radius: 100, fillColor: 'rgba(10, 161, 221, 1.0)', strokeColor: 'rgba(10, 161, 221, 1.0)' },
+    { radius: 200, fillColor: 'rgba(255, 255, 255, 1.0)', strokeColor: 'rgba(255, 255, 255, 1.0)' },
+    { radius: 700, fillColor: 'rgba(10, 161, 221, 0.3)', strokeColor: 'rgba(10, 161, 221, 0.3)'  },
+    { radius: 1300, fillColor: 'rgba(10, 161, 221, 0.1)', strokeColor: 'rgba(10, 161, 221, 0.1)'  },
+    { radius: 2000, fillColor: 'rgba(192, 192, 192, 0.2)', strokeColor: 'rgba(192, 192, 192, 0.2)'  },
+  ];
+
   const renderBackdrop = useCallback(
     (props) => (
       <BottomSheetBackdrop
@@ -107,10 +139,22 @@ const Home = ({ navigation }) => {
       <SearchBar />
       <MapView
         style={styles.map}
+        customMapStyle={customMapStyle}
         provider={PROVIDER_GOOGLE}
         showsUserLocation={true}
         region={mapRegion}
       >
+        {/* Circle to represent the radar */}
+        {circleData.map((circle, index) => (
+        <Circle
+          key={index}
+          center={mapRegion}
+          radius={circle.radius} // Use different radii from the circleData array
+          fillColor={circle.fillColor} // Use different fill colors
+          strokeColor={circle.strokeColor} // Use different stroke colors
+          strokeWidth={2}
+        />
+      ))}
         {vendor?.map((item, index) => (
           <Marker
             onPress={() => handleOpenVendor(item)}
@@ -265,9 +309,11 @@ const Home = ({ navigation }) => {
                     justifyContent: "center",
                   }}
                 >
-                  <AntDesign name="close" size={SIZES.base2}
-                    color={COLORS.tertiary} />
-                  
+                  <AntDesign
+                    name="close"
+                    size={SIZES.base2}
+                    color={COLORS.tertiary}
+                  />
                 </View>
               </TouchableOpacity>
             </View>
@@ -321,14 +367,11 @@ const styles = StyleSheet.create({
     borderWidth: SIZES.thin,
     elevation: SIZES.thickness,
     shadow: SIZES.thickness,
-    shadowOffset: SIZES.thin,
     shadowColor: COLORS.gray2,
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 4,
-    // },
-    // shadowOpacity: 0.3,
-    // shadowRadius: 4,
+    shadowOffset:
+      Platform.OS === "ios" ? { width: 0, height: SIZES.thickness } : undefined,
+    shadowOpacity: Platform.OS === "ios" ? 0.3 : undefined,
+    shadowRadius: Platform.OS === "ios" ? 4 : undefined,
     zIndex: 2,
   },
   arrow: {
@@ -337,9 +380,9 @@ const styles = StyleSheet.create({
     width: 0,
     height: 0,
     borderTopWidth: SIZES.base3,
-    borderRightWidth: SIZES.base2,
+    borderRightWidth: SIZES.base3,
     borderBottomWidth: 0,
-    borderLeftWidth: SIZES.base2,
+    borderLeftWidth: SIZES.base3,
     borderTopColor: COLORS.white,
     borderRightColor: "transparent",
     borderBottomColor: "transparent",

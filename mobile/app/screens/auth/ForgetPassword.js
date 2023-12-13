@@ -4,7 +4,7 @@ import {
   View,
   ActivityIndicator,
   KeyboardAvoidingView,
-  TextInput,
+  ScrollView
 } from "react-native";
 import Toast from "react-native-toast-message";
 import React, { useState, useEffect } from "react";
@@ -16,6 +16,7 @@ import {
   resetPasswordOTP,
   resetPassword,
 } from "../../context/features/authSlice";
+import CustomTextInput from "../../components/auth/CustomTextInput";
 
 const ForgetPassword = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -125,6 +126,10 @@ const ForgetPassword = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ marginBottom: SIZES.base10 }}
+      >
       {!forgetView && (
         <KeyboardAvoidingView>
           <Text style={styles.header}>{"Forget\nPassword?"}</Text>
@@ -138,19 +143,9 @@ const ForgetPassword = ({ navigation }) => {
           ) : null}
           <View style={{ marginTop: SIZES.base3 }}>
             <Text style={styles.inputheading}>Email</Text>
-            <TextInput
+            <CustomTextInput
               value={email}
               onChangeText={(text) => setEmail(text)}
-              style={{
-                ...FONTS.body3,
-                borderWidth: SIZES.thickness / 3,
-                borderColor: COLORS.tertiary,
-                color: COLORS.tertiary,
-                marginVertical: SIZES.thickness,
-                width: SIZES.wp(90),
-                padding: SIZES.base2,
-                borderRadius: SIZES.radius / 2,
-              }}
               placeholder="Enter your Email"
             />
           </View>
@@ -182,62 +177,32 @@ const ForgetPassword = ({ navigation }) => {
           ) : null}
           <View style={{ marginTop: SIZES.base3 }}>
             <Text style={styles.inputheading}>Verification Code</Text>
-            <TextInput
+            <CustomTextInput
               keyboardType="numeric"
               value={code}
               onChangeText={(text) => setCode(text)}
-              style={{
-                ...FONTS.body3,
-                borderWidth: SIZES.thickness / 3,
-                borderColor: COLORS.tertiary,
-                color: COLORS.tertiary,
-                marginVertical: SIZES.thickness,
-                // width: SIZES.wp(90),
-                padding: SIZES.base2,
-                borderRadius: SIZES.radius / 2,
-              }}
               placeholder={`7 digit code sent to email (${email})`}
             />
           </View>
           <View style={{ marginTop: SIZES.base }}>
             <Text style={styles.inputheading}>New Password</Text>
 
-            <TextInput
+            <CustomTextInput
               value={password}
               onChangeText={(text) => setPassword(text)}
               secureTextEntry={true}
-              style={{
-                ...FONTS.body3,
-                borderWidth: SIZES.thickness / 3,
-                borderColor: COLORS.tertiary,
-                color: COLORS.tertiary,
-                marginVertical: SIZES.thickness,
-                // width: SIZES.wp(90),
-                padding: SIZES.base2,
-                borderRadius: SIZES.radius / 2,
-              }}
-              placeholder="***********"
+              placeholder={"***********"}
             />
           </View>
 
           <View style={{ marginTop: SIZES.base }}>
             <Text style={styles.inputheading}>Confirm Password</Text>
 
-            <TextInput
+            <CustomTextInput
               value={cpassword}
               onChangeText={(text) => setCPassword(text)}
               secureTextEntry={true}
-              style={{
-                ...FONTS.body3,
-                borderWidth: SIZES.thickness / 3,
-                borderColor: COLORS.tertiary,
-                color: COLORS.tertiary,
-                marginVertical: SIZES.thickness,
-                // width: SIZES.wp(90),
-                padding: SIZES.base2,
-                borderRadius: SIZES.radius / 2,
-              }}
-              placeholder="***********"
+              placeholder={"***********"}
             />
           </View>
 
@@ -256,6 +221,7 @@ const ForgetPassword = ({ navigation }) => {
           />
         </KeyboardAvoidingView>
       )}
+      </ScrollView>
     </SafeAreaView>
   );
 };
