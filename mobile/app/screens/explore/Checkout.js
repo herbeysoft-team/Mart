@@ -17,7 +17,6 @@ import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "../../components/auth/CustomButton";
 import OrderCompleteModel from "../../components/general/OrderCompleteModel";
-import { AntDesign } from '@expo/vector-icons';
 
 export default function Checkout({ navigation }) {
   const route = useRoute();
@@ -39,7 +38,6 @@ export default function Checkout({ navigation }) {
   };
 
   const gotoHome = () => {
-    console.log("Go Home")
     navigation.navigate("Main");
     setOpenOrderCompleteModel(false);
   };

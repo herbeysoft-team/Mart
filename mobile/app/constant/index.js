@@ -3,6 +3,8 @@ import slides from "./slides"
 import listing from "./listing"
 import vendor from "./vendor"
 import URLBASE from "./urlbase"
+import listingoption from "./listingoption"
+import deliveryoption from "./deliveryoption"
 
 export {
     COLORS,
@@ -12,4 +14,6 @@ export {
     listing,
     vendor,
     URLBASE,
+    listingoption,
+    deliveryoption,
 }

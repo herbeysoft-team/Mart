@@ -18,6 +18,7 @@ mongoose
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const listingRouter = require("./routes/listing");
+const categoryRouter = require("./routes/category");
 
 
 // MiddleWare
@@ -31,6 +32,7 @@ app.disable("x-powered-by"); //less hackers know your stack
 app.use("/api/v1/auth/", authRouter);
 app.use("/api/v1/user/", userRouter);
 app.use("/api/v1/listing/", listingRouter);
+app.use("/api/v1/category/", categoryRouter);
 
 
 app.listen(process.env.PORT || port, () =>

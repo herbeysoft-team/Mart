@@ -115,6 +115,14 @@ export default function Register({ navigation }) {
   }, [verifyerror]);
 
   useEffect(() => {
+    completeregerror &&
+      Toast.show({
+        type: "error",
+        text1: completeregerror.message,
+      });
+  }, [completeregerror]);
+
+  useEffect(() => {
     if (route.params?.step) {
       setCurrentStep(route.params?.step - 1);
     }
@@ -331,7 +339,10 @@ export default function Register({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom: SIZES.base10}}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ marginBottom: SIZES.base10 }}
+      >
         {/* Indicator container */}
         <View
           style={{
@@ -785,7 +796,7 @@ const styles = StyleSheet.create({
     lineHeight: SIZES.base2,
   },
   inputheading: {
-    color: COLORS.tertiary,
+    color: COLORS.gray3,
     ...FONTS.h4,
     marginTop: SIZES.base,
     lineHeight: SIZES.base2,

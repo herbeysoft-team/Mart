@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     color: COLORS.secondary,
   },
   inputheading: {
-    color: COLORS.tertiary,
+    color: COLORS.gray3,
     ...FONTS.body4,
     marginTop: SIZES.base,
     lineHeight: SIZES.base2,
