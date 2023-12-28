@@ -235,8 +235,6 @@ exports.getListingById = async (req, res) => {
 exports.updateListing = async (req, res) => {
   const userId = req.user.userId;
   const { id } = req.params;
-  const updateData = req.body;
-  console.log(updateData);
 
   try {
     // Find the user by ID

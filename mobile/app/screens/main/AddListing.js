@@ -287,7 +287,6 @@ const AddListing = ({ navigation }) => {
   };
 
   const handleAddService = () => {
-    
     if (
       !servicename ||
       !description ||
@@ -299,7 +298,7 @@ const AddListing = ({ navigation }) => {
       !tags ||
       !unit ||
       !images
-    )  {
+    ) {
       Toast.show({
         type: "info",
         text1: "All field required!!!",
@@ -351,7 +350,7 @@ const AddListing = ({ navigation }) => {
       !tags ||
       !unit ||
       !images
-    ){
+    ) {
       Toast.show({
         type: "info",
         text1: "All field required!!!",
@@ -878,7 +877,6 @@ const AddListing = ({ navigation }) => {
                     {images &&
                       images.map((image, index) => (
                         <View key={index} style={{ position: "relative" }}>
-    
                           <Image
                             source={image ? { uri: image } : placeholder}
                             style={{
@@ -1017,7 +1015,6 @@ const AddListing = ({ navigation }) => {
                     textIcon="₦"
                   />
                 </View>
-
 
                 <View
                   style={{
