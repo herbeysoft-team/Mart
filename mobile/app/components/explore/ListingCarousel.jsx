@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, FlatList, Image } from "react-native";
 import React, { useState, useRef } from "react";
-import { FONTS, COLORS, SIZES } from "../../constant";
+import { FONTS, COLORS, SIZES, URLBASE } from "../../constant";
+import placeholder from "../../../assets/placeholder.png";
 
 export default function ListingCarousel({ images }) {
   const flatListRef = useRef(null);
@@ -34,7 +35,7 @@ export default function ListingCarousel({ images }) {
           return (
             <View style={{ width: SIZES.wp(100) }}>
               <Image
-                source={item}
+                source={item ? { uri: `${URLBASE.imageBaseUrl}${item}`} : placeholder}
                 style={{
                   flex: 1,
                   width: SIZES.width,

@@ -1,22 +1,43 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { FONTS, COLORS, SIZES } from "../../constant";
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+} from "react-native";
+import React, { useEffect, useMemo } from "react";
+import { FONTS, COLORS, SIZES, URLBASE } from "../../constant";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { getVendorDetails } from "../../context/features/vendorSlice";
+import placeholder from "../../../assets/placeholder.png";
 
-export default function VendorCard({
-  navigation,
-  id,
-  image,
-  name,
-  rating,
-  ratingTotal,
-  address,
-  distance,
-}) {
+export default function VendorCard({ navigation, user }) {
+  const dispatch = useDispatch();
+
+  const { loadingvendor, vendordetails } = useSelector((state) => state.vendor);
+
+  const vendor = {
+    id: user,
+    longitude: 4.5444192,
+    latitude: 8.537279,
+  };
+
+  useEffect(() => {
+    dispatch(getVendorDetails(vendor));
+  }, []);
+
+  const memoizeVendorDetails = useMemo(() => vendordetails, [vendordetails]);
+
   return (
-    <Pressable onPress={() => navigation.navigate("Vendor-Profile", {"id":id, "image":image, "name":name, "rating":rating, "address":address})}>
+    <Pressable
+      onPress={() =>
+        navigation.navigate("Vendor-Profile", memoizeVendorDetails)
+      }
+    >
       <View
         style={{
           flexDirection: "row",
@@ -25,8 +46,8 @@ export default function VendorCard({
           paddingVertical: SIZES.base2,
           borderColor: COLORS.gray4,
           paddingVertical: SIZES.base2,
-          borderBottomWidth: SIZES.thin/2,
-          marginBottom: SIZES.base3
+          borderBottomWidth: SIZES.thin / 2,
+          marginBottom: SIZES.base3,
         }}
       >
         <View
@@ -37,7 +58,13 @@ export default function VendorCard({
           }}
         >
           <Image
-            source={image}
+            source={
+              memoizeVendorDetails?.vendor?.profile
+                ? {
+                    uri: `${URLBASE.imageBaseUrl}${memoizeVendorDetails?.vendor?.profile}`,
+                  }
+                : placeholder
+            }
             style={{
               height: SIZES.base6,
               width: SIZES.base6,
@@ -53,12 +80,16 @@ export default function VendorCard({
                 gap: SIZES.base,
               }}
             >
-              <Text style={{ ...FONTS.h3, color: COLORS.gray }}>{name}</Text>
-              <MaterialIcons
-                name="verified"
-                size={SIZES.base2}
-                color={COLORS.primary}
-              />
+              <Text style={{ ...FONTS.h3, color: COLORS.gray }}>
+                {memoizeVendorDetails?.vendor?.fullname}
+              </Text>
+              {memoizeVendorDetails?.vendor?.verifiedAccount && (
+                <MaterialIcons
+                  name="verified"
+                  size={SIZES.base2}
+                  color={COLORS.primary}
+                />
+              )}
             </View>
             <View
               style={{
@@ -74,7 +105,7 @@ export default function VendorCard({
                 color={COLORS.amber}
               />
               <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
-                {`${rating} (${ratingTotal})`}
+                {`${memoizeVendorDetails?.vendor?.rating} (${memoizeVendorDetails?.vendor?.ratingCount})`}
               </Text>
             </View>
             <View
@@ -89,8 +120,16 @@ export default function VendorCard({
                 size={SIZES.base2}
                 color={COLORS.gray3}
               />
-              <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
-                {`${address} . ${distance}`}
+              <Text
+                numberOfLines={1}
+                style={{ ...FONTS.body4, color: COLORS.gray3 }}
+              >
+                {`${memoizeVendorDetails?.vendor?.address.slice(
+                  0,
+                  20
+                )} . ${parseInt(
+                  memoizeVendorDetails?.vendor?.distance
+                )}km away`}
               </Text>
             </View>
           </View>

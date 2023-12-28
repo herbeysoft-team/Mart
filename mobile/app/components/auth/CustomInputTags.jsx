@@ -3,8 +3,8 @@ import InputTag, { useInputTag } from "react-native-input-tags";
 import React, { useState } from "react";
 import { FONTS, SIZES, COLORS } from "../../constant";
 
-export default function CustomInputTags({ addTag, removeTag}) {
-  const [tags, setTags] = useState([]);
+export default function CustomInputTags({ addTag, removeTag, defaultTags}) {
+  const [tags, setTags] = useState(defaultTags || []);
   const [text, setText] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 

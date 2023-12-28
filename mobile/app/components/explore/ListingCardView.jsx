@@ -1,8 +1,9 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { FONTS, COLORS, SIZES } from "../../constant";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { FONTS, COLORS, SIZES, URLBASE } from "../../constant";
+import placeholder from "../../../assets/placeholder.png";
 
 export default function ListingCardView({ listing, navigation }) {
   return (
@@ -22,7 +23,7 @@ export default function ListingCardView({ listing, navigation }) {
       >
         <View>
         <Image
-          source={listing.image[0]}
+          source={listing?.image && listing?.image[0]? { uri: `${URLBASE.imageBaseUrl}${listing?.image[0]}`} : placeholder}
           style={{
             height: SIZES.base14,
             width: SIZES.base14,
@@ -32,7 +33,7 @@ export default function ListingCardView({ listing, navigation }) {
           }}
         />
           <View style={{position:"absolute", bottom: SIZES.base, left: SIZES.base, paddingHorizontal:SIZES.thickness, paddingVertical: SIZES.thickness, backgroundColor:COLORS.primary, borderRadius: SIZES.thickness }}>
-              <Text style={{...FONTS.body4, color: COLORS.white,}}>6 min</Text>
+              <Text style={{...FONTS.body4, color: COLORS.white,}}>{`${listing?.travelTimeMinutes} min`}</Text>
           </View>
           </View>
         <View style={{ flex: 2, gap: SIZES.base, alignItems: "flex-start" }}>
@@ -40,9 +41,11 @@ export default function ListingCardView({ listing, navigation }) {
             {listing?.name}
           </Text>
           <Text style={{ ...FONTS.h4, color: COLORS.primary }}>
-            {listing?.type == "product"
+            {/* {listing?.type == "product"
               ? `N${listing?.price}`
               : `N${listing?.price}/${listing?.unit}`}
+               */}
+               {`₦${listing?.price}/${listing?.unit}`}
           </Text>
           <View
             style={{
@@ -62,7 +65,7 @@ export default function ListingCardView({ listing, navigation }) {
             )}
             <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
               {listing?.type == "product"
-                ? `${listing?.stock?.quantity} pcs left`
+                ? `${listing?.stock?.quantity} ${listing?.unit} left`
                 : listing?.type == "event"
                 ? `${listing?.date} . ${listing?.time}`
                 : `${listing?.available} . ${listing?.time}`}

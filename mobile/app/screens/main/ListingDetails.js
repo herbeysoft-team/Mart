@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import React, { useEffect } from "react";
-import { FONTS, SIZES, COLORS } from "../../constant";
+import { FONTS, SIZES, COLORS, URLBASE } from "../../constant";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderSmall from "../../components/general/HeaderSmall";
 import { useRoute } from "@react-navigation/native";
@@ -16,9 +16,9 @@ import VendorCard from "../../components/explore/VendorCard";
 import CustomButton from "../../components/auth/CustomButton";
 import ListingCarousel from "../../components/explore/ListingCarousel";
 
+
 export default function ListingDetails({ navigation }) {
   const route = useRoute();
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ paddingTop: SIZES.base2, paddingHorizontal: SIZES.base2 }}>
@@ -97,21 +97,14 @@ export default function ListingDetails({ navigation }) {
               </Text>
             </View>
             <Text style={{ ...FONTS.body3, color: COLORS.gray3 }}>
-              We’re your neighbourhood cake artisans, crafting delectable
-              moments since 2018. Our passion is to bake joy into every slice.{" "}
-              <Text style={{ color: COLORS.primary }}>Read more</Text>
+              {route.params?.description}
+              {/* <Text style={{ color: COLORS.primary }}>Read more</Text> */}
             </Text>
           </View>
           {/* Vendor of the listing */}
           <VendorCard
             navigation={navigation}
-            id={route.params?.user?.id}
-            image={route.params?.user?.image}
-            name={route.params?.user?.username}
-            rating={route.params?.user?.rating}
-            ratingTotal={"245"}
-            address={route.params?.user?.location}
-            distance={"6km away"}
+            user={route.params?.user}
           />
           {/* Action Buttons */}
           <View

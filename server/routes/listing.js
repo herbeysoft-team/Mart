@@ -6,23 +6,30 @@ const {
    getAllListings,
    getListingById,
    updateListing,
-   deleteListing
+   deleteListing,
+   uploadimages,
+   getListingsByLocation
   } = require("../controller/listing");
-const { multerMiddleware } = require("../middleware/MulterUtil");
-
+const { multerMiddleware, multerMultipleMiddleware } = require("../middleware/MulterUtil");
 
 
 /**ADD LISTING */
-router.post("/addlisting", verifyToken, addlisting);
+router.post("/uploadimages", multerMultipleMiddleware, uploadimages);
+
+/**ADD LISTING */
+router.post("/addlisting/", verifyToken, multerMultipleMiddleware, addlisting);
 
 /**GET ALL LISTINGS */
 router.get("/getalllisting", getAllListings);
+
+/** GET LISTIING BY LOCATION */
+router.get("/getlistingbylocation/:longitude/:latitude", getListingsByLocation)
 
 /**GET LISTING BY ID*/
 router.get("/getlisting/:id", getListingById);
 
 /**UPDATE LISTING*/
-router.put("/updatelisting/:id", updateListing);
+router.put("/updatelisting/:id", verifyToken, updateListing);
 
 /**DELETE LISTING*/
 router.delete("/deletelisting/:id", deleteListing);

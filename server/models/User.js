@@ -65,11 +65,16 @@ const UserSchema = new Schema(
       type: Number,
       default: 0,
     },
-    coords: {
-      latitude: { type: Number },
-      longitude: { type: Number },
-      latitudeDelta: { type: Number },
-      longitudeDelta: { type: Number },
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number],
+        index: "2dsphere",
+      },
     },
     listings: [
       {

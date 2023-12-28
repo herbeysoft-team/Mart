@@ -21,8 +21,11 @@ const ListingSchema = new Schema({
   available: String,
   image: [String],
   location: {
-    latitude: Number,
-    longitude: Number,
+    type: { type: String, enum: ['Point'], default: 'Point' },
+    coordinates: {
+      type: [Number],
+      index: '2dsphere' // Ensures this field has a 2dsphere index
+    },
     address: String,
   },
   stock: {

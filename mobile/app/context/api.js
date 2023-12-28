@@ -11,6 +11,10 @@ API.interceptors.request.use(async (req) => {
   if (token) {
     req.headers.Authorization = `Bearer ${token}`;
   }
+  // Set Content-Type for FormData requests
+  if (req.data instanceof FormData) {
+    req.headers['Content-Type'] = 'multipart/form-data';
+  }
   return req;
 });
 
@@ -37,14 +41,20 @@ export const getUserProfile = (userId) => API.get(`/api/v1/user/getuserprofile/$
 // export const updateUserProfile = (updatedValue) => API.put("/api/v1/user/updateuserprofile", updatedValue); //update user profile
 // export const uploadProfilePic = (formData) => API.put("/api/v1/user/updateuserprofilepic", formData); //upload profile pic
 
-// /**RELATIONSHIP API */
-// export const addRelationship = (userId) => API.post(`/api/v1/relationship/addrelationship/${userId}`); //follow a user
-// export const deleteRelationship = (userId) => API.post(`/api/v1/relationship/deleterelationship/${userId}`); //unfollow a user
-// export const countRelationship = (userId) => API.get(`/api/v1/relationship/countrelationship/${userId}`); //count follower and following
-// export const checkRelationship = (userId) => API.get(`/api/v1/relationship/checkrelationship/${userId}`); //check follower and following
-// export const checkMutualRelationship = (userId) => API.get(`/api/v1/relationship/checkmutualrelationship/${userId}`); //check follower and following
-// export const getFollowers = (userId) => API.get(`/api/v1/relationship/getfollowers/${userId}`); //get all user followers
-// export const getFollowings = (userId) => API.get(`/api/v1/relationship/getfollowings/${userId}`); //get all user followings
+/** LISTING API */
+export const uploadPhotos = (formData) => API.post(`/api/v1/listing/uploadimages/`, formData); //upload Photos
+export const addListing = (formData) => API.post(`/api/v1/listing/addlisting/`, formData); //Add A Listing
+export const getListingsByLocation = (longitude, latitude) => API.get(`/api/v1/listing/getlistingbylocation/${longitude}/${latitude}`) //Get listing by location
+export const updateListing = (id, formData) => API.put(`/api/v1/listing/updatelisting/${id}`, formData); //Update A Listing
+
+/** CATEGORY API */
+export const getCategory = (type) => API.get(`/api/v1/category/getallcategories/${type}`); //get subcategories
+
+/** VENDOR API */
+export const getVendorDetails = (id, longitude, latitude) => API.get(`/api/v1/vendor/getvendordetails/${id}/${longitude}/${latitude}`); //get vendor details
+export const getVendorListings = (id) => API.get(`/api/v1/vendor/getvendorlisting/${id}`); //get vendor listings
+export const deleteVendorListing = (id) => API.delete(`/api/v1/listing/deletelisting/${id}`); //delete a listing
+
 
 // /**ITEM API */
 // export const getCategories = () => API.get(`/api/v1/category/allcategories/`); //Get all Categories

@@ -18,9 +18,9 @@ router.post("/addcategory", addcategory);
 router.get("/getallcategories/:type", getAllCategories);
 
 /**UPDATE CATEGORY*/
-router.put("/updatecategory/:type/:oldName", updateCategory);
+router.put("/updatecategory/:type/:id", updateCategory);
 
 /**DELETE LISTING*/
-router.delete("/deletecategory/:type/:name", deletecategory);
+router.delete("/deletecategory/:type/:id", deletecategory);
 
 module.exports = router;

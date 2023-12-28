@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   StyleSheet,
   Text,
@@ -7,8 +8,9 @@ import {
   TouchableOpacity,
   Image,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   FONTS,
@@ -29,30 +31,83 @@ import CustomInputTags from "../../components/auth/CustomInputTags";
 import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
+import { useDispatch, useSelector } from "react-redux";
 import CustomDateInputWithIcon from "../../components/auth/CustomDateInputWithIcon";
 import ListingAddedModel from "../../components/general/ListingAddedModel";
+import {
+  getProductCategory,
+  getEventCategory,
+  getServiceCategory,
+} from "../../context/features/categorySlice";
+
+import {
+  addListing,
+  setListingStatus,
+} from "../../context/features/listingSlice";
+import LoadingOverlay from "../../components/general/LoadingOverlay";
 
 const AddListing = ({ navigation }) => {
   const steps = [1, 2];
+  const dispatch = useDispatch();
   const [openListingAdddedModel, setOpenListingAddedModel] = useState(false);
+  const { productCategory, eventCategory, serviceCategory } = useSelector(
+    (state) => state.category
+  );
+
+  const { loadingaddlisting, errorfileloading, addlistingstatus } = useSelector(
+    (state) => state.listing
+  );
+
+  useEffect(() => {
+    dispatch(getProductCategory("product"));
+    dispatch(getEventCategory("event"));
+    dispatch(getServiceCategory("service"));
+  }, []);
+
+  const memoizedProductCategory = useMemo(
+    () => productCategory,
+    [productCategory]
+  );
+  const memoizedEventCategory = useMemo(() => eventCategory, [eventCategory]);
+  const memoizedServiceCategory = useMemo(
+    () => serviceCategory,
+    [serviceCategory]
+  );
+
+  useEffect(() => {
+    addlistingstatus && gotoListingAdded();
+  }, [addlistingstatus]);
 
   const gotoListingAdded = () => {
     setOpenListingAddedModel(true);
+    setTimeout(() => {
+      setServiceName("");
+      setProductName("");
+      setEventName("");
+      setDescription("");
+      setCategory("");
+      setPrice("");
+      setQuantity("");
+      setLocation("");
+      setTags([]);
+      setImages([]);
+      setUnit("");
+      setTo("");
+      setFrom("");
+      setAvailability("");
+      setTime("");
+      setDate("");
+    }, 1000);
   };
 
   const gotoHome = () => {
-    navigation.navigate("Main");
     setOpenListingAddedModel(false);
+    dispatch(setListingStatus());
+    navigation.navigate("Home");
   };
 
-  const items = [
-    { label: "Football", value: "football" },
-    { label: "Baseball", value: "baseball" },
-    { label: "Hockey", value: "hockey" },
-  ];
-
   const daysAvailableOptions = [
-    { label: "Weekdays", value: "Weekdays" },
+    { label: "Mon-Fri", value: "Mon-Fri" },
     { label: "Weekends", value: "Weekends" },
     { label: "Everyday", value: "Everyday" },
     { label: "Monday", value: "Monday" },
@@ -63,6 +118,34 @@ const AddListing = ({ navigation }) => {
     { label: "Saturday", value: "Saturday" },
     { label: "Sunday", value: "Sunday" },
   ];
+
+  const productUnits = [
+    { label: "Piece", value: "Piece" },
+    { label: "Unit", value: "Unit" },
+    { label: "Kilogram (kg)", value: "Kilogram" },
+    { label: "Gram (g)", value: "Gram" },
+    { label: "Liter (L)", value: "Liter" },
+    { label: "Meter (m)", value: "Meter" },
+    { label: "Dozen", value: "Dozen" },
+    { label: "Carton", value: "Carton" },
+    { label: "Bundle", value: "Bundle" },
+  ];
+
+  const serviceUnits = [
+    { label: "Hour", value: "Hour" },
+    { label: "Session", value: "Session" },
+    { label: "Consultation", value: "Consultation" },
+    { label: "Visit", value: "Visit" },
+    { label: "Project", value: "Project" },
+  ];
+
+  const eventUnits = [
+    { label: "Ticket", value: "Ticket" },
+    { label: "Seat", value: "Seat" },
+    { label: "Pass", value: "Pass" },
+    { label: "Entry", value: "Entry" },
+  ];
+
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
   const [deliveryOption, setDeliveryOption] = useState("");
@@ -72,6 +155,7 @@ const AddListing = ({ navigation }) => {
   const [eventname, setEventName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [unit, setUnit] = useState(null);
   const [quantity, setQuantity] = useState("");
   const [location, setLocation] = useState("");
   const [plocation, setpLocation] = useState("");
@@ -132,6 +216,10 @@ const AddListing = ({ navigation }) => {
     setAvailability(value);
   };
 
+  const handleProductUnitChange = (value) => {
+    setUnit(value);
+  };
+
   const handleAddTag = (newTag) => {
     setTags([...tags, newTag]);
   };
@@ -150,8 +238,7 @@ const AddListing = ({ navigation }) => {
     setCurrentStep(currentStep - 1);
   };
 
-  const handleAddProduct = () => {
-    gotoListingAdded()
+  const handleAddProduct = async () => {
     if (
       !productname ||
       !description ||
@@ -160,6 +247,7 @@ const AddListing = ({ navigation }) => {
       !category ||
       !location ||
       !tags ||
+      !unit ||
       !images
     ) {
       Toast.show({
@@ -167,117 +255,137 @@ const AddListing = ({ navigation }) => {
         text1: "All field required!!!",
       });
     } else {
-      console.log({
-        "Product Name": productname,
-        Description: description,
-        Category: category,
-        Price: price,
-        quantity: quantity,
-        location: location,
-        tags: tags,
-        images: images,
-      });
-      Toast.show({
-        type: "success",
-        text1: "We are good to go",
-      });
+      const formData = new FormData();
+      try {
+        images.forEach((image, index) => {
+          formData.append(`files`, {
+            uri: image,
+            name: `image_${index}.jpg`,
+            type: "image/jpeg",
+          });
+        });
 
-      setProductName("");
-      setDescription("");
-      setCategory(null);
-      setPrice("");
-      setQuantity("");
-      setLocation("");
-      setTags([]);
-      setImages([]);
+        formData.append("type", "product");
+        formData.append("name", productname);
+        formData.append("description", description);
+        formData.append("price", price);
+        formData.append("category", category);
+        formData.append("location", location);
+        formData.append("tags", tags);
+        formData.append("quantity", quantity);
+        formData.append("unit", unit);
+
+        dispatch(addListing({ formData, Toast }));
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: error,
+        });
+        console.log(error);
+      }
     }
   };
 
   const handleAddService = () => {
-    gotoListingAdded()
+    
     if (
       !servicename ||
       !description ||
       !price ||
-      !availability ||
       !category ||
       !from ||
       !to ||
       !location ||
       !tags ||
+      !unit ||
       !images
-    ) {
+    )  {
       Toast.show({
         type: "info",
         text1: "All field required!!!",
       });
     } else {
-      console.log({
-        "Service Name": servicename,
-        Description: description,
-        Category: category,
-        Price: price,
-        quantity: quantity,
-        location: location,
-        tags: tags,
-        images: images,
-      });
-      Toast.show({
-        type: "success",
-        text1: "We are good to go",
-      });
+      const formData = new FormData();
+      try {
+        images.forEach((image, index) => {
+          formData.append(`files`, {
+            uri: image,
+            name: `image_${index}.jpg`,
+            type: "image/jpeg",
+          });
+        });
 
-      setServiceName("");
-      setDescription("");
-      setCategory(null);
-      setPrice("");
-      setQuantity("");
-      setLocation("");
-      setTags([]);
-      setImages([]);
+        formData.append("type", "service");
+        formData.append("name", servicename);
+        formData.append("description", description);
+        formData.append("price", price);
+        formData.append("category", category);
+        formData.append("location", location);
+        formData.append("tags", tags);
+        formData.append("quantity", quantity);
+        formData.append("unit", unit);
+        formData.append("available", availability);
+        formData.append("from", from);
+        formData.append("to", to);
+
+        dispatch(addListing({ formData, Toast }));
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: error,
+        });
+        console.log(error);
+      }
     }
   };
 
   const handleAddEvent = () => {
-    gotoListingAdded()
     if (
       !eventname ||
       !description ||
       !price ||
       !category ||
-      !date ||
       !time ||
+      !date ||
       !location ||
       !tags ||
+      !unit ||
       !images
-    ) {
+    ){
       Toast.show({
         type: "info",
         text1: "All field required!!!",
       });
     } else {
-      console.log({
-        "Service Name": servicename,
-        Description: description,
-        Category: category,
-        Price: price,
-        quantity: quantity,
-        location: location,
-        tags: tags,
-        images: images,
-      });
-      Toast.show({
-        type: "success",
-        text1: "We are good to go",
-      });
+      const formData = new FormData();
+      try {
+        images.forEach((image, index) => {
+          formData.append(`files`, {
+            uri: image,
+            name: `image_${index}.jpg`,
+            type: "image/jpeg",
+          });
+        });
 
-      setEventName("");
-      setDescription("");
-      setCategory(null);
-      setPrice("");
-      setLocation("");
-      setTags([]);
-      setImages([]);
+        formData.append("type", "event");
+        formData.append("name", eventname);
+        formData.append("description", description);
+        formData.append("price", price);
+        formData.append("category", category);
+        formData.append("location", location);
+        formData.append("tags", tags);
+        formData.append("unit", unit);
+        formData.append("time", time);
+        formData.append("date", date);
+
+        dispatch(addListing({ formData, Toast }));
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: error,
+        });
+        console.log(error);
+      }
     }
   };
 
@@ -316,7 +424,7 @@ const AddListing = ({ navigation }) => {
       setdContact("");
       setpLocation("");
       setdLocation("");
-      setDeliveryOption("")
+      setDeliveryOption("");
     }
   };
 
@@ -327,42 +435,32 @@ const AddListing = ({ navigation }) => {
   };
 
   const uploadImages = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        aspect: [1, 1],
-        quality: 1,
-        allowsMultipleSelection: true,
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [1, 1],
+      quality: 1,
+      allowsMultipleSelection: true,
+    });
+
+    if (!result.canceled) {
+      const maxSize = 2 * 1024 * 1024; // 2MB
+      const selectedImages = result.assets;
+
+      const validImages = selectedImages.filter((image) => {
+        const imageSize = image.fileSize;
+        return imageSize <= maxSize;
       });
 
-      if (!result.canceled) {
-        const maxSize = 2 * 1024 * 1024;
-        const selectedImages = result.assets;
-
-        const validImages = selectedImages.filter((image) => {
-          const imageSize = image.fileSize;
-          return imageSize <= maxSize;
+      if (validImages.length > 0) {
+        const newImageUris = validImages.map((image) => image.uri);
+        setImages((prevImages) => [...prevImages, ...newImageUris]);
+      } else {
+        Toast.show({
+          type: "info",
+          text1: "Selected image(s) are too large.",
+          text2: "Please select image(s) smaller than 2MB",
         });
-
-        if (validImages.length > 0) {
-          // Add the newly selected valid images to the existing array of images
-          setImages((prevImages) => [
-            ...prevImages,
-            ...validImages.map((img) => img.uri),
-          ]);
-        } else {
-          Toast.show({
-            type: "info",
-            text1: "Selected image(s) are too large.",
-            text2: "Please select image(s) smaller than 2MB",
-          });
-        }
       }
-    } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: String(error),
-      });
     }
   };
 
@@ -483,7 +581,7 @@ const AddListing = ({ navigation }) => {
             {selectedOption?.id == 1 && (
               <View style={{ marginBottom: SIZES.base5 }}>
                 <Text style={styles.header}>{"Listing Details"}</Text>
-                {/* {completeregloading ? (
+                {/* {loadingaddlisting ? (
                   <ActivityIndicator size="large" color={COLORS.tertiary} />
                 ) : null} */}
 
@@ -509,7 +607,7 @@ const AddListing = ({ navigation }) => {
                   <Text style={styles.inputheading}>Category</Text>
                   <CustomTextInputWithPicker
                     placeholder="Select Category"
-                    items={items}
+                    items={memoizedProductCategory}
                     onValueChange={handleDropdownChange}
                   />
                 </View>
@@ -551,6 +649,14 @@ const AddListing = ({ navigation }) => {
                       keyboardType="numeric"
                     />
                   </View>
+                </View>
+                <View style={{ marginTop: SIZES.base }}>
+                  <Text style={styles.inputheading}>Unit</Text>
+                  <CustomTextInputWithPicker
+                    placeholder="Select Unit"
+                    items={productUnits}
+                    onValueChange={handleProductUnitChange}
+                  />
                 </View>
                 <View style={{ marginTop: SIZES.base }}>
                   <Text style={styles.inputheading}>Tags</Text>
@@ -630,6 +736,8 @@ const AddListing = ({ navigation }) => {
                   </View>
                 </View>
 
+                <LoadingOverlay visible={loadingaddlisting} />
+
                 <View
                   style={{
                     flexDirection: "column",
@@ -657,7 +765,7 @@ const AddListing = ({ navigation }) => {
                 {/* {completeregloading ? (
                  <ActivityIndicator size="large" color={COLORS.tertiary} />
                ) : null} */}
-
+                <LoadingOverlay visible={loadingaddlisting} />
                 {/* form here */}
                 <View style={{ marginTop: SIZES.base }}>
                   <Text style={styles.inputheading}>Service Name</Text>
@@ -680,7 +788,7 @@ const AddListing = ({ navigation }) => {
                   <Text style={styles.inputheading}>Category</Text>
                   <CustomTextInputWithPicker
                     placeholder="Select Category"
-                    items={items}
+                    items={memoizedServiceCategory}
                     onValueChange={handleDropdownChange}
                   />
                 </View>
@@ -709,6 +817,14 @@ const AddListing = ({ navigation }) => {
                     placeholder="Select Availability"
                     items={daysAvailableOptions}
                     onValueChange={handleServiceAvailablity}
+                  />
+                </View>
+                <View style={{ marginTop: SIZES.base }}>
+                  <Text style={styles.inputheading}>Unit</Text>
+                  <CustomTextInputWithPicker
+                    placeholder="Select Unit"
+                    items={serviceUnits}
+                    onValueChange={handleProductUnitChange}
                   />
                 </View>
                 <View
@@ -762,6 +878,7 @@ const AddListing = ({ navigation }) => {
                     {images &&
                       images.map((image, index) => (
                         <View key={index} style={{ position: "relative" }}>
+    
                           <Image
                             source={image ? { uri: image } : placeholder}
                             style={{
@@ -817,6 +934,8 @@ const AddListing = ({ navigation }) => {
                   </View>
                 </View>
 
+                <LoadingOverlay visible={loadingaddlisting} />
+
                 <View
                   style={{
                     flexDirection: "column",
@@ -867,7 +986,7 @@ const AddListing = ({ navigation }) => {
                   <Text style={styles.inputheading}>Category</Text>
                   <CustomTextInputWithPicker
                     placeholder="Select Category"
-                    items={items}
+                    items={memoizedEventCategory}
                     onValueChange={handleDropdownChange}
                   />
                 </View>
@@ -882,14 +1001,23 @@ const AddListing = ({ navigation }) => {
                   />
                 </View>
                 <View style={{ marginTop: SIZES.base }}>
+                  <Text style={styles.inputheading}>Unit</Text>
+                  <CustomTextInputWithPicker
+                    placeholder="Select Unit"
+                    items={eventUnits}
+                    onValueChange={handleProductUnitChange}
+                  />
+                </View>
+                <View style={{ marginTop: SIZES.base }}>
                   <Text style={styles.inputheading}>Price</Text>
                   <CustomTextInputWithIcon
                     value={price}
                     onChangeText={(text) => setPrice(text)}
-                    placeholder="Ticket Price"
+                    placeholder="Price"
                     textIcon="₦"
                   />
                 </View>
+
 
                 <View
                   style={{
@@ -910,7 +1038,7 @@ const AddListing = ({ navigation }) => {
                     />
                   </View>
                   <View style={{ marginTop: SIZES.base, flex: 1 }}>
-                    <Text style={styles.inputheading}>To</Text>
+                    <Text style={styles.inputheading}>Time</Text>
                     <CustomDateInputWithIcon
                       placeholder="09:00"
                       icon="time-outline"
@@ -996,6 +1124,8 @@ const AddListing = ({ navigation }) => {
                     </TouchableOpacity>
                   </View>
                 </View>
+
+                <LoadingOverlay visible={loadingaddlisting} />
 
                 <View
                   style={{

@@ -1,36 +1,14 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import React, { useEffect } from "react";
-import { FONTS, SIZES, COLORS, listing } from "../../constant";
+import { FONTS, SIZES, COLORS, listing, URLBASE } from "../../constant";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import HeaderMini from "../../components/general/HeaderMini";
-import VendorListingCardView from "../../components/explore/VendorListingCardView";
 import VendorReviewCard from "../../components/explore/VendorReviewCard";
-
-const ListingsRoute = ({ navigation }) => (
-  <ScrollView
-    showsVerticalScrollIndicator={false}
-    style={{
-      flex: 1,
-      backgroundColor: COLORS.white,
-      paddingVertical: SIZES.base,
-      paddingHorizontal: SIZES.base2,
-    }}
-  >
-    {listing.length > 0 &&
-      listing
-        .filter((item) => item.type === "product" && item?.price <= 4000)
-        .map((item, index) => (
-          <VendorListingCardView
-            key={item.id}
-            listing={item}
-            navigation={navigation}
-          />
-        ))}
-  </ScrollView>
-);
+import placeholder from "../../../assets/placeholder.png";
+import ListingRoute from "../../components/explore/ListingRoute";
 
 const ReviewsRoute = () => (
   <ScrollView
@@ -43,19 +21,16 @@ const ReviewsRoute = () => (
       marginBottom: SIZES.base,
     }}
   >
-    <VendorReviewCard/>
-    <VendorReviewCard/>
-    <VendorReviewCard/>
-    <VendorReviewCard/>
-    <VendorReviewCard/>
-    <VendorReviewCard/>
+    <VendorReviewCard />
+    <VendorReviewCard />
+    <VendorReviewCard />
+    <VendorReviewCard />
+    <VendorReviewCard />
+    <VendorReviewCard />
   </ScrollView>
 );
 
-const renderScene = SceneMap({
-  0: ListingsRoute,
-  1: ReviewsRoute,
-});
+
 
 const renderTabBar = (props) => (
   <TabBar
@@ -85,7 +60,18 @@ export default function VendorProfile({ navigation }) {
     { key: "1", title: "Reviews" },
   ]);
 
-  const { id, image, name, rating, address } = route.params;
+  const { id, profile, fullname, address } = route.params.vendor;
+
+  const renderScene = ({ route }) => {
+    switch (route.key) {
+      case "0":
+        return <ListingRoute navigation={navigation} id={id} />;
+      case "1":
+        return <ReviewsRoute />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -101,14 +87,16 @@ export default function VendorProfile({ navigation }) {
         }}
       >
         <Image
-          source={image}
+          source={
+            profile ? { uri: `${URLBASE.imageBaseUrl}${profile}` } : placeholder
+          }
           style={{
             height: SIZES.base8,
             width: SIZES.base8,
             borderRadius: SIZES.base6,
           }}
         />
-        <Text style={{ ...FONTS.h3, color: COLORS.gray }}>{name}</Text>
+        <Text style={{ ...FONTS.h3, color: COLORS.gray }}>{fullname}</Text>
         <View
           style={{
             flexDirection: "row",
@@ -121,7 +109,12 @@ export default function VendorProfile({ navigation }) {
             size={SIZES.base2}
             color={COLORS.gray3}
           />
-          <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>{address}</Text>
+          <Text
+            numberOfLines={2}
+            style={{ ...FONTS.body4, color: COLORS.gray3 }}
+          >
+            {address}
+          </Text>
         </View>
       </View>
       {/* the tabview  */}

@@ -41,6 +41,7 @@ const CustomTextInputWithPicker = ({
         }}
         onValueChange={onValueChange}
         items={items}
+        value={rest.value}
         style={{
           inputIOS: {
             ...FONTS.body3,

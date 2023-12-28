@@ -9,10 +9,13 @@ export default function CustomDateInputWithIcon({
   icon,
   onSelectedTimeChange,
   mode,
+  defaultTime,
   ...rest
 }) {
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
-  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(
+    defaultTime ? defaultTime : null // Set default time if provided
+  );
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = () => {

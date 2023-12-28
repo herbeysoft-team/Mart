@@ -14,6 +14,7 @@ import Setting from "../screens/profile/Settings";
 import MySubscription from "../screens/profile/MySubscription";
 import Help from "../screens/profile/Help";
 import ChangePassword from "../screens/profile/ChangePassword";
+import EditListing from "../screens/profile/EditListing";
 
 
 const Prof = createNativeStackNavigator();
@@ -83,6 +84,11 @@ const ProfileNavigation = () => {
         <Prof.Screen
           name="Change-Password"
           component={ChangePassword}
+          options={{ headerShown: false }}
+        />
+        <Prof.Screen
+          name="Edit-Listing"
+          component={EditListing}
           options={{ headerShown: false }}
         />
       </Prof.Navigator>

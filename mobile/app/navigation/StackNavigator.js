@@ -11,6 +11,7 @@ import ListingDetails from "../screens/main/ListingDetails";
 import VendorProfile from "../screens/explore/VendorProfile";
 import Checkout from "../screens/explore/Checkout";
 import { getItem } from "../utils/asyncStorage.js";
+import ImageUpload from "../screens/auth/ImageUpload.js";
 
 const Stack = createNativeStackNavigator();
 const StackNavigator = () => {
@@ -123,6 +124,11 @@ const StackNavigator = () => {
           <Stack.Screen
             name="Checkout"
             component={Checkout}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Images"
+            component={ImageUpload}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

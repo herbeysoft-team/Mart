@@ -16,7 +16,7 @@ import React, {
   useCallback,
 } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FONTS, SIZES, COLORS, listing } from "../../constant";
+import { FONTS, SIZES, COLORS } from "../../constant";
 import HeaderBig from "../../components/general/HeaderBig";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
@@ -27,8 +27,40 @@ import ListingCardViewGrid from "../../components/explore/ListingCardViewGrid";
 import { FlashList } from "@shopify/flash-list";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import CustomButton from "../../components/auth/CustomButton";
+import { useDispatch, useSelector } from "react-redux";
+import { getListingsByLocation } from "../../context/features/listingSlice";
+import LoadingOverlay from "../../components/general/LoadingOverlay";
 
 const Explore = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const {
+    listingsbylocation,
+    loadinglistingsbylocation,
+    errorlistingsbylocation,
+  } = useSelector((state) => state.listing);
+
+  const location = {
+    longitude: 4.5444192,
+    latitude: 8.537279,
+  };
+
+  useEffect(() => {
+    dispatch(getListingsByLocation(location));
+  }, []);
+
+  const memoizedListingsByLocation = useMemo(
+    () => listingsbylocation,
+    [listingsbylocation]
+  );
+
+  // const updatedData = [
+  //   ...memoizedListingsByLocation,
+  //   {
+  //     id: "explore_other_neighborhood", // Some unique identifier
+  //     componentType: "Pressable", // Identifier for Pressable
+  //   },
+  // ];
+
   // ref
   const bottomSheetRef = useRef(null);
   // variables
@@ -55,7 +87,7 @@ const Explore = ({ navigation }) => {
 
   const handleOpenBottomSheetSetting = () => {
     setOpenSetting(true);
-    handleOpenBottomSheet()
+    handleOpenBottomSheet();
   };
 
   const renderBackdrop = useCallback(
@@ -126,20 +158,39 @@ const Explore = ({ navigation }) => {
         )}
       </View>
       {/* Listing Section */}
-
-      <FlashList
-        contentContainerStyle={{ paddingBottom: SIZES.base12 }}
-        showsVerticalScrollIndicator={false}
-        estimatedItemSize={200}
-        data={listing?.filter((item) => item.type == activeCategory.key)}
-        renderItem={({ item }) =>
-          gridView ? (
-            <ListingCardViewGrid listing={item} navigation={navigation} />
-          ) : (
-            <ListingCardView listing={item} navigation={navigation} />
-          )
-        }
-      />
+      {loadinglistingsbylocation ? (
+        <LoadingOverlay visible={false} />
+      ) : (
+        <>
+          <FlashList
+            contentContainerStyle={{ paddingBottom: SIZES.base12 }}
+            showsVerticalScrollIndicator={false}
+            estimatedItemSize={200}
+            data={memoizedListingsByLocation}
+            renderItem={({ item }) =>
+              item.componentType === "Pressable" ? (
+                <Pressable onPress={() => {}}>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      ...FONTS.h4,
+                      color: COLORS.primary,
+                      borderWidth: SIZES.thin,
+                      borderColor: COLORS.gray4,
+                      padding: SIZES.base
+                    }}
+                  >{`Explore other Neighborhood`}</Text>
+                </Pressable>
+              ) : gridView ? (
+                <ListingCardViewGrid listing={item} navigation={navigation} />
+              ) : (
+                <ListingCardView listing={item} navigation={navigation} />
+              )
+            }
+          />
+          <View style={{ padding: SIZES.base }}></View>
+        </>
+      )}
 
       <View
         style={{
@@ -158,16 +209,7 @@ const Explore = ({ navigation }) => {
       >
         <Text
           style={{ textAlign: "center", ...FONTS.body4 }}
-        >{`${listing?.length} results in your Neighborhood`}</Text>
-        <Pressable onPress={() => {}}>
-          <Text
-            style={{
-              textAlign: "center",
-              ...FONTS.body3,
-              color: COLORS.primary,
-            }}
-          >{`Explore other Neighborhood`}</Text>
-        </Pressable>
+        >{`${memoizedListingsByLocation?.length} results in your Neighborhood`}</Text>
       </View>
       {/* BottomSheet  */}
       {openSetting && (

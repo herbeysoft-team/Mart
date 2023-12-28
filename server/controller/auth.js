@@ -245,9 +245,9 @@ exports.completereg = async (req, res) => {
     if (coordinate) {
       const updateUser = {
         userType: req.body?.userType,
-        coords: {
-          latitude: coordinate.latitude,
-          longitude: coordinate.longitude,
+        location: {
+          type: 'Point',
+          coordinates: [coordinate?.longitude, coordinate?.latitude],
         },
         address: address,
         phoneNumber: req.body?.phone,

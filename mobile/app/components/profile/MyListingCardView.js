@@ -1,15 +1,45 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  Image,
+  TouchableOpacity,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import React, { useCallback, useRef, useState, useMemo } from "react";
 import { FONTS, COLORS, SIZES, URLBASE } from "../../constant";
+import { Entypo } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import placeholder from "../../../assets/placeholder.png";
+import { useDispatch } from "react-redux";
+import { toggleSetting } from "../../context/features/listingSlice";
 
-export default function VendorListingCardView({ listing}) {
+export default function MyListingCardView({ listing, handleSettingChange }) {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const handleOpenBottomSheet = () => {
+    if (handleSettingChange) {
+      handleSettingChange({status: true, id: listing._id});
+      // console.log(listing._id)
+    } else {
+      console.error("handleSettingChange is not defined");
+    }
+  };
   return (
-    <Pressable onPress={() => navigation.navigate("Listing-Detail", listing)}>
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        gap: SIZES.base,
+        flex: 1,
+        marginBottom: SIZES.base,
+        borderBottomColor: COLORS.gray4,
+        borderBottomWidth: SIZES.thin,
+      }}
+    >
       <View
         style={{
           paddingVertical: SIZES.base,
@@ -18,24 +48,28 @@ export default function VendorListingCardView({ listing}) {
           alignItems: "flex-start",
           justifyContent: "space-between",
           gap: SIZES.base,
-          marginBottom: SIZES.base,
-          borderBottomColor: COLORS.gray4,
-          borderBottomWidth: SIZES.thin,
+
+          flex: 3,
         }}
       >
-        <View>
-        <Image
-          source={listing?.image && listing?.image[0]? { uri: `${URLBASE.imageBaseUrl}${listing?.image[0]}`} : placeholder}
-          style={{
-            height: SIZES.base14,
-            width: SIZES.base12,
-            flex: 1,
-            borderRadius: SIZES.base,
-            resizeMode: "cover",
-          }}
-        />
-         
-          </View>
+        <Pressable
+          onPress={() => navigation.navigate("Listing-Detail", listing)}
+        >
+          <Image
+            source={
+              listing?.image && listing?.image[0]
+                ? { uri: `${URLBASE.imageBaseUrl}${listing?.image[0]}` }
+                : placeholder
+            }
+            style={{
+              height: SIZES.base14,
+              width: SIZES.base12,
+              flex: 1,
+              borderRadius: SIZES.base,
+              resizeMode: "cover",
+            }}
+          />
+        </Pressable>
         <View style={{ flex: 2, gap: SIZES.base, alignItems: "flex-start" }}>
           <Text style={{ ...FONTS.listHead, color: COLORS.accent2 }}>
             {listing?.name}
@@ -87,7 +121,14 @@ export default function VendorListingCardView({ listing}) {
           </View>
         </View>
       </View>
-    </Pressable>
+      <TouchableOpacity onPress={handleOpenBottomSheet}>
+        <Entypo
+          name="dots-three-horizontal"
+          size={SIZES.base2}
+          color={COLORS.accent2}
+        />
+      </TouchableOpacity>
+    </View>
   );
 }
 

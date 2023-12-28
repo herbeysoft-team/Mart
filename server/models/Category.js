@@ -10,15 +10,19 @@ const CategorySchema = new Schema(
         unique: true,
       },
       subcategories: [{
-        name: {
+        label: {
           type: String,
           required: true,
-          unique: true,
+        },
+        value: {
+          type: String,
         },
     }],
   },
   { timestamps: true }
 );
+
+CategorySchema.index({ type: 1, 'subcategories.label': 1 }, { unique: true });
 
 const CategoryModel = mongoose.model("Category", CategorySchema);
 
