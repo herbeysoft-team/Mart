@@ -8,6 +8,7 @@ import {
 export const COLORS = {
   background: "#031F2B",
   primary: "#0AA1DD",
+  primaryLight: "#E6F8FF",
   primaryDeep: "#006E99",
   secondary: "#003D55",
   indicator: "#E0E0E0",

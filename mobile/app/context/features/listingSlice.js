@@ -103,6 +103,12 @@ const listingSlice = createSlice({
     setSetting: (state, action) => {
       state.openSetting = action.payload;
     },
+    filterListingsBySearch: (state, action) => {
+      const searchText = action.payload.toLowerCase(); // Convert search text to lowercase for case-insensitive matching
+      state.listingsbylocation = state.listingsbylocation.filter((listing) => {
+        return listing.name.toLowerCase().includes(searchText);
+      });
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -152,5 +158,5 @@ const listingSlice = createSlice({
 export const toggleSetting = (value) => (dispatch) => {
   dispatch(setSetting(value));
 };
-export const { setListingStatus, setSetting} = listingSlice.actions;
+export const { setListingStatus, setSetting, filterListingsBySearch} = listingSlice.actions;
 export default listingSlice.reducer;

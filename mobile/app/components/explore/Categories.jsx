@@ -10,11 +10,11 @@ export default function Categories({
   return (
     <View style={{ flexDirection: "row", gap: SIZES.base, marginBottom:SIZES.base2 }}>
       {categories.map((cat, index) => {
-        let isActive = cat.key == activeCategory.key;
+        let isActive = cat.key === activeCategory?.key;
         return (
           <TouchableOpacity
             key={index}
-            onPress={() => handleChangeCategory(cat)}
+            onPress={() => handleChangeCategory(isActive ? null : cat)}
             style={{
               paddingHorizontal: SIZES.base,
               paddingVertical: SIZES.base,

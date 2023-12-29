@@ -1,5 +1,4 @@
 import {
-  FlatList,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -18,8 +17,6 @@ import React, {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FONTS, SIZES, COLORS } from "../../constant";
 import HeaderBig from "../../components/general/HeaderBig";
-import { Feather } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Categories from "../../components/explore/Categories";
 import ListingCardView from "../../components/explore/ListingCardView";
@@ -30,6 +27,10 @@ import CustomButton from "../../components/auth/CustomButton";
 import { useDispatch, useSelector } from "react-redux";
 import { getListingsByLocation } from "../../context/features/listingSlice";
 import LoadingOverlay from "../../components/general/LoadingOverlay";
+import SearchBox from "../../components/explore/SearchBox.jsx";
+import Slider from "../../components/explore/Slider.jsx";
+import MinMaxLabels from "../../components/explore/MinMaxLabels.jsx";
+import CustomBottomSheet from "../../components/explore/CustomBottomSheet.jsx";
 
 const Explore = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -53,25 +54,23 @@ const Explore = ({ navigation }) => {
     [listingsbylocation]
   );
 
-  // const updatedData = [
-  //   ...memoizedListingsByLocation,
-  //   {
-  //     id: "explore_other_neighborhood", // Some unique identifier
-  //     componentType: "Pressable", // Identifier for Pressable
-  //   },
-  // ];
+  const updatedData = [
+    ...memoizedListingsByLocation,
+    {
+      id: "explore_other_neighborhood", // Some unique identifier
+      componentType: "Pressable", // Identifier for Pressable
+    },
+  ];
 
   // ref
   const bottomSheetRef = useRef(null);
   // variables
-  const snapPoints = useMemo(() => ["70%"], []);
+  const snapPoints = useMemo(() => ["60%"], []);
   const [gridView, setGridView] = useState(false);
   const [openSetting, setOpenSetting] = useState(false);
-  const [activeCategory, setActiveCategory] = useState({
-    id: 0,
-    name: "Products",
-    key: "product",
-  });
+  const [activeCategory, setActiveCategory] = useState(null);
+  const [filteredData, setFilteredData] = useState(updatedData);
+
   const [categories, setCategories] = useState([
     { id: 0, name: "Products", key: "product" },
     { id: 1, name: "Events", key: "event" },
@@ -80,7 +79,24 @@ const Explore = ({ navigation }) => {
 
   const handleChangeCategory = (category) => {
     setActiveCategory(category);
+    if (!category) {
+      // If the active category is null (reset filter), show all data
+      setFilteredData(updatedData);
+    } else {
+      // Filter the data based on the selected category
+      const filtered = updatedData.filter((item) => {
+        // Modify this condition based on your category filtering logic
+        return item.type === category.key; // For instance, filter by category key
+      });
+      setFilteredData(filtered);
+    }
   };
+
+  const handleValueChange = useCallback((low, high) => {
+    console.log(low, high);
+  }, []);
+
+  const handleFilteredResult = () => {};
 
   const handleCloseBottomSheet = () => bottomSheetRef.current?.close();
   const handleOpenBottomSheet = () => bottomSheetRef.current?.expand();
@@ -104,48 +120,7 @@ const Explore = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <HeaderBig title={"Explore"} />
       {/* Search components */}
-      <View style={styles.SearchBox}>
-        <View
-          style={{
-            paddingHorizontal: SIZES.base2,
-            paddingVertical: SIZES.base2,
-            flexDirection: "row",
-            borderRadius: SIZES.base,
-            borderColor: COLORS.gray4,
-            borderWidth: SIZES.thin,
-            flex: 6,
-            alignItems: "center",
-            gap: SIZES.base2,
-          }}
-        >
-          <Feather name="search" size={SIZES.base2} color={COLORS.gray3} />
-          <TextInput
-            placeholder="Search listings"
-            placeholderTextColor={COLORS.gray3}
-            style={{ ...FONTS.body3, color: COLORS.gray3 }}
-          />
-        </View>
-        <TouchableOpacity onPress={handleOpenBottomSheetSetting}>
-          <View
-            style={{
-              paddingHorizontal: SIZES.base,
-              paddingVertical: SIZES.base,
-              flex: 1,
-              borderRadius: SIZES.base,
-              borderColor: COLORS.gray4,
-              borderWidth: SIZES.thin,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Ionicons
-              name="options-outline"
-              size={SIZES.base4}
-              color={COLORS.gray3}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
+      <SearchBox handleOpenBottomSheetSetting={handleOpenBottomSheetSetting} />
 
       {/* categories section */}
       <View>
@@ -159,14 +134,14 @@ const Explore = ({ navigation }) => {
       </View>
       {/* Listing Section */}
       {loadinglistingsbylocation ? (
-        <LoadingOverlay visible={false} />
+        <LoadingOverlay visible={loadinglistingsbylocation} />
       ) : (
         <>
           <FlashList
-            contentContainerStyle={{ paddingBottom: SIZES.base12 }}
+            contentContainerStyle={{ paddingBottom: SIZES.base10 }}
             showsVerticalScrollIndicator={false}
             estimatedItemSize={200}
-            data={memoizedListingsByLocation}
+            data={!activeCategory ? updatedData : filteredData}
             renderItem={({ item }) =>
               item.componentType === "Pressable" ? (
                 <Pressable onPress={() => {}}>
@@ -177,7 +152,7 @@ const Explore = ({ navigation }) => {
                       color: COLORS.primary,
                       borderWidth: SIZES.thin,
                       borderColor: COLORS.gray4,
-                      padding: SIZES.base
+                      padding: SIZES.base,
                     }}
                   >{`Explore other Neighborhood`}</Text>
                 </Pressable>
@@ -188,7 +163,6 @@ const Explore = ({ navigation }) => {
               )
             }
           />
-          <View style={{ padding: SIZES.base }}></View>
         </>
       )}
 
@@ -212,6 +186,11 @@ const Explore = ({ navigation }) => {
         >{`${memoizedListingsByLocation?.length} results in your Neighborhood`}</Text>
       </View>
       {/* BottomSheet  */}
+      {/* <CustomBottomSheet
+        handleCloseBottomSheet={handleCloseBottomSheet}
+        renderBackdrop={renderBackdrop}
+        handleOpenBottomSheetSetting={handleOpenBottomSheetSetting}
+      /> */}
       {openSetting && (
         <BottomSheet
           ref={bottomSheetRef}
@@ -273,35 +252,11 @@ const Explore = ({ navigation }) => {
                   gap: SIZES.base,
                 }}
               >
-                <View
-                  style={{
-                    borderRadius: SIZES.thickness,
-                    borderWidth: SIZES.thin,
-                    borderColor: COLORS.gray4,
-                    paddingHorizontal: SIZES.base,
-                    paddingVertical: SIZES.base,
-                  }}
-                >
-                  <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
-                    Less than 30 min
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    borderRadius: SIZES.thickness,
-                    borderWidth: SIZES.thin,
-                    borderColor: COLORS.gray4,
-                    paddingHorizontal: SIZES.base,
-                    paddingVertical: SIZES.base,
-                  }}
-                >
-                  <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
-                    More than 30 min
-                  </Text>
-                </View>
+                <Slider handleValueChange={handleValueChange} />
               </View>
+              <MinMaxLabels min={0} max={`100000+`} />
             </View>
-            <View
+            {/* <View
               style={{
                 paddingHorizontal: SIZES.base2,
                 paddingVertical: SIZES.base2,
@@ -342,7 +297,7 @@ const Explore = ({ navigation }) => {
                   </Text>
                 </View>
               </View>
-            </View>
+            </View> */}
             <View
               style={{
                 paddingHorizontal: SIZES.base2,
@@ -418,15 +373,16 @@ const Explore = ({ navigation }) => {
                     height: SIZES.base5,
                     borderRadius: SIZES.base5,
                     borderWidth: SIZES.thin,
-                    borderColor: COLORS.gray4,
+                    borderColor: !gridView ? COLORS.white : COLORS.gray4,
                     alignItems: "center",
                     justifyContent: "center",
+                    backgroundColor: !gridView ? COLORS.primaryLight : null,
                   }}
                 >
                   <MaterialCommunityIcons
                     name="view-list"
                     size={SIZES.base3}
-                    color={COLORS.gray3}
+                    color={!gridView ? COLORS.primary : COLORS.gray3}
                   />
                 </View>
                 <View
@@ -435,15 +391,16 @@ const Explore = ({ navigation }) => {
                     height: SIZES.base5,
                     borderRadius: SIZES.base5,
                     borderWidth: SIZES.thin,
-                    borderColor: COLORS.gray4,
+                    borderColor: gridView ? COLORS.white : COLORS.gray4,
                     alignItems: "center",
                     justifyContent: "center",
+                    backgroundColor: gridView ? COLORS.primaryLight : null,
                   }}
                 >
                   <MaterialCommunityIcons
                     name="view-day"
                     size={SIZES.base3}
-                    color={COLORS.gray3}
+                    color={gridView ? COLORS.primary : COLORS.gray3}
                   />
                 </View>
               </View>
@@ -474,6 +431,43 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: SIZES.base3,
+  },
+  slider: {
+    flex: 1,
+    alignSelf: "center",
+    // Add any other styles you want for the slider container
+  },
+  thumb: {
+    width: SIZES.base2,
+    height: SIZES.base2,
+    borderRadius: SIZES.base2,
+    backgroundColor: COLORS.gray4,
+    borderColor: COLORS.gray4,
+    // Customize thumb styles as needed
+  },
+  rail: {
+    flex: 1,
+    height: SIZES.thickness,
+    backgroundColor: COLORS.gray4,
+    // Customize rail styles as needed
+  },
+  railSelected: {
+    flex: 1,
+    height: SIZES.thickness,
+    backgroundColor: COLORS.primary,
+    // Customize selected rail styles as needed
+  },
+  label: {
+    textAlign: "center",
+    color: COLORS.accent,
+    // Customize label styles as needed
+  },
+  notch: {
+    width: SIZES.thin,
+    height: SIZES.thin,
+    borderRadius: SIZES.base2,
+    backgroundColor: COLORS.primary,
+    // Customize notch styles as needed
   },
 });
 
