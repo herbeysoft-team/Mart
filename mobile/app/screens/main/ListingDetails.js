@@ -1,12 +1,11 @@
 import {
-  Image,
-  ImageBackground,
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FONTS, SIZES, COLORS, URLBASE } from "../../constant";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderSmall from "../../components/general/HeaderSmall";
@@ -15,10 +14,59 @@ import { Ionicons } from "@expo/vector-icons";
 import VendorCard from "../../components/explore/VendorCard";
 import CustomButton from "../../components/auth/CustomButton";
 import ListingCarousel from "../../components/explore/ListingCarousel";
+import { getItem} from "../../utils/asyncStorage.js";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getMessages,
+  sendMessage,
+  getChatList,
+} from "../../context/features/messageSlice";
 
+import SimilarListing from "../../components/explore/SimilarListing.jsx";
 
 export default function ListingDetails({ navigation }) {
   const route = useRoute();
+  const dispatch = useDispatch();
+  const [senderId, setSenderId] = useState("");
+  const userId = route.params?.user;
+  const { loadingsend } = useSelector((state) => state.message);
+  const listingcontent = {
+    id: route.params?._id,
+    longitude: 4.5444192,
+    latitude: 8.537279,
+  };
+
+  useEffect(() => {
+    const checkUserId = async () => {
+      try {
+        const id = await getItem("trowmartuserId");
+
+        if (id) {
+          setSenderId(id);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    checkUserId();
+  }, []);
+
+  const handleSend = () => {
+    content = {
+      senderId,
+      recepientId: userId,
+      messageType: "listing",
+      listingId: route.params?._id,
+    };
+
+    dispatch(sendMessage(content));
+
+    setTimeout(() => {
+      dispatch(getMessages({ senderId: senderId, recepientId: userId }));
+      dispatch(getChatList(senderId));
+      navigation.navigate("Chat-Screen", userId);
+    }, 500);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ paddingTop: SIZES.base2, paddingHorizontal: SIZES.base2 }}>
@@ -102,10 +150,7 @@ export default function ListingDetails({ navigation }) {
             </Text>
           </View>
           {/* Vendor of the listing */}
-          <VendorCard
-            navigation={navigation}
-            user={route.params?.user}
-          />
+          <VendorCard navigation={navigation} user={route.params?.user} />
           {/* Action Buttons */}
           <View
             style={{
@@ -115,8 +160,13 @@ export default function ListingDetails({ navigation }) {
               flex: 1,
             }}
           >
+            {loadingsend ? (
+              <ActivityIndicator size="small" color={COLORS.tertiary} />
+            ) : null}
             <CustomButton
-              onPress={() => {navigation.navigate("Checkout", route?.params)}}
+              onPress={() => {
+                navigation.navigate("Checkout", route?.params);
+              }}
               text={
                 route.params?.type == "product"
                   ? "Buy Now"
@@ -133,11 +183,12 @@ export default function ListingDetails({ navigation }) {
             />
 
             <CustomButton
-              onPress={() => {}}
+              onPress={handleSend}
               text={"Message Vendor"}
               fill={false}
             />
           </View>
+          <SimilarListing navigation={navigation} listingcontent={listingcontent}/>
         </View>
       </ScrollView>
     </SafeAreaView>

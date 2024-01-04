@@ -12,6 +12,7 @@ import VendorProfile from "../screens/explore/VendorProfile";
 import Checkout from "../screens/explore/Checkout";
 import { getItem } from "../utils/asyncStorage.js";
 import ImageUpload from "../screens/auth/ImageUpload.js";
+import ChatScreen from "../screens/main/ChatScreen.js";
 
 const Stack = createNativeStackNavigator();
 const StackNavigator = () => {
@@ -129,6 +130,11 @@ const StackNavigator = () => {
           <Stack.Screen
             name="Images"
             component={ImageUpload}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Chat-Screen"
+            component={ChatScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

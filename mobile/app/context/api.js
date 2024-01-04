@@ -46,6 +46,7 @@ export const uploadPhotos = (formData) => API.post(`/api/v1/listing/uploadimages
 export const addListing = (formData) => API.post(`/api/v1/listing/addlisting/`, formData); //Add A Listing
 export const getListingsByLocation = (longitude, latitude) => API.get(`/api/v1/listing/getlistingbylocation/${longitude}/${latitude}`) //Get listing by location
 export const updateListing = (id, formData) => API.put(`/api/v1/listing/updatelisting/${id}`, formData); //Update A Listing
+export const getSimilarListings= (id, longitude, latitude) => API.get(`/api/v1/listing/getsimilarlisting/${id}/${longitude}/${latitude}`) //Get Similar listing By Location
 
 /** CATEGORY API */
 export const getCategory = (type) => API.get(`/api/v1/category/getallcategories/${type}`); //get subcategories
@@ -55,6 +56,11 @@ export const getVendorDetails = (id, longitude, latitude) => API.get(`/api/v1/ve
 export const getVendorListings = (id) => API.get(`/api/v1/vendor/getvendorlisting/${id}`); //get vendor listings
 export const deleteVendorListing = (id) => API.delete(`/api/v1/listing/deletelisting/${id}`); //delete a listing
 
+/** MESSAGE API */
+export const getChatList = (id) => API.get(`/api/v1/message/getchatlist/${id}`) //get user chatlist
+export const getChatUser = (id) => API.get(`/api/v1/message/${id}`) //get chat user
+export const getMessages = (senderId, recepientId) => API.get(`api/v1/message/getmessages/${senderId}/${recepientId}`) //get chat between two users
+export const sendMessage = (content) => API.post(`api/v1/message/sendmessage`, content) //send message
 
 // /**ITEM API */
 // export const getCategories = () => API.get(`/api/v1/category/allcategories/`); //Get all Categories
@@ -109,15 +115,4 @@ export const deleteVendorListing = (id) => API.delete(`/api/v1/listing/deletelis
 // export const getMyNotification = () => API.get(`/api/v1/notification/getmynotification`); //Fetch all my notification
 // export const hasUnreadNotification = () => API.get(`/api/v1/notification/hasunreadnotification`); //Check if user has unread notification
 
-// /**RETROW API */
-// export const getRetrow= (id) => API.get(`/api/v1/like/getretrow/${id}`); //Fetch all retrow for the trowbox
-// export const getRetrowForPost= (id) => API.get(`/api/v1/like/getretrow/${id}`); //Fetch all retrow for the trowbox
 
-// /**MESSAGING API */
-// export const sendMessage = (formData) => API.post(`/api/v1/message/sendmessagetext`, formData); //send a message
-// export const sendMessageMedia = (formData) => API.post(`/api/v1/message/sendmessagemedia`, formData); //send a message media
-// export const getShare = (id) => API.get(`/api/v1/message/getshare/${id}`); //Fetch all share
-// export const getShareForPost = (id) => API.get(`/api/v1/message/getshare/${id}`); //Fetch share for a post
-// export const getMessages= (userId) => API.get(`/api/v1/message/getmessages/${userId}`); //Fetch all messages between users
-// export const hasNoUnreadMessages= () => API.get(`/api/v1/message/hasnounreadmessages`); //check if user does not have unread message
-// export const getMessagesUsers= () => API.get(`/api/v1/message/getmessagesusers`); //Fetch all users who you converse with

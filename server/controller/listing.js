@@ -3,6 +3,7 @@ const Listing = require("../models/Listing");
 const geocode = require("../utilities/geocode");
 const formatTimeRange = require("../utilities/formatTimeRange");
 const formatTime = require("../utilities/formatTime");
+const { Console } = require("console");
 
 /**
  * POST - http://localhost:8002/api/v1/listing/uploadimages
@@ -395,5 +396,62 @@ exports.deleteListing = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+/**
+ * GET - http://localhost:8002/api/v1/listing/getsimilarlisting/:listingId
+ *
+ */
+exports.getSimilarListings = async (req, res) => {
+  const { id, longitude, latitude } = req.params;
+  const maxDistance = 30000; // 5 kilometers (adjust as needed)
+  const averageCarSpeed = 13.4;
+  try {
+    // Find the current listing to use its category, type, and tags
+    const currentListing = await Listing.findById(id);
+
+    if (!currentListing) {
+      return res.status(404).json({ message: 'Listing not found' });
+    }
+
+    // Extract category, type, and tags of the current listing
+    const { category, type, tags } = currentListing;
+
+    // Find similar listings based on category, type, and at least one matching tag,
+    // and calculate the distance to the given longitude/latitude
+    const similarListings = await Listing.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: [parseFloat(longitude), parseFloat(latitude)],
+          },
+          distanceField: 'distance',
+          maxDistance: maxDistance,
+          query: {
+            $and: [
+              { _id: { $ne: id } }, // Exclude the current listing
+              { $or: [{ category }, { type }] }, // Match category or type
+              { tags: { $in: tags } }, // Match at least one tag
+            ],
+          },
+          spherical: true,
+        },
+      },
+      { $limit: 2 }, // Limit the number of similar listings to 2
+    ]);
+
+    console.log(similarListings)
+
+    similarListings.forEach((listing) => {
+      const travelTime = listing.distance / averageCarSpeed;
+      listing.travelTimeMinutes = Math.round(travelTime / 60); // Convert seconds to minutes
+    });
+
+    res.status(200).json(similarListings);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Something went wrong' });
   }
 };

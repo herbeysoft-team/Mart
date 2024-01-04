@@ -81,6 +81,22 @@ export const getListingsByLocation = createAsyncThunk(
   }
 );
 
+export const getSimilarListings = createAsyncThunk(
+  "listing/getSimilarListings",
+  async (listingcontent, { rejectWithValue }) => {
+    const { id, longitude, latitude} = listingcontent;
+    try {
+      const response = await api.getSimilarListings(id, longitude, latitude);
+      return response.data;
+    } catch (err) {
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+      });
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 const listingSlice = createSlice({
   name: "listing",
   initialState: {
@@ -95,6 +111,9 @@ const listingSlice = createSlice({
     listingsbylocation: [],
     loadinglistingsbylocation: false,
     errorlistingsbylocation: "",
+    similarlistings: [],
+    loadingsimilarlistings: false,
+    errorsimilarlistings: "",
   },
   reducers: {
     setListingStatus: (state, action) => {
@@ -151,6 +170,17 @@ const listingSlice = createSlice({
       .addCase(getListingsByLocation.rejected, (state, action) => {
         state.loadinglistingsbylocation = false;
         state.errorlistingsbylocation = action.payload;
+      })
+      .addCase(getSimilarListings.pending, (state) => {
+        state.loadingsimilarlistings = true;
+      })
+      .addCase(getSimilarListings.fulfilled, (state, action) => {
+        state.loadingsimilarlistings = false;
+        state.similarlistings = action.payload;
+      })
+      .addCase(getSimilarListings.rejected, (state, action) => {
+        state.loadingsimilarlistings = false;
+        state.errorsimilarlistings = action.payload;
       });
   },
 });

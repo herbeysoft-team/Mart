@@ -8,7 +8,8 @@ const {
    updateListing,
    deleteListing,
    uploadimages,
-   getListingsByLocation
+   getListingsByLocation,
+   getSimilarListings
   } = require("../controller/listing");
 const { multerMiddleware, multerMultipleMiddleware } = require("../middleware/MulterUtil");
 
@@ -24,6 +25,9 @@ router.get("/getalllisting", getAllListings);
 
 /** GET LISTIING BY LOCATION */
 router.get("/getlistingbylocation/:longitude/:latitude", getListingsByLocation)
+
+/** GET SIMILAR LISTING */
+router.get("/getsimilarlisting/:id/:longitude/:latitude", getSimilarListings)
 
 /**GET LISTING BY ID*/
 router.get("/getlisting/:id", getListingById);
