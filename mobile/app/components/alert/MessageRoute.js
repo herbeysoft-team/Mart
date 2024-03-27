@@ -21,7 +21,7 @@ export default function MessageRoute({ navigation, chatList }) {
             <MessageBox
               key={index}
               profilePic={chat?.image}
-              user={chat?.fullname}
+              user={chat?.fullname || chat?.businessName }
               message={chat?.lastMessage}
               time={chat?.lastMessageTime}
               number={chat?.unreadMessageCount}

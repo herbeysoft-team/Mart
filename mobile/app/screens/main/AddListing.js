@@ -17,11 +17,9 @@ import {
   SIZES,
   COLORS,
   listingoption,
-  deliveryoption,
 } from "../../constant";
-import { Entypo } from "@expo/vector-icons";
 import CustomButton from "../../components/auth/CustomButton";
-import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import HeaderListing from "../../components/general/HeaderLising";
 import CustomTextInput from "../../components/auth/CustomTextInput";
 import CustomMultiLineInput from "../../components/auth/CustomMultiLineInput";
@@ -234,6 +232,13 @@ const AddListing = ({ navigation }) => {
     setCurrentStep(currentStep + 1);
   };
 
+  const handleSelectedOption = (item) => {
+    setSelectedOption(item);
+    setTimeout(() => {
+      setCurrentStep(currentStep + 1);
+    }, 100);
+  };
+
   const handleGoBack = () => {
     setCurrentStep(currentStep - 1);
   };
@@ -388,44 +393,6 @@ const AddListing = ({ navigation }) => {
     }
   };
 
-  const handleAddRequest = () => {
-    if (
-      !packagename ||
-      !description ||
-      !plocation ||
-      !dlocation ||
-      !pcontact ||
-      !dcontact ||
-      !deliveryOption
-    ) {
-      Toast.show({
-        type: "info",
-        text1: "All field required!!!",
-      });
-    } else {
-      console.log({
-        "Package Name": packagename,
-        Description: description,
-        plocation,
-        dlocation,
-        pcontact,
-        dcontact,
-        deliveryOption,
-      });
-      Toast.show({
-        type: "success",
-        text1: "We are good to go",
-      });
-
-      setPackageName("");
-      setDescription("");
-      setpContact("");
-      setdContact("");
-      setpLocation("");
-      setdLocation("");
-      setDeliveryOption("");
-    }
-  };
 
   const removeImage = (index) => {
     const newImages = [...images];
@@ -499,7 +466,7 @@ const AddListing = ({ navigation }) => {
             <View style={{ marginTop: SIZES.base3 }}>
               {listingoption?.map((item, index) => (
                 <Pressable
-                  onPress={() => setSelectedOption(item)}
+                  onPress={() => handleSelectedOption(item)}
                   key={item?.id}
                   style={{
                     borderWidth: SIZES.thickness / 3,
@@ -517,7 +484,13 @@ const AddListing = ({ navigation }) => {
                     borderRadius: SIZES.base,
                   }}
                 >
-                  <View style={{ flexDirection: "row", gap: SIZES.base2 }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: SIZES.base2,
+                      alignItems: "center",
+                    }}
+                  >
                     <Image
                       source={item?.icon}
                       style={{
@@ -529,29 +502,15 @@ const AddListing = ({ navigation }) => {
                       }}
                     />
 
-                    <View style={{ flexDirection: "column" }}>
-                      <Text style={{ ...FONTS.h3, color: COLORS.accent2 }}>
-                        {item?.title}
-                      </Text>
-                      <Text style={{ ...FONTS.body4, color: COLORS.gray }}>
-                        {item?.subtitle}
-                      </Text>
-                    </View>
+                    <Text style={{ ...FONTS.h3, color: COLORS.accent2 }}>
+                      {item?.title}
+                    </Text>
                   </View>
-                  {selectedOption && selectedOption.id === item?.id ? (
-                    <FontAwesome5
-                      name="dot-circle"
-                      size={SIZES.base3}
-                      color={COLORS.primary}
-                    />
-                  ) : (
-                    <Entypo
-                      onPress={() => setSelectedOption(item)}
-                      name="circle"
-                      size={SIZES.base3}
-                      color={COLORS.gray4}
-                    />
-                  )}
+                  <MaterialIcons
+                    name="keyboard-arrow-right"
+                    size={SIZES.base3}
+                    color={COLORS.tertiary}
+                  />
                 </Pressable>
               ))}
             </View>
@@ -564,11 +523,6 @@ const AddListing = ({ navigation }) => {
               }}
             />
 
-            <CustomButton
-              text={"Continue"}
-              onPress={handleContinue}
-              fill={true}
-            />
           </View>
         )}
 
@@ -1145,158 +1099,7 @@ const AddListing = ({ navigation }) => {
                 </View>
               </View>
             )}
-            {selectedOption?.id == 4 && (
-              <View style={{ marginBottom: SIZES.base5 }}>
-                <Text style={styles.header}>{"Listing Details"}</Text>
-                {/* {completeregloading ? (
-                 <ActivityIndicator size="large" color={COLORS.tertiary} />
-               ) : null} */}
 
-                {/* form here */}
-                <View style={{ marginTop: SIZES.base }}>
-                  <Text style={styles.inputheading}>Package Name</Text>
-                  <CustomTextInput
-                    value={packagename}
-                    onChangeText={(text) => setPackageName(text)}
-                    placeholder="Enter Package Name"
-                  />
-                </View>
-                <View style={{ marginTop: SIZES.base }}>
-                  <Text style={styles.inputheading}>Package Description</Text>
-                  <CustomMultiLineInput
-                    multiline={true}
-                    value={description}
-                    onChangeText={(text) => setDescription(text)}
-                    placeholder="Enter Package Description"
-                  />
-                </View>
-
-                <View style={{ marginTop: SIZES.base }}>
-                  <Text style={styles.inputheading}>Pick Up Location</Text>
-                  <CustomTextInputWithIcon
-                    value={plocation}
-                    onChangeText={(text) => setpLocation(text)}
-                    placeholder="Enter Pick Up Location"
-                    icon="enviromento"
-                  />
-                </View>
-                <View style={{ marginTop: SIZES.base }}>
-                  <Text style={styles.inputheading}>Pick Up Contact</Text>
-                  <CustomTextInputWithIcon
-                    value={pcontact}
-                    onChangeText={(text) => setpContact(text)}
-                    placeholder="Enter Pick Up Contact"
-                    icon="phone"
-                    keyboardType="numeric"
-                  />
-                </View>
-
-                <View style={{ marginTop: SIZES.base }}>
-                  <Text style={styles.inputheading}>Drop Off Location</Text>
-                  <CustomTextInputWithIcon
-                    value={dlocation}
-                    onChangeText={(text) => setdLocation(text)}
-                    placeholder="Enter Drop Off Location"
-                    icon="enviromento"
-                    // textIcon="₦"
-                  />
-                </View>
-
-                <View style={{ marginTop: SIZES.base }}>
-                  <Text style={styles.inputheading}>Drop Off Contact</Text>
-                  <CustomTextInputWithIcon
-                    value={dcontact}
-                    onChangeText={(text) => setdContact(text)}
-                    placeholder="Enter Drop Off Contact"
-                    icon="phone"
-                    // textIcon="₦"
-                  />
-                </View>
-
-                <View style={{ marginTop: SIZES.base }}>
-                  <Text style={styles.inputheading}>Preferred Carrier</Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      flex: 1,
-                      marginBottom: SIZES.base3,
-                    }}
-                  >
-                    {deliveryoption?.map((item, index) => (
-                      <Pressable
-                        onPress={() => setDeliveryOption(item)}
-                        key={item?.id}
-                        style={{
-                          borderWidth: SIZES.thickness / 3,
-                          borderColor:
-                            deliveryOption && deliveryOption.id === item?.id
-                              ? COLORS.primary
-                              : COLORS.gray4,
-                          paddingVertical: SIZES.base3,
-                          paddingHorizontal: SIZES.base3,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: SIZES.base,
-                          width: SIZES.base10,
-                          height: SIZES.base10,
-                          marginVertical: SIZES.base,
-                          borderRadius: SIZES.base,
-                          backgroundColor: COLORS.gray2,
-                        }}
-                      >
-                        <Image
-                          source={item?.icon}
-                          style={{
-                            height: SIZES.base5,
-                            width: SIZES.base5,
-                            resizeMode: "contain",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        />
-                      </Pressable>
-                    ))}
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text
-                      style={{ ...FONTS.h3, color: COLORS.accent }}
-                    >{`Order Estimate`}</Text>
-                    <Text
-                      style={{ ...FONTS.h3, color: COLORS.accent }}
-                    >{`₦${"3500"}`}</Text>
-                  </View>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    gap: SIZES.base,
-                    marginTop: SIZES.base3,
-                  }}
-                >
-                  <CustomButton
-                    text={"Send Request"}
-                    onPress={handleAddRequest}
-                    fill={true}
-                  />
-                  <CustomButton
-                    text={"Back"}
-                    onPress={handleGoBack}
-                    fill={false}
-                  />
-                </View>
-              </View>
-            )}
           </KeyboardAvoidingView>
         )}
         <ListingAddedModel

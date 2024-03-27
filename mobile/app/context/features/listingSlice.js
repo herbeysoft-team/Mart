@@ -43,7 +43,6 @@ export const addListing = createAsyncThunk(
 export const updateListing = createAsyncThunk(
   "listing/updateListing",
   async ({ id, formData, Toast, navigation }, { rejectWithValue }) => {
-    console.log({id, formData})
     try {
       const response = await api.updateListing(id, formData);
       if (response.data.status) {

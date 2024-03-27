@@ -10,16 +10,18 @@ import {
 import React, { useState } from "react";
 import { useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FONTS, SIZES, COLORS, listing } from "../../constant";
+import { FONTS, SIZES, COLORS, URLBASE } from "../../constant";
 import HeaderMini from "../../components/general/HeaderMini";
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "../../components/auth/CustomButton";
 import OrderCompleteModel from "../../components/general/OrderCompleteModel";
+import VendorHeading from "../../components/explore/VendorHeading";
 
 export default function Checkout({ navigation }) {
   const route = useRoute();
+  console.log(route)
   const [selectedOption, setSelectedOption] = useState("");
   const [openOrderCompleteModel, setOpenOrderCompleteModel] = useState(false);
   const profileOption = [
@@ -47,9 +49,7 @@ export default function Checkout({ navigation }) {
       <HeaderMini title={"Checkout"} navigation={navigation} />
       <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.itemContainer}>
-        <Text style={{ ...FONTS.h3, color: COLORS.accent2 }}>
-          {`Vendor : ${route.params.user.username}`}
-        </Text>
+        <VendorHeading navigation={navigation} user={route.params?.user}/>
         <View
           style={{
             paddingVertical: SIZES.base,
@@ -61,7 +61,7 @@ export default function Checkout({ navigation }) {
           }}
         >
           <Image
-            source={route.params.image[0]}
+            source={{ uri: `${URLBASE.imageBaseUrl}${route.params.image[0]}`}}
             style={{
               height: SIZES.base14,
               width: SIZES.base12,

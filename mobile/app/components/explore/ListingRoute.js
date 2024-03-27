@@ -1,5 +1,5 @@
 import { View, Text, ScrollView } from "react-native";
-import { FONTS, COLORS, SIZES, URLBASE, listing } from "../../constant";
+import { FONTS, COLORS, SIZES, URLBASE } from "../../constant";
 import React,{useEffect, useMemo} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getVendorListings } from "../../context/features/vendorSlice";

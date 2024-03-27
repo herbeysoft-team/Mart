@@ -31,9 +31,11 @@ import SearchBox from "../../components/explore/SearchBox.jsx";
 import Slider from "../../components/explore/Slider.jsx";
 import MinMaxLabels from "../../components/explore/MinMaxLabels.jsx";
 import CustomBottomSheet from "../../components/explore/CustomBottomSheet.jsx";
+import FloatingBotton from "../../components/general/FloatingBotton.js";
 
 const Explore = ({ navigation }) => {
   const dispatch = useDispatch();
+  const { userLocation } = useSelector((state) => state.map);
   const {
     listingsbylocation,
     loadinglistingsbylocation,
@@ -41,8 +43,8 @@ const Explore = ({ navigation }) => {
   } = useSelector((state) => state.listing);
 
   const location = {
-    longitude: 4.5444192,
-    latitude: 8.537279,
+    longitude: userLocation?.longitude,
+    latitude: userLocation?.latitude,
   };
 
   useEffect(() => {
@@ -116,6 +118,11 @@ const Explore = ({ navigation }) => {
     ),
     []
   );
+
+  const navigateToRequestSceen = () => {
+    navigation.navigate("Request-Delivery");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <HeaderBig title={"Explore"} />
@@ -413,6 +420,7 @@ const Explore = ({ navigation }) => {
           </ScrollView>
         </BottomSheet>
       )}
+      {!openSetting && <FloatingBotton navigation={navigation} />}
     </SafeAreaView>
   );
 };

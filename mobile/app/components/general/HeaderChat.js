@@ -63,7 +63,7 @@ export default function HeaderChat({ navigation, userId }) {
             textAlign: "center",
           }}
         >
-          {memoizeChatUser?.fullname}
+          {memoizeChatUser?.fullname || memoizeChatUser?.businessName}
         </Text>
       </View>
       {/* <View style={{ flex: 1 }}></View> */}

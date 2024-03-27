@@ -164,7 +164,7 @@ exports.addlisting = async (req, res) => {
  */
 exports.getAllListings = async (req, res) => {
   try {
-    const allListings = await Listing.find();
+    const allListings = await Listing.find().populate('user', 'profile fullname businessName');
     res.status(200).json(allListings);
   } catch (error) {
     console.error(error);
@@ -410,7 +410,6 @@ exports.getSimilarListings = async (req, res) => {
   try {
     // Find the current listing to use its category, type, and tags
     const currentListing = await Listing.findById(id);
-
     if (!currentListing) {
       return res.status(404).json({ message: 'Listing not found' });
     }
@@ -431,7 +430,7 @@ exports.getSimilarListings = async (req, res) => {
           maxDistance: maxDistance,
           query: {
             $and: [
-              { _id: { $ne: id } }, // Exclude the current listing
+              { _id: { $ne: currentListing._id } }, // Exclude the current listing
               { $or: [{ category }, { type }] }, // Match category or type
               { tags: { $in: tags } }, // Match at least one tag
             ],
@@ -441,8 +440,6 @@ exports.getSimilarListings = async (req, res) => {
       },
       { $limit: 2 }, // Limit the number of similar listings to 2
     ]);
-
-    console.log(similarListings)
 
     similarListings.forEach((listing) => {
       const travelTime = listing.distance / averageCarSpeed;

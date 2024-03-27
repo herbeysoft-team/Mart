@@ -1,36 +1,23 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  Touchable,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import React, { useEffect } from "react";
-import { FONTS, SIZES, COLORS, listing, URLBASE } from "../../constant";
+import { FONTS, SIZES, COLORS,URLBASE } from "../../constant";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons} from "@expo/vector-icons";
 import HeaderMini from "../../components/general/HeaderMini";
 import VendorReviewCard from "../../components/explore/VendorReviewCard";
 import placeholder from "../../../assets/placeholder.png";
 import ListingRoute from "../../components/explore/ListingRoute";
-
-const ReviewsRoute = () => (
-  <ScrollView
-    showsVerticalScrollIndicator={false}
-    style={{
-      flex: 1,
-      backgroundColor: COLORS.white,
-      paddingVertical: SIZES.base2,
-      paddingHorizontal: SIZES.base2,
-      marginBottom: SIZES.base,
-    }}
-  >
-    <VendorReviewCard />
-    <VendorReviewCard />
-    <VendorReviewCard />
-    <VendorReviewCard />
-    <VendorReviewCard />
-    <VendorReviewCard />
-  </ScrollView>
-);
-
-
+import ReviewRoute from "../../components/explore/ReviewRoute";
 
 const renderTabBar = (props) => (
   <TabBar
@@ -60,14 +47,23 @@ export default function VendorProfile({ navigation }) {
     { key: "1", title: "Reviews" },
   ]);
 
-  const { id, profile, fullname, address } = route.params.vendor;
+  const {
+    id,
+    profile,
+    fullname,
+    businessName,
+    address,
+    profession,
+    industry,
+    physicalStore,
+  } = route.params.vendor;
 
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "0":
         return <ListingRoute navigation={navigation} id={id} />;
       case "1":
-        return <ReviewsRoute />;
+        return <ReviewRoute navigation={navigation} id={id} />;
       default:
         return null;
     }
@@ -96,7 +92,12 @@ export default function VendorProfile({ navigation }) {
             borderRadius: SIZES.base6,
           }}
         />
-        <Text style={{ ...FONTS.h3, color: COLORS.gray }}>{fullname}</Text>
+        <Text style={{ ...FONTS.h3, color: COLORS.gray }}>
+          {fullname || businessName}
+        </Text>
+        <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
+          {profession || industry}
+        </Text>
         <View
           style={{
             flexDirection: "row",
@@ -116,6 +117,29 @@ export default function VendorProfile({ navigation }) {
             {address}
           </Text>
         </View>
+        {
+          physicalStore &&
+        
+        <TouchableOpacity
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: SIZES.thickness,
+            backgroundColor: COLORS.primaryLight,
+            borderRadius: SIZES.base,
+            padding: SIZES.thickness,
+          }}
+        >
+          <MaterialIcons name="storefront" size={SIZES.base2} color={COLORS.primary} />
+          
+          <Text
+            numberOfLines={2}
+            style={{ ...FONTS.body4, color: COLORS.primary }}
+          >
+            {"Physical Store"}
+          </Text>
+        </TouchableOpacity>
+}
       </View>
       {/* the tabview  */}
       <TabView

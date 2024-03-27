@@ -31,6 +31,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import placeholder from "../../../assets/placeholder.png";
 import CustomTextInput from "../../components/auth/CustomTextInput.jsx";
+import CheckBoxComponent from "../../components/auth/CheckBoxComponent.jsx";
 
 export default function Register({ navigation }) {
   const {
@@ -62,6 +63,7 @@ export default function Register({ navigation }) {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
 
   const profileOption = [
     {
@@ -140,6 +142,10 @@ export default function Register({ navigation }) {
   const checkIfWeHaveEmail = async () => {
     let tempEmail = await getItem("trowmartemail");
     setEmail(tempEmail);
+  };
+
+  const toggleCheckbox = () => {
+    setIsChecked(!isChecked);
   };
 
   const handleSignUp = () => {
@@ -263,6 +269,7 @@ export default function Register({ navigation }) {
       formData.append("address", address);
       formData.append("phone", phone);
       formData.append("userType", userType);
+      formData.append("physicalStore", isChecked);
       dispatch(completeReg({ formData, navigation, Toast }));
     }
   };
@@ -298,6 +305,7 @@ export default function Register({ navigation }) {
       formData.append("address", address);
       formData.append("phone", phone);
       formData.append("userType", userType);
+      formData.append("physicalStore", isChecked);
       dispatch(completeReg({ formData, navigation, Toast }));
     }
   };
@@ -645,6 +653,31 @@ export default function Register({ navigation }) {
                     placeholder="Enter your Phone number"
                   />
                 </View>
+                {/* Add the checkbox and text below the phone input */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: SIZES.base,
+                  }}
+                >
+                  {/* Checkbox component */}
+                  <CheckBoxComponent
+                    isChecked={isChecked}
+                    onPress={toggleCheckbox}
+                  />
+
+                  {/* Text */}
+                  <Text
+                    style={{
+                      ...FONTS.h4,
+                      color: COLORS.gray3,
+                      marginLeft: SIZES.base,
+                    }}
+                  >
+                    Do you have a physical store ?
+                  </Text>
+                </View>
                 <View
                   style={{
                     flexDirection: "column",
@@ -746,6 +779,31 @@ export default function Register({ navigation }) {
                     onChangeText={(text) => setPhone(text)}
                     placeholder="Enter your Phone number"
                   />
+                </View>
+                {/* Add the checkbox and text below the phone input */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: SIZES.base,
+                  }}
+                >
+                  {/* Checkbox component */}
+                  <CheckBoxComponent
+                    isChecked={isChecked}
+                    onPress={toggleCheckbox}
+                  />
+
+                  {/* Text */}
+                  <Text
+                    style={{
+                      ...FONTS.h4,
+                      color: COLORS.gray3,
+                      marginLeft: SIZES.base,
+                    }}
+                  >
+                    Do you have a physical store ?
+                  </Text>
                 </View>
                 <View
                   style={{

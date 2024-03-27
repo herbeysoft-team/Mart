@@ -67,6 +67,7 @@ export const SIZES = {
   onboardImageHeight: hp(32.1),
 
   // FONTS SIZES
+  rating: hp(8),
   h0: hp(4.1),
   h1: hp(3.1),
   h2: hp(2.6),
@@ -90,6 +91,7 @@ export const FONTS = {
   h2: { fontFamily: "semi", fontSize: SIZES.h2, fontWeight:"700" },
   h3: { fontFamily: "semi", fontSize: SIZES.h3, fontWeight: "700" },
   h4: { fontFamily: "semi", fontSize: SIZES.h4, fontWeight: "700" },
+  rating: { fontFamily: "semi", fontSize: SIZES.rating, fontWeight: "700" },
   body1: { fontFamily: "medium", fontSize: SIZES.body1, fontWeight: "400" },
   body2: { fontFamily: "medium", fontSize: SIZES.body2, fontWeight: "400" },
   body3: { fontFamily: "medium", fontSize: SIZES.body3, fontWeight: "400" },

@@ -22,13 +22,7 @@ const listingoption = [
       title: "Event",
       subtitle: "Sample caption for this listing type",
       icon: eventIccon,
-    },
-    {
-      id: 4,
-      title: "Request Delivery",
-      subtitle: "Sample caption for this listing type",
-      icon: deliveryIccon,
-    },
+    }
   ];
 
   export default listingoption;

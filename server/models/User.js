@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+
 const UserSchema = new Schema(
   {
     userType: {
       type: String,
-      enum: ["admin", "individual", "business"],
+      enum: [ "individual", "business"],
       required: false,
     },
     profile: {
@@ -55,6 +56,10 @@ const UserSchema = new Schema(
     industry: {
       type: String,
     },
+    physicalStore: {
+      type: Boolean,
+      default: false,
+    },
     rating: {
       type: Number,
       min: 1,
@@ -73,7 +78,7 @@ const UserSchema = new Schema(
       },
       coordinates: {
         type: [Number],
-        index: "2dsphere",
+        index: '2dsphere' // Ensures this field has a 2dsphere index
       },
     },
     listings: [
@@ -82,6 +87,13 @@ const UserSchema = new Schema(
         ref: "Listing",
       },
     ],
+    verificationstatus: {
+      type: String,
+      enum: ["pending", "under review", "approved", "rejected"],
+      default: "pending",
+    },
+    receivedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }], // Reviews received as a vendor
+    givenReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }], // Reviews given as a customer
   },
   { timestamps: true }
 );

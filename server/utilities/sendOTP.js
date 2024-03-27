@@ -159,6 +159,225 @@ const sendPasswordResetOTPEmail = async (email) => {
   }
 };
 
+/*SEND MESSAGE NOTIFICATION EMAIL*/
+const sendMessageNotificationEmail = async (recepientId) => {
+  try {
+    //CHECK IF THE USER EXISTS
+    const userExist = await User.findOne({ _id: recepientId });
+
+    if (!userExist) {
+      throw Error("There's no account for the provided email");
+    }
+
+    //SEND EMAIL
+    const mailOptions = {
+      from: "noreply@trowmart.app",
+      to: userExist?.email,
+      subject: "New Message Notification",
+      html: `
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6U7Fm6f5eD1fGyoD5TmP3U/igNlVP" crossorigin="anonymous">
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: 'Helvetica', sans-serif; /* Use Helvetica font */
+      color: #333;
+      padding: 20px;
+    }
+	.header-container {
+      background-color: #007bff; /* Blue background color */
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center; /* Center align text in the blue box */
+      margin-bottom: 20px; /* Add space between blue box and content */
+    }
+    .email-container {
+      background-color: #fff; /* Blue background color */
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px; /* Add space between blue box and content */
+    }
+    h1 {
+      color: #fff; /* White text color for TrowMart */
+	  font-family: 'Helvetica', sans-serif; /* Use Helvetica font for paragraphs */
+	  font-size: 4rem
+    }
+	h2 {
+      color: #000; 
+	  font-family: 'Helvetica', sans-serif; /* Use Helvetica font for paragraphs */
+    }
+    p {
+      margin-bottom: 15px;
+      font-family: 'Helvetica', sans-serif; /* Use Helvetica font for paragraphs */
+    }
+    .social-links {
+	  align: center; /* Center align text in the blue box */
+      margin-top: 20px;
+    }
+    .social-links img {
+      width: 30px; /* Adjust the width of social media icons */
+      height: 30px; /* Adjust the height of social media icons */
+      margin-right: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-container">
+    <h1>TrowMart</h1> <!-- TrowMart text in the center of the blue box -->
+  </div>
+
+  <div class="email-container">
+    <h2>Dear User,</h2>
+    <p>You have a new message. Kindly check it out.</p>
+    <br/>
+    <p>Regards,</p>
+    <p>TrowMart Team</p>
+
+    <!-- Social Media Icons -->
+    <div class="social-links">
+      <a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook"></i></a>
+      <a href="https://twitter.com/" target="_blank"><i class="fab fa-twitter"></i></a>
+      <a href="https://www.linkedin.com/" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </div>
+  </div>
+</body>
+</html>
+
+    `,
+    };
+    const sendMailNotification = await sendEmail(mailOptions);
+    return sendMailNotification;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const sendInviteNotificationEmail = async (email) => {
+  try {
+    const registrationLink = `http://localhost:3000/complete-registration/${encodeURIComponent(
+      email
+    )}`;
+
+    //SEND EMAIL
+    const mailOptions = {
+      from: "noreply@trowmart.app",
+      to: email,
+      subject: "Invitation to Join TrowMart ",
+      html: `
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6U7Fm6f5eD1fGyoD5TmP3U/igNlVP" crossorigin="anonymous">
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: 'Helvetica', sans-serif; /* Use Helvetica font */
+      color: #333;
+      padding: 20px;
+    }
+	.header-container {
+      background-color: #007bff; /* Blue background color */
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center; /* Center align text in the blue box */
+      margin-bottom: 20px; /* Add space between blue box and content */
+    }
+    .email-container {
+      background-color: #fff; /* Blue background color */
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px; /* Add space between blue box and content */
+    }
+    h1 {
+      color: #fff; /* White text color for TrowMart */
+	  font-family: 'Helvetica', sans-serif; /* Use Helvetica font for paragraphs */
+	  font-size: 4rem
+    }
+	h2 {
+      color: #000; 
+	  font-family: 'Helvetica', sans-serif; /* Use Helvetica font for paragraphs */
+    }
+    p {
+      margin-bottom: 15px;
+      font-family: 'Helvetica', sans-serif; /* Use Helvetica font for paragraphs */
+    }
+    .social-links {
+	  align: center; /* Center align text in the blue box */
+      margin-top: 20px;
+    }
+    .social-links img {
+      width: 30px; /* Adjust the width of social media icons */
+      height: 30px; /* Adjust the height of social media icons */
+      margin-right: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-container">
+    <h1>TrowMart</h1> <!-- TrowMart text in the center of the blue box -->
+  </div>
+
+  <div class="email-container">
+    <h2>Hi,</h2>
+    <p>You have been invited to join TrowMart. Click the link below to complete your registration:</p>
+    
+    <a href="${registrationLink}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Complete Registration</a>
+    
+    <br/>
+    <p>Regards,</p>
+    <p>TrowMart Team</p>
+
+    <!-- Social Media Icons -->
+    <div class="social-links">
+      <a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook"></i></a>
+      <a href="https://twitter.com/" target="_blank"><i class="fab fa-twitter"></i></a>
+      <a href="https://www.linkedin.com/" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </div>
+  </div>
+</body>
+</html>
+
+    `,
+    };
+    const sendMailNotification = await sendEmail(mailOptions);
+    return sendMailNotification;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/*SEND STOCK NOTIFICATION EMAIL*/
+const sendStockNotificationEmail = async (recepientId) => {
+  try {
+    //CHECK IF THE USER EXISTS
+    const userExist = await User.findOne({ _id: recepientId });
+
+    if (!userExist) {
+      throw Error("There's no account for the provided email");
+    }
+
+    //SEND EMAIL
+    const mailOptions = {
+      from: "noreply@trowmart.app",
+      to: userExist?.email,
+      subject: "Low Stock Notification",
+      html: `<p>Dear User,</p><p>You have a new message, Kindly check it out.</p><br/><p>Regards,</p><p>TrowMart Team</p>`,
+    };
+    const sendMailNotification = await sendEmail(mailOptions);
+    return sendMailNotification;
+  } catch (error) {
+    throw error;
+  }
+};
+
 /*RESET USER PASSWORD */
 const resetUserPassword = async ({ email, code, newPassword }) => {
   try {
@@ -172,7 +391,7 @@ const resetUserPassword = async ({ email, code, newPassword }) => {
     const hashedNewPassword = await hashData(newPassword);
     await User.updateOne({ email }, { password: hashedNewPassword });
 
-    await OTP.deleteOne({email});
+    await OTP.deleteOne({ email });
     return;
   } catch (error) {
     throw error;
@@ -186,4 +405,7 @@ module.exports = {
   verifyUserEmail,
   sendPasswordResetOTPEmail,
   resetUserPassword,
+  sendMessageNotificationEmail,
+  sendStockNotificationEmail,
+  sendInviteNotificationEmail,
 };

@@ -105,16 +105,7 @@ export default function ChatScreen({ navigation }) {
                   { textAlign: item?.senderId !== userId ? "right" : "left" },
                 ]}
               >
-                <Text
-                  style={{
-                    textAlign: item?.senderId !== userId ? "right" : "left",
-                    ...FONTS.body3,
-                    color: COLORS.gray3,
-                    marginBottom: SIZES.thickness,
-                  }}
-                >
-                  {moment(item?.timeStamp).format("dddd h:mma")}
-                </Text>
+                
                 <View
                   style={[
                     item?.senderId !== userId
@@ -138,6 +129,16 @@ export default function ChatScreen({ navigation }) {
                     {item?.textMessage}
                   </Text>
                 </View>
+                <Text
+                  style={{
+                    textAlign: item?.senderId !== userId ? "right" : "left",
+                    ...FONTS.body3,
+                    color: COLORS.gray3,
+                    marginBottom: SIZES.thickness,
+                  }}
+                >
+                  {moment(item?.timeStamp).format("dddd h:mma")}
+                </Text>
               </Pressable>
             );
           }
@@ -180,7 +181,6 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     borderRadius: SIZES.thickness,
     padding: SIZES.base,
-    width: "100%",
     maxWidth: "100%",
   },
   sentText: {

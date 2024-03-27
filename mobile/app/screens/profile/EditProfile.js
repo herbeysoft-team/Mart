@@ -6,24 +6,130 @@ import {
   Image,
   TextInput,
   KeyboardAvoidingView,
+  ActivityIndicator,
+  TouchableOpacity
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FONTS, SIZES, COLORS } from "../../constant";
+import { FONTS, SIZES, COLORS, URLBASE } from "../../constant";
 import HeaderMedium from "../../components/general/HeaderMedium";
+import { useRoute } from "@react-navigation/native";
 import ProfilePic from "../../../assets/profilepic.jpeg";
 import CustomButton from "../../components/auth/CustomButton";
+import { useDispatch, useSelector } from "react-redux";
+import { getItem } from "../../utils/asyncStorage.js";
+import { updateProfile, getUserProfile, updateProfilePic } from "../../context/features/userSlice";
+import Toast from "react-native-toast-message";
+import * as ImagePicker from "expo-image-picker";
 
 export default function EditProfile({ navigation }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [verify, setVerify] = useState("");
+  const route = useRoute();
+  const dispatch = useDispatch();
   const [fullname, setFullname] = useState("");
   const [businessname, setBusinessname] = useState("");
   const [industry, setIndustry] = useState("");
   const [proffession, setProffession] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
+  const [image, setImage] = useState("");
+  const [profile, setProfile] = useState("");
+
+  const { loadingUpdate } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    setBusinessname(route?.params?.businessName);
+    setFullname(route?.params?.fullname);
+    setProfile(route?.params?.profile);
+    setIndustry(route?.params?.industry);
+    setProffession(route?.params?.profession);
+    setPhone(route?.params?.phoneNumber);
+    setAddress(route?.params?.address);
+  }, []);
+
+  const handleUpdateProfile = () => {
+    if (address && phone) {
+      dispatch(
+        updateProfile({
+          formData: {
+            businessName: businessname,
+            fullname,
+            profession: proffession,
+            industry,
+            address,
+            phoneNumber: phone,
+          },
+          Toast,
+          navigation,
+        })
+      );
+      
+      setTimeout(async () => {
+        const getId = await getItem("trowmartuserId");
+        if (getId) {
+          dispatch(getUserProfile(getId))
+        }
+      }, 1000);
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "Kindly fill the neccessary details",
+      });
+    }
+  };
+
+  const uploadImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+        const imageSize = result.assets[0].fileSize;
+        if (imageSize > maxSize) {
+          Toast.show({
+            type: "info",
+            text1: "Selected image is too large.",
+            text2: "Please select an image smaller than 2MB",
+          });
+
+          return; // Stop further processing
+        }
+        const formData = new FormData();
+        formData.append("file", {
+          uri: result.assets[0].uri, // Local file path on the device
+          type: "image/jpeg", // Adjust the type as needed
+          name: "file.jpg",
+        });
+        
+        // dispatch(completeReg({ formData, navigation, Toast }));
+        setImage(result.assets[0].uri);
+        dispatch(
+          updateProfilePic({
+            formData,
+            Toast
+          })
+        );
+        
+        setTimeout(async () => {
+          const getId = await getItem("trowmartuserId");
+          if (getId) {
+            dispatch(getUserProfile(getId))
+          }
+        }, 1000);
+
+      }
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: error,
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <HeaderMedium navigation={navigation} title={"Edit Profile"} />
@@ -48,8 +154,13 @@ export default function EditProfile({ navigation }) {
                 justifyContent: "center",
               }}
             >
+             
               <Image
-                source={ProfilePic}
+                source={
+                  image
+                    ? { uri: image }
+                    : profile ? { uri: `${URLBASE.imageBaseUrl}${profile}` }: ProfilePic
+                }
                 style={{
                   height: SIZES.base8,
                   width: SIZES.base8,
@@ -64,6 +175,7 @@ export default function EditProfile({ navigation }) {
                 justifyContent: "center",
               }}
             >
+               <TouchableOpacity onPress={uploadImage}>
               <Text
                 style={{
                   ...FONTS.body3,
@@ -73,50 +185,93 @@ export default function EditProfile({ navigation }) {
               >
                 Upload Image
               </Text>
+              </TouchableOpacity>
               <Text style={{ ...FONTS.body4, color: COLORS.tertiary }}>
                 Shouldn't be more than 2mb in Size
               </Text>
             </View>
           </View>
           {/* form here */}
-          <View style={{ marginTop: SIZES.base }}>
-            <Text style={styles.inputheading}>Business Name</Text>
-            <TextInput
-              value={businessname}
-              onChangeText={(text) => setBusinessname(text)}
-              style={{
-                ...FONTS.body3,
-                borderWidth: SIZES.thickness / 3,
-                borderColor: COLORS.tertiary,
-                color: COLORS.tertiary,
-                marginVertical: SIZES.thickness,
-                // width: SIZES.wp(90),
-                padding: SIZES.base2,
-                borderRadius: SIZES.radius / 2,
-              }}
-              placeholder="Bk's Pasteries"
-            />
-          </View>
+          {route?.params?.userType === "business" ? (
+            <View style={{ marginTop: SIZES.base }}>
+              <Text style={styles.inputheading}>Business Name</Text>
+              <TextInput
+                value={businessname}
+                onChangeText={(text) => setBusinessname(text)}
+                style={{
+                  ...FONTS.body3,
+                  borderWidth: SIZES.thickness / 3,
+                  borderColor: COLORS.tertiary,
+                  color: COLORS.tertiary,
+                  marginVertical: SIZES.thickness,
+                  // width: SIZES.wp(90),
+                  padding: SIZES.base2,
+                  borderRadius: SIZES.radius / 2,
+                }}
+                placeholder="Bk's Pasteries"
+              />
+            </View>
+          ) : (
+            <View style={{ marginTop: SIZES.base }}>
+              <Text style={styles.inputheading}>Full Name</Text>
+              <TextInput
+                value={fullname}
+                onChangeText={(text) => setFullname(text)}
+                style={{
+                  ...FONTS.body3,
+                  borderWidth: SIZES.thickness / 3,
+                  borderColor: COLORS.tertiary,
+                  color: COLORS.tertiary,
+                  marginVertical: SIZES.thickness,
+                  // width: SIZES.wp(90),
+                  padding: SIZES.base2,
+                  borderRadius: SIZES.radius / 2,
+                }}
+                placeholder="Bk's Pasteries"
+              />
+            </View>
+          )}
+          {route?.params?.userType === "business" ? (
+            <View style={{ marginTop: SIZES.base }}>
+              <Text style={styles.inputheading}>Industry</Text>
 
-          <View style={{ marginTop: SIZES.base }}>
-            <Text style={styles.inputheading}>Industry</Text>
+              <TextInput
+                value={industry}
+                onChangeText={(text) => setIndustry(text)}
+                style={{
+                  ...FONTS.body3,
+                  borderWidth: SIZES.thickness / 3,
+                  borderColor: COLORS.tertiary,
+                  color: COLORS.tertiary,
+                  marginVertical: SIZES.thickness,
+                  // width: SIZES.wp(90),
+                  padding: SIZES.base2,
+                  borderRadius: SIZES.radius / 2,
+                }}
+                placeholder="Catering"
+              />
+            </View>
+          ) : (
+            <View style={{ marginTop: SIZES.base }}>
+              <Text style={styles.inputheading}>Profession</Text>
 
-            <TextInput
-              value={industry}
-              onChangeText={(text) => setIndustry(text)}
-              style={{
-                ...FONTS.body3,
-                borderWidth: SIZES.thickness / 3,
-                borderColor: COLORS.tertiary,
-                color: COLORS.tertiary,
-                marginVertical: SIZES.thickness,
-                // width: SIZES.wp(90),
-                padding: SIZES.base2,
-                borderRadius: SIZES.radius / 2,
-              }}
-              placeholder="Catering"
-            />
-          </View>
+              <TextInput
+                value={proffession}
+                onChangeText={(text) => setProffession(text)}
+                style={{
+                  ...FONTS.body3,
+                  borderWidth: SIZES.thickness / 3,
+                  borderColor: COLORS.tertiary,
+                  color: COLORS.tertiary,
+                  marginVertical: SIZES.thickness,
+                  // width: SIZES.wp(90),
+                  padding: SIZES.base2,
+                  borderRadius: SIZES.radius / 2,
+                }}
+                placeholder="Catering"
+              />
+            </View>
+          )}
           <View style={{ marginTop: SIZES.base }}>
             <Text style={styles.inputheading}>Address</Text>
 
@@ -155,6 +310,9 @@ export default function EditProfile({ navigation }) {
               placeholder="08022407013"
             />
           </View>
+          {loadingUpdate && (
+            <ActivityIndicator size="small" color={COLORS.tertiary} />
+          )}
           <View
             style={{
               flexDirection: "column",
@@ -163,7 +321,11 @@ export default function EditProfile({ navigation }) {
               marginTop: SIZES.base3,
             }}
           >
-            <CustomButton text={"Save"} onPress={() => {}} fill={true} />
+            <CustomButton
+              text={"Save"}
+              onPress={handleUpdateProfile}
+              fill={true}
+            />
           </View>
         </KeyboardAvoidingView>
       </ScrollView>

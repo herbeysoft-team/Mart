@@ -14,7 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import VendorCard from "../../components/explore/VendorCard";
 import CustomButton from "../../components/auth/CustomButton";
 import ListingCarousel from "../../components/explore/ListingCarousel";
-import { getItem} from "../../utils/asyncStorage.js";
+import { getItem } from "../../utils/asyncStorage.js";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getMessages,
@@ -27,13 +27,14 @@ import SimilarListing from "../../components/explore/SimilarListing.jsx";
 export default function ListingDetails({ navigation }) {
   const route = useRoute();
   const dispatch = useDispatch();
+  const { userLocation } = useSelector((state) => state.map);
   const [senderId, setSenderId] = useState("");
   const userId = route.params?.user;
   const { loadingsend } = useSelector((state) => state.message);
   const listingcontent = {
     id: route.params?._id,
-    longitude: 4.5444192,
-    latitude: 8.537279,
+    longitude: userLocation?.longitude,
+    latitude: userLocation?.latitude,
   };
 
   useEffect(() => {
@@ -101,8 +102,8 @@ export default function ListingDetails({ navigation }) {
             </Text>
             <Text style={{ ...FONTS.h4, color: COLORS.primary }}>
               {route.params?.type == "product"
-                ? `N${route.params?.price}`
-                : `N${route.params?.price}/${route.params?.unit}`}
+                ? `₦${route.params?.price}`
+                : `₦${route.params?.price}/${route.params?.unit}`}
             </Text>
             {/* <View
             style={{
@@ -168,19 +169,17 @@ export default function ListingDetails({ navigation }) {
                 navigation.navigate("Checkout", route?.params);
               }}
               text={
-                route.params?.type == "product"
-                  ? "Buy Now"
-                  : route.params?.type == "event"
-                  ? "Get Tickets"
-                  : " Book Service"
+                route.params?.type == "product" ? "Buy Now" : "Visit Website"
               }
               fill={true}
             />
-            <CustomButton
-              onPress={() => {}}
-              text={"Add to Cart"}
-              fill={false}
-            />
+            {route.params?.type == "product" ? (
+              <CustomButton
+                onPress={() => {}}
+                text={"Add to Cart"}
+                fill={false}
+              />
+            ) : null}
 
             <CustomButton
               onPress={handleSend}
@@ -188,7 +187,10 @@ export default function ListingDetails({ navigation }) {
               fill={false}
             />
           </View>
-          <SimilarListing navigation={navigation} listingcontent={listingcontent}/>
+          <SimilarListing
+            navigation={navigation}
+            listingcontent={listingcontent}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>

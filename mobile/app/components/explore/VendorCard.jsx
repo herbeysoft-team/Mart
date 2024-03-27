@@ -17,13 +17,16 @@ import placeholder from "../../../assets/placeholder.png";
 
 export default function VendorCard({ navigation, user }) {
   const dispatch = useDispatch();
+  const { userLocation } = useSelector(
+    (state) => state.map
+  );
 
   const { loadingvendor, vendordetails } = useSelector((state) => state.vendor);
 
   const vendor = {
     id: user,
-    longitude: 4.5444192,
-    latitude: 8.537279,
+    longitude: userLocation.longitude,
+    latitude: userLocation.latitude,
   };
 
   useEffect(() => {
@@ -90,6 +93,23 @@ export default function VendorCard({ navigation, user }) {
                   color={COLORS.primary}
                 />
               )}
+            {memoizeVendorDetails?.vendor?.physicalStore && (
+          <View
+            style={{
+              alignItems: "center",
+              backgroundColor: COLORS.primaryLight,
+              borderRadius: SIZES.base2,
+              padding: SIZES.thickness,
+            }}
+          >
+            <MaterialIcons
+              name="storefront"
+              size={SIZES.base3/2}
+              color={COLORS.primary}
+            />
+          </View>
+        )}
+
             </View>
             <View
               style={{

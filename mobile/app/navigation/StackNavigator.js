@@ -13,6 +13,8 @@ import Checkout from "../screens/explore/Checkout";
 import { getItem } from "../utils/asyncStorage.js";
 import ImageUpload from "../screens/auth/ImageUpload.js";
 import ChatScreen from "../screens/main/ChatScreen.js";
+import RequestDelivery from "../screens/main/RequestDelivery.js";
+import CartSceen from "../screens/explore/CartScreen.js";
 
 const Stack = createNativeStackNavigator();
 const StackNavigator = () => {
@@ -40,7 +42,7 @@ const StackNavigator = () => {
     return (
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Onboard">
-          <Stack.Screen
+        <Stack.Screen
             name="Register"
             component={Register}
             options={{ headerShown: false }}
@@ -78,6 +80,26 @@ const StackNavigator = () => {
           <Stack.Screen
             name="Checkout"
             component={Checkout}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Cart"
+            component={CartSceen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Images"
+            component={ImageUpload}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Chat-Screen"
+            component={ChatScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Request-Delivery"
+            component={RequestDelivery}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
@@ -128,6 +150,11 @@ const StackNavigator = () => {
             options={{ headerShown: false }}
           />
           <Stack.Screen
+            name="Cart"
+            component={CartSceen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
             name="Images"
             component={ImageUpload}
             options={{ headerShown: false }}
@@ -135,6 +162,11 @@ const StackNavigator = () => {
           <Stack.Screen
             name="Chat-Screen"
             component={ChatScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Request-Delivery"
+            component={RequestDelivery}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

@@ -30,6 +30,7 @@ export default function BottomNavigation() {
           borderTopWidth: SIZES.thin,
           elevation: Platform.OS === "android" ? 0 : undefined,
           shadowOpacity: Platform.OS === "ios" ? 0 : undefined,
+          zIndex:100,
         },
       }}
     >

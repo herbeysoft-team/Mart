@@ -8,69 +8,76 @@ import {
   Touchable,
   Platform,
 } from "react-native";
-import React, { useState, useRef, useMemo, useCallback } from "react";
-import { FONTS, SIZES, COLORS, listing, vendor } from "../../constant";
-import MapView, { Marker, Circle, PROVIDER_GOOGLE } from "react-native-maps";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
+import { FONTS, SIZES, COLORS, listing, URLBASE } from "../../constant";
+import placeholder from "../../../assets/placeholder.png";
 import SearchBar from "../../components/home/SearchBar";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetFlatList,
 } from "@gorhom/bottom-sheet";
+import * as Location from "expo-location";
 import CustomButton from "../../components/auth/CustomButton";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
-
-const customMapStyle = [
-  // Your custom map style JSON object
-  {
-    elementType: 'geometry',
-    stylers: [
-      {
-        color: "tranparent", // Change the color as needed
-      },
-    ],
-  },
-  {
-    elementType: 'labels.text.stroke',
-    stylers: [
-      {
-        color: COLORS.gray4, // Change the color as needed
-      },
-    ],
-  },
-  // Add more style configurations as needed
-];
+import AppMapView from "../../components/home/AppMapView";
+import { setUserLocation } from "../../context/features/mapSlice";
+import {
+  getVendorsByLocation,
+  getVendorListings,
+} from "../../context/features/vendorSlice";
+import { useDispatch, useSelector } from "react-redux";
+import FloatingBotton from "../../components/general/FloatingBotton";
 
 const Home = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const { userLocation } = useSelector((state) => state.map);
+  const { vendorbylocation, loadingvendorlisting, vendorlistings } =
+    useSelector((state) => state.vendor);
   // ref
   const bottomSheetRefHome = useRef(null);
   // variables
-  const snapPoints = useMemo(() => ["60%"], ["80%"]);
+  const snapPoints = useMemo(() => ["50%"], ["80%"]);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const handleCloseBottomSheet = () => bottomSheetRefHome.current?.close();
   const handleOpenBottomSheet = () => bottomSheetRefHome.current?.expand();
 
+  const [mapRegion, setmapRegion] = useState({});
+
   const handleCloseVendor = (item) => {
     setSelectedVendor(null);
+    setmapRegion({
+      latitude: userLocation?.latitude,
+      longitude: userLocation?.longitude,
+      latitudeDelta: 0.10922,
+      longitudeDelta: 0.0921,
+    });
+    setIsBottomSheetOpen(false);
     handleCloseBottomSheet();
   };
 
-  const handleOpenVendor = (item) => {
+  const handleVendorSelect = (vendor) => {
     setSelectedVendor(null);
-    setSelectedVendor(item);
-    handleOpenBottomSheet();
+    setSelectedVendor(vendor);
+    setmapRegion({
+      latitude: vendor?.location?.coordinates[1],
+      longitude: vendor?.location?.coordinates[0],
+      latitudeDelta: 0.10922,
+      longitudeDelta: 0.0921,
+    });
+    setIsBottomSheetOpen(true);
+    dispatch(getVendorListings(vendor._id));
+    handleOpenBottomSheet(); // Open the bottom sheet when a vendor is selected
   };
-  
-  // Define different radii for the circles
-  const circleData = [
-    { radius: 100, fillColor: 'rgba(10, 161, 221, 1.0)', strokeColor: 'rgba(10, 161, 221, 1.0)' },
-    { radius: 200, fillColor: 'rgba(255, 255, 255, 1.0)', strokeColor: 'rgba(255, 255, 255, 1.0)' },
-    { radius: 700, fillColor: 'rgba(10, 161, 221, 0.3)', strokeColor: 'rgba(10, 161, 221, 0.3)'  },
-    { radius: 1300, fillColor: 'rgba(10, 161, 221, 0.1)', strokeColor: 'rgba(10, 161, 221, 0.1)'  },
-    { radius: 2000, fillColor: 'rgba(192, 192, 192, 0.2)', strokeColor: 'rgba(192, 192, 192, 0.2)'  },
-  ];
 
   const renderBackdrop = useCallback(
     (props) => (
@@ -91,26 +98,34 @@ const Home = ({ navigation }) => {
       >
         <View
           style={{
-            paddingVertical: SIZES.base,
+            paddingVertical: SIZES.thickness,
             borderRadius: SIZES.base,
             alignItems: "flex-start",
             justifyContent: "space-between",
             gap: SIZES.base,
-            marginBottom: SIZES.base,
-            borderBottomColor: COLORS.gray4,
-            borderBottomWidth: SIZES.thin,
+            marginBottom: SIZES.thin,
+            // borderBottomColor: COLORS.gray4,
+            // borderBottomWidth: SIZES.thin,
           }}
         >
           <View>
             <Image
-              source={item?.image[0]}
+              source={{ uri: `${URLBASE.imageBaseUrl}${item?.image[0]}` }}
               style={{
-                height: SIZES.hp(15),
-                width: SIZES.hp(15),
+                height: SIZES.hp(12),
+                width: SIZES.hp(12),
                 borderRadius: SIZES.base,
                 resizeMode: "cover",
               }}
             />
+            <Text style={{ ...FONTS.h4, color: COLORS.primary }}>
+              {item?.type == "product"
+                ? `₦${item?.price}`
+                : `₦${item?.price}/${item?.unit}`}
+            </Text>
+            <Text style={{ ...FONTS.listHead, color: COLORS.accent2 }}>
+              {item?.name}
+            </Text>
           </View>
           <View style={{ flex: 2, gap: SIZES.base, alignItems: "flex-start" }}>
             <Text style={{ ...FONTS.h4, color: COLORS.primary }}>
@@ -127,95 +142,67 @@ const Home = ({ navigation }) => {
     ),
     []
   );
+
   const [selectedVendor, setSelectedVendor] = useState(null);
-  const [mapRegion, setmapRegion] = useState({
-    latitude: 8.4905382,
-    longitude: 4.5108319,
-    latitudeDelta: 0.0522,
-    longitudeDelta: 0.0421,
-  });
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+
+      if (location) {
+        dispatch(setUserLocation(location.coords));
+        setmapRegion({
+          latitude: location.coords?.latitude,
+          longitude: location.coords?.longitude,
+          latitudeDelta: 0.10922,
+          longitudeDelta: 0.0921,
+        });
+      }
+    })();
+  }, []);
+
+  const location = {
+    longitude: userLocation?.longitude,
+    latitude: userLocation?.latitude,
+  };
+
+  useEffect(() => {
+    if (userLocation?.longitude) {
+      dispatch(getVendorsByLocation(location));
+    }
+  }, [userLocation?.longitude]);
+
+
   return (
     <View style={styles.container}>
-      <SearchBar />
-      <MapView
-        style={styles.map}
-        customMapStyle={customMapStyle}
-        provider={PROVIDER_GOOGLE}
-        showsUserLocation={true}
-        region={mapRegion}
-      >
-        {/* Circle to represent the radar */}
-        {circleData.map((circle, index) => (
-        <Circle
-          key={index}
-          center={mapRegion}
-          radius={circle.radius} // Use different radii from the circleData array
-          fillColor={circle.fillColor} // Use different fill colors
-          strokeColor={circle.strokeColor} // Use different stroke colors
-          strokeWidth={2}
-        />
-      ))}
-        {vendor?.map((item, index) => (
-          <Marker
-            onPress={() => handleOpenVendor(item)}
-            key={item.id}
-            coordinate={{
-              latitude: item.location.latitude,
-              longitude: item.location.longitude,
-            }}
-          >
-            <View style={{ alignItems: "center" }}>
-              <View
-                style={[
-                  styles.marker,
-                  {
-                    backgroundColor:
-                      selectedVendor?.id === item?.id
-                        ? COLORS.primary
-                        : COLORS.white,
-                  },
-                ]}
-              >
-                <Image
-                  source={item?.profile}
-                  style={{
-                    height: SIZES.base5,
-                    width: SIZES.base5,
-                    borderRadius: SIZES.base5,
-                    resizeMode: "cover",
-                  }}
-                />
-              </View>
-              <View
-                style={[
-                  styles.arrow,
-                  {
-                    borderTopColor:
-                      selectedVendor?.id === item?.id
-                        ? COLORS.primary
-                        : COLORS.white,
-                  },
-                ]}
-              />
-            </View>
-          </Marker>
-        ))}
-      </MapView>
+      <SearchBar navigation={navigation} />
+      <AppMapView
+        vendor={vendorbylocation}
+        mapRegion={mapRegion}
+        isBottomSheetOpen={isBottomSheetOpen}
+        onVendorSelect={handleVendorSelect}
+      />
       {/* BottomSheet  */}
       {selectedVendor !== null && (
         <BottomSheet
           ref={bottomSheetRefHome}
           index={0}
           snapPoints={snapPoints}
-          enablePanDownToClose={true}
+          enablePanDownToClose={false}
           backdropComponent={renderBackdrop}
           handleIndicatorStyle={{ color: COLORS.primary }}
         >
           <View
             style={{
-              paddingVertical: SIZES.base,
               paddingHorizontal: SIZES.base2,
               backgroundColor: COLORS.white,
+              zIndex: 3,
             }}
           >
             <View
@@ -223,9 +210,8 @@ const Home = ({ navigation }) => {
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
-                paddingVertical: SIZES.base2,
                 borderColor: COLORS.gray4,
-                paddingVertical: SIZES.base2,
+                paddingVertical: SIZES.thickness,
                 borderBottomWidth: SIZES.thin / 2,
                 marginBottom: SIZES.base,
               }}
@@ -238,7 +224,13 @@ const Home = ({ navigation }) => {
                 }}
               >
                 <Image
-                  source={selectedVendor?.profile}
+                  source={
+                    selectedVendor?.profile
+                      ? {
+                          uri: `${URLBASE.imageBaseUrl}${selectedVendor?.profile}`,
+                        }
+                      : placeholder
+                  }
                   style={{
                     height: SIZES.base6,
                     width: SIZES.base6,
@@ -255,13 +247,15 @@ const Home = ({ navigation }) => {
                     }}
                   >
                     <Text style={{ ...FONTS.h3, color: COLORS.gray }}>
-                      {selectedVendor?.name}
+                      {selectedVendor?.fullname || selectedVendor?.businessName}
                     </Text>
-                    <MaterialIcons
-                      name="verified"
-                      size={SIZES.base2}
-                      color={COLORS.primary}
-                    />
+                    {selectedVendor?.verifiedAccount && (
+                      <MaterialIcons
+                        name="verified"
+                        size={SIZES.base2}
+                        color={COLORS.primary}
+                      />
+                    )}
                   </View>
                   <View
                     style={{
@@ -277,7 +271,7 @@ const Home = ({ navigation }) => {
                       color={COLORS.amber}
                     />
                     <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
-                      {`${selectedVendor?.rating} (${selectedVendor?.ratingTotal})`}
+                      {`${selectedVendor?.rating} (${selectedVendor?.ratingCount})`}
                     </Text>
                   </View>
                   <View
@@ -292,8 +286,13 @@ const Home = ({ navigation }) => {
                       size={SIZES.base2}
                       color={COLORS.gray3}
                     />
-                    <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
-                      {`${selectedVendor?.location?.address} . ${selectedVendor?.distance}`}
+                    <Text
+                      numberOfLines={1}
+                      style={{ ...FONTS.body4, color: COLORS.gray3 }}
+                    >
+                      {`${selectedVendor?.address?.slice(0, 20)} . ${parseInt(
+                        selectedVendor?.travelTimeMinutes
+                      )}min away`}
                     </Text>
                   </View>
                 </View>
@@ -318,22 +317,44 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
             </View>
             <Text style={{ ...FONTS.h3, color: COLORS.tertiary }}>
-              Recent Listings
+              {vendorlistings.length > 0 ? "Recent Listings" : ""}
             </Text>
-            <FlatList
-              data={listing}
-              keyExtractor={(item) => item.id}
-              renderItem={renderItem}
-              contentContainerStyle={styles.contentContainer}
-              horizontal
-            />
+            {vendorlistings.length > 0 ? (
+              <FlatList
+                data={vendorlistings}
+                keyExtractor={(item) => item._id}
+                renderItem={renderItem}
+                contentContainerStyle={styles.contentContainer}
+                horizontal
+              />
+            ) : (
+              <View>
+                <Text
+                  style={{
+                    ...FONTS.h3,
+                    color: COLORS.gray,
+                    paddingVertical: SIZES.base3,
+                  }}
+                >
+                  No Listing Yet!
+                </Text>
+              </View>
+            )}
             <CustomButton
               fill={false}
               text={"View Vendor"}
-              onPress={() => {}}
+              onPress={() =>
+                navigation.navigate("Vendor-Profile", {
+                  vendor: selectedVendor,
+                })
+              }
             />
           </View>
         </BottomSheet>
+      )}
+
+      {selectedVendor === null && (
+        <FloatingBotton navigation={navigation} />
       )}
     </View>
   );
@@ -391,12 +412,6 @@ const styles = StyleSheet.create({
     shadow: SIZES.thickness,
     shadowOffset: SIZES.thin,
     shadowColor: COLORS.gray2,
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 4,
-    // },
-    // shadowOpacity: 0.3,
-    // shadowRadius: 4,
   },
   contentContainer: {
     flexDirection: "row", // Ensure items are laid out horizontally

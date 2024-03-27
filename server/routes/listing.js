@@ -11,7 +11,7 @@ const {
    getListingsByLocation,
    getSimilarListings
   } = require("../controller/listing");
-const { multerMiddleware, multerMultipleMiddleware } = require("../middleware/MulterUtil");
+const { multerMultipleMiddleware } = require("../middleware/MulterUtil");
 
 
 /**ADD LISTING */
@@ -21,7 +21,7 @@ router.post("/uploadimages", multerMultipleMiddleware, uploadimages);
 router.post("/addlisting/", verifyToken, multerMultipleMiddleware, addlisting);
 
 /**GET ALL LISTINGS */
-router.get("/getalllisting", getAllListings);
+router.get("/getalllisting",  getAllListings);
 
 /** GET LISTIING BY LOCATION */
 router.get("/getlistingbylocation/:longitude/:latitude", getListingsByLocation)

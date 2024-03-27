@@ -19,6 +19,23 @@ export const getVendorDetails = createAsyncThunk(
   }
 );
 
+export const getVendorsByLocation = createAsyncThunk(
+  "vendor/getVendorsByLocation",
+  async (location, { rejectWithValue }) => {
+    const { longitude, latitude} = location;
+    try {
+      const response = await api.getVendorsByLocation(longitude, latitude);
+      return response.data;
+    } catch (err) {
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+      });
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const getVendorListings = createAsyncThunk(
   "vendor/getVendorListings ",
   async (id, { rejectWithValue }) => {
@@ -56,6 +73,8 @@ export const deleteVendorListing = createAsyncThunk(
     }
   }
 );
+
+
 const vendorSlice = createSlice({
   name: "vendor",
   initialState: {
@@ -67,6 +86,9 @@ const vendorSlice = createSlice({
     vendorlistings: [],
     deleteloading: false,
     deleteerror: "",
+    loadingvendorbylocation: false,
+    errorvendorbylocation: "",
+    vendorbylocation: [],
   },
 //   reducers: {
 //     setListingStatus: (state, action) => {
@@ -107,6 +129,17 @@ const vendorSlice = createSlice({
       .addCase(deleteVendorListing.rejected, (state, action) => {
         state.deleteloading = false;
         state.deleteerror= action.payload;
+      })
+      .addCase(getVendorsByLocation.pending, (state) => {
+        state.loadingvendorbylocation = true;
+      })
+      .addCase(getVendorsByLocation.fulfilled, (state, action) => {
+        state.loadingvendorbylocation = false;
+        state.vendorbylocation = action.payload;
+      })
+      .addCase(getVendorsByLocation.rejected, (state, action) => {
+        state.loadingvendorbylocation = false;
+        state.errorvendorbylocation= action.payload;
       });
   },
 });

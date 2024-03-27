@@ -5,6 +5,9 @@ import CategoryReducer from './features/categorySlice'
 import ListingReducer from './features/listingSlice'
 import VendorReducer from './features/vendorSlice'
 import MessageReducer from './features/messageSlice'
+import ReviewReducer from './features/reviewSlice'
+import MapReducer from './features/mapSlice'
+import CartReducer from './features/cartSlice'
 
 export default configureStore({
   reducer: {
@@ -14,5 +17,8 @@ export default configureStore({
     listing: ListingReducer,
     vendor: VendorReducer,
     message: MessageReducer,
+    review: ReviewReducer,
+    map: MapReducer,
+    cart: CartReducer,
   }
 });

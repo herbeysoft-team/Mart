@@ -76,8 +76,8 @@ export default function MyListingCardView({ listing, handleSettingChange }) {
           </Text>
           <Text style={{ ...FONTS.h4, color: COLORS.primary }}>
             {listing?.type == "product"
-              ? `N${listing?.price}`
-              : `N${listing?.price}/${listing?.unit}`}
+              ? `₦${listing?.price}`
+              : `₦${listing?.price}/${listing?.unit}`}
           </Text>
           <View
             style={{

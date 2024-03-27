@@ -21,7 +21,9 @@ const listingRouter = require("./routes/listing");
 const categoryRouter = require("./routes/category");
 const vendorRouter = require("./routes/vendor");
 const messageRouter = require("./routes/message");
-
+const reviewRouter = require("./routes/review");
+const adminRouter = require("./routes/admin");
+const cartRouter = require("./routes/cart");
 
 // MiddleWare
 app.use(bodyParser.json())
@@ -37,7 +39,9 @@ app.use("/api/v1/listing/", listingRouter);
 app.use("/api/v1/category/", categoryRouter);
 app.use("/api/v1/vendor/", vendorRouter);
 app.use("/api/v1/message/", messageRouter);
-
+app.use("/api/v1/review/", reviewRouter);
+app.use("/api/v1/admin/", adminRouter);
+app.use("/api/v1/cart", cartRouter)
 
 
 app.listen(process.env.PORT || port, () =>

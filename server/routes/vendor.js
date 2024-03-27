@@ -3,7 +3,8 @@ const router = express.Router();
 
 const {
   getVendorDetails,
-  getVendorListing
+  getVendorListing,
+  getVendorsByLocation
 } = require("../controller/vendor");
 const verifyToken = require("../middleware/VerifyToken");
 const verifyAdmin = require("../middleware/verifyAdmin");
@@ -15,5 +16,8 @@ router.get("/getvendordetails/:id/:longitude/:latitude", getVendorDetails)
 
 /** GET VENDOR LISTINGS*/
 router.get("/getvendorlisting/:id", getVendorListing)
+
+/** GET VENDOR BY LOCATION */
+router.get("/getvendorsbylocation/:longitude/:latitude", verifyToken, getVendorsByLocation)
 
 module.exports = router;

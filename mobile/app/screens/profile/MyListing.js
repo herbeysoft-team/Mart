@@ -24,12 +24,12 @@ import { TabView, TabBar } from "react-native-tab-view";
 import { setItem, getItem, removeItem } from "../../utils/asyncStorage.js";
 import ProductRoute from "../../components/profile/ProductRoute.js";
 import EventRoute from "../../components/profile/EventRoute.js";
-import LoadingOverlay from "../../components/general/LoadingOverlay";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import ServicesRoute from "../../components/profile/ServicesRoute.js";
 import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
+import GeneralModal from "../../components/general/GeneralModal.js";
 
 const renderTabBar = (props) => (
   <TabBar
@@ -56,9 +56,11 @@ export default function MyListing({ navigation }) {
   // ref
   const bottomSheetListingOptionRef = useRef(null);
   const [openSetting, setOpenSetting] = useState(false);
+  const [openGeneralModal, setOpenGeneralModal] = useState(false);
   const [itemId, setItemId] = useState("");
+  const [sure, setSure] = useState(false);
   // variables
-  const snapPoints = useMemo(() => ["30%"], []);
+  const snapPoints = useMemo(() => (sure ? ["40%"] : ["30%"]), [sure]);
 
   const handleCloseBottomSheet = () =>
     bottomSheetListingOptionRef.current?.close();
@@ -70,7 +72,12 @@ export default function MyListing({ navigation }) {
     handleOpenBottomSheet();
   };
 
-  const handleDeleteItem = async () => {
+  const gotoGeneralModal = () => {
+    setOpenGeneralModal(true)
+    handleCloseBottomSheet();
+  };
+
+  const handleDeleteListing = async () => {
     dispatch(deleteVendorListing({ id: itemId, Toast }));
     const getId = await getItem("trowmartuserId");
     if (getId) {
@@ -174,8 +181,9 @@ export default function MyListing({ navigation }) {
       <View style={{ paddingTop: SIZES.base2, paddingHorizontal: SIZES.base2 }}>
         <HeaderMedium navigation={navigation} title={"My Listings"} />
       </View>
-      {loadingvendorlisting &&
-        LoadingOverlay((visible = { loadingvendorlisting }))}
+      {loadingvendorlisting && (
+        <ActivityIndicator size="small" color={COLORS.tertiary} />
+      )}
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -244,7 +252,7 @@ export default function MyListing({ navigation }) {
               </Pressable>
 
               <Pressable
-                onPress={handleDeleteItem}
+                onPress={gotoGeneralModal}
                 style={{
                   flexDirection: "row",
                   gap: SIZES.base2,
@@ -267,14 +275,24 @@ export default function MyListing({ navigation }) {
                 >
                   Delete Listing
                 </Text>
-                {deleteloading ? (
+                {/* {deleteloading ? (
                   <ActivityIndicator size="small" color={COLORS.tertiary} />
-                ) : null}
+                ) : null} */}
               </Pressable>
             </View>
+            
           </View>
         </BottomSheet>
       )}
+       <GeneralModal
+          openGeneralModal={openGeneralModal}
+          setOpenGeneralModal={setOpenGeneralModal}
+          gotoGeneralModal={gotoGeneralModal}
+          ButtonName={"Delete Listing"}
+          Heading={"Delete Listing"}
+          SubHeading={"Are you sure you want to delete the listing?"}
+          handleDelete={handleDeleteListing}
+        />
     </SafeAreaView>
   );
 }

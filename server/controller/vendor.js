@@ -27,11 +27,15 @@ exports.getVendorDetails = async (req, res) => {
     const {
       profile,
       fullname,
+      businessName,
       _id,
       rating,
       ratingCount,
       verifiedAccount,
       address,
+      profession,
+      industry,
+      physicalStore,
     } = vendor;
 
     res.status(200).json({
@@ -44,6 +48,10 @@ exports.getVendorDetails = async (req, res) => {
         distance,
         verifiedAccount,
         address,
+        businessName,
+        profession,
+        industry,
+        physicalStore,
       },
     }); // Return vendor details and distance
   } catch (error) {
@@ -69,6 +77,66 @@ exports.getVendorListing = async (req, res) => {
     }
 
     res.status(200).json(vendor.listings);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+/**
+ * GET - http://localhost:8002/api/v1/vendor/getvendorsbylocation/:longitude/:latitude
+ *
+ */
+exports.getVendorsByLocation = async (req, res) => {
+  try {
+    const { longitude, latitude } = req.params;
+    const maxDistance = 30000; // 30 kilometers (adjust as needed)
+    const averageCarSpeed = 13.4;
+    // Find the user by ID
+    const user = await User.findById(req.user.userId);
+
+    // $geoNear stage should be the first stage
+    const vendors = await User.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: "Point",
+            coordinates: [parseFloat(longitude), parseFloat(latitude)],
+          },
+          distanceField: "distance",
+          spherical: true,
+          maxDistance: maxDistance,
+        },
+      },
+      {
+        $match: {
+          _id: { $ne: user._id }, // Exclude the current user
+        },
+      },
+      {
+        $project: {
+          fullname: 1,
+          businessName: 1,
+          location: 1,
+          rating: 1,
+          ratingCount: 1,
+          verifiedAccount: 1,
+          address: 1,
+          profile: 1,
+          distance: 1,
+          profession: 1,
+          industry: 1,
+          physicalStore: 1, // Include the distance field in the output
+        },
+      },
+    ]);
+
+    // Calculate travel time based on distance and average car speed
+    vendors.forEach((vendor) => {
+      const travelTime = vendor.distance / averageCarSpeed;
+      vendor.travelTimeMinutes = Math.round(travelTime / 60); // Convert seconds to minutes
+    });
+    res.status(200).json(vendors);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Something went wrong" });

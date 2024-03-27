@@ -11,8 +11,6 @@ const {
   passwordreset,
   reset,
   completereg,
-  adminsignup,
-  adminlogin,
   changepassword,
 } = require("../controller/auth");
 const { multerMiddleware } = require("../middleware/MulterUtil");
@@ -47,11 +45,6 @@ router.post("/completereg", multerMiddleware, completereg);
 /**ADMIN CHANGE PASSOWRD */
 router.post("/changepassword", changepassword);
 
-/**ADMIN LOGIN */
-router.post("/adminlogin", adminlogin);
-
-/**ADMIN SIGNUP */
-router.post("/adminsignup", adminsignup);
 
 // /**LOGOUT */
 // router.post("/logout", logout);

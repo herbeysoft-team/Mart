@@ -15,7 +15,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier":"com.herbeysoft.trowmart",
+      "config":{
+        "googleMapsApikey":"AIzaSyBOSZNsjlfibDcXrOnPCpwvrqET6oDqN2M"
+      }
     },
     "android": {
       
@@ -26,7 +30,7 @@
       "config":{
         "package": "com.herbeysoft.trowmart",
         "googleMaps": {
-          "apiKey": ""
+          "apiKey": "AIzaSyBOSZNsjlfibDcXrOnPCpwvrqET6oDqN2M"
         }
       },
       "permissions":[
@@ -39,12 +43,9 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "The app accesses your photos to let you share them with your friends."
-        }
-      ]
+      ["expo-image-picker", { "photosPermission": "Allow TrowMart to access your gallery" }],
+      ["expo-camera", { "cameraPermission": "Allow TrowMart to access your camera." }],
+      ["expo-location",{"locationAlwaysAndWhenInUsePermission": "Allow TrowMart to use your location."}]
     ]
   }
 }

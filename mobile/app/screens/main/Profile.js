@@ -6,24 +6,22 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FONTS, SIZES, COLORS, URLBASE} from "../../constant";
+import { FONTS, SIZES, COLORS, URLBASE } from "../../constant";
 import HeaderBig from "../../components/general/HeaderBig";
-import ProfilePic from "../../../assets/profilepic.jpeg";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Octicons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
 import { FontAwesome } from "@expo/vector-icons";
 import GetVerifiedModel from "../../components/general/GetVerifiedModel";
 import LogOutModel from "../../components/general/LogOutModel";
-import { setItem, getItem, removeItem } from "../../utils/asyncStorage.js";
+import { getItem, removeItem } from "../../utils/asyncStorage.js";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getUserProfile
-} from "../../context/features/userSlice";
+import { getUserProfile } from "../../context/features/userSlice";
 import placeholder from "../../../assets/placeholder.png";
 
 const Profile = ({ navigation }) => {
@@ -31,16 +29,16 @@ const Profile = ({ navigation }) => {
   const dispatch = useDispatch();
   const [openGetVerified, setOpenGetVerified] = useState(false);
   const [openLogOut, setOpenLogOut] = useState(false);
-  const {
-    userProfile
-  } = useSelector((state) => state.user);
+  const { userProfile } = useSelector((state) => state.user);
+
+  const memoizeUserProfile = useMemo(() => userProfile, [userProfile]);
 
   useEffect(() => {
     const checkUserId = async () => {
       try {
         const getId = await getItem("trowmartuserId");
         if (getId) {
-          dispatch(getUserProfile(getId))
+          dispatch(getUserProfile(getId));
         }
       } catch (error) {
         console.log(error);
@@ -49,13 +47,20 @@ const Profile = ({ navigation }) => {
     checkUserId();
   }, []);
 
-
   const gotoEditProfle = () => {
-    navigation.navigate("Edit-Profile");
+    navigation.navigate("Edit-Profile", userProfile);
   };
 
   const gotoGetVerifiedModal = () => {
-    setOpenGetVerified(true);
+    if(memoizeUserProfile?.verificationstatus === "under review"){
+      Toast.show({
+        type: "error",
+        text1: "Your document is under review",
+      });
+    }else{
+      setOpenGetVerified(true);
+    }
+    
   };
 
   const gotoLogOutModal = () => {
@@ -99,7 +104,7 @@ const Profile = ({ navigation }) => {
     navigation.navigate("Rating");
   };
 
-  const gotoSetting = () => {
+  const gotoNotification = () => {
     navigation.navigate("Setting");
   };
 
@@ -114,6 +119,7 @@ const Profile = ({ navigation }) => {
   const gotoChangePassword = () => {
     navigation.navigate("Change-Password");
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <HeaderBig title={"Profile"} />
@@ -135,17 +141,22 @@ const Profile = ({ navigation }) => {
                   gap: SIZES.base2,
                 }}
               >
-               
                 <Image
-                  source={ userProfile?.profile ? { uri: `${URLBASE.imageBaseUrl}${userProfile?.profile}`} : placeholder }
+                  source={
+                    memoizeUserProfile?.profile
+                      ? {
+                          uri: `${URLBASE.imageBaseUrl}${memoizeUserProfile?.profile}`,
+                        }
+                      : placeholder
+                  }
                   style={{
                     height: SIZES.base6,
                     width: SIZES.base6,
                     borderRadius: SIZES.base6,
-                    resizeMode:"cover"
+                    resizeMode: "cover",
                   }}
                 />
-              
+
                 <View>
                   <View
                     style={{
@@ -156,19 +167,24 @@ const Profile = ({ navigation }) => {
                     }}
                   >
                     <Text style={{ ...FONTS.h3, color: COLORS.gray }}>
-                    {userProfile?.userType === "business" ? userProfile?.businessName : userProfile?.fullname}
+                      {memoizeUserProfile?.userType === "business"
+                        ? memoizeUserProfile?.businessName
+                        : memoizeUserProfile?.fullname}
                     </Text>
-                    <MaterialIcons
-                      name="verified"
-                      size={SIZES.base2}
-                      color={COLORS.primary}
-                    />
+                    {memoizeUserProfile?.verifyAccount && (
+                      <MaterialIcons
+                        name="verified"
+                        size={SIZES.base2}
+                        color={COLORS.primary}
+                      />
+                    )}
                   </View>
                   <Text style={{ ...FONTS.body4, color: COLORS.gray3 }}>
-                  `{userProfile?.email}
+                    {memoizeUserProfile?.email}
                   </Text>
                 </View>
               </View>
+
               <MaterialIcons
                 name="keyboard-arrow-right"
                 size={SIZES.base2}
@@ -236,7 +252,7 @@ const Profile = ({ navigation }) => {
                     }}
                   >
                     <Text style={{ ...FONTS.body4, color: COLORS.amber }}>
-                      Pending
+                      {memoizeUserProfile?.verificationstatus}
                     </Text>
                   </View>
                 </View>
@@ -411,7 +427,7 @@ const Profile = ({ navigation }) => {
                   }}
                 >
                   <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
-                    Delivery Requests
+                    Deliveries
                   </Text>
                 </View>
               </View>
@@ -610,7 +626,7 @@ const Profile = ({ navigation }) => {
 
         {/* next section */}
         <View style={styles.userSection}>
-          <Pressable onPress={gotoSetting}>
+          <Pressable onPress={gotoNotification}>
             <View
               style={{
                 flexDirection: "row",
@@ -652,7 +668,7 @@ const Profile = ({ navigation }) => {
                   }}
                 >
                   <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
-                    Settings
+                    Notifications
                   </Text>
                 </View>
               </View>
@@ -818,11 +834,13 @@ const Profile = ({ navigation }) => {
                     borderRadius: SIZES.base,
                   }}
                 >
-                  <MaterialIcons
+                  <Feather name="lock"  size={SIZES.base2}
+                    color={COLORS.white}/>
+                  {/* <MaterialIcons
                     name="insights"
                     size={SIZES.base2}
                     color={COLORS.white}
-                  />
+                  /> */}
                 </View>
 
                 <View
@@ -834,7 +852,7 @@ const Profile = ({ navigation }) => {
                   }}
                 >
                   <Text style={{ ...FONTS.h3, color: COLORS.gray3 }}>
-                    Change Password
+                    Security
                   </Text>
                 </View>
               </View>

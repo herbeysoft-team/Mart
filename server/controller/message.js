@@ -1,6 +1,9 @@
 const User = require("../models/User");
 const Message = require("../models/Message");
 const Listing = require("../models/Listing");
+const {
+  sendMessageNotificationEmail
+} = require("../utilities/sendOTP");
 
 /**
  * POST - http://localhost:8002/api/v1/message/sendtextmessage
@@ -21,6 +24,8 @@ exports.sendmessage = async (req, res) => {
 
     const savedMessage = await newMessage.save();
 
+    await sendMessageNotificationEmail(recepientId)
+
     res.status(201).json(savedMessage);
   } catch (error) {
     res.status(500).json({ error: "Failed to send text message" });
@@ -34,25 +39,17 @@ exports.sendmessage = async (req, res) => {
 exports.getmessages = async (req, res) => {
   try {
     const { senderId, recepientId } = req.params;
-
     // Fetch messages sent to the recipient with viewed: false
     let messages = await Message.find({
       senderId: senderId,
       recepientId: recepientId,
       viewed: false,
-    })
-      .sort({ timeStamp: 1 })
-      .populate({
-        path: "listing",
-        model: Listing, // Replace with your Listing model
-      });
-
+    })   
     // Update recipient's messages to viewed: true
     if (messages.length > 0) {
       const messageIdsToUpdate = messages
-        .filter((message) => message.senderId != senderId)
+        .filter((message) => message.recepientId == senderId)
         .map((message) => message._id);
-
       if (messageIdsToUpdate.length > 0) {
         await Message.updateMany(
           { _id: { $in: messageIdsToUpdate } },
@@ -89,7 +86,7 @@ exports.getmessageuser = async (req, res) => {
 
     //fetch the user data from the user ID
     const recepientId = await User.findById(userId).select(
-      "fullname profile id"
+      "fullname profile _id businessName"
     );
 
     res.json(recepientId);
@@ -128,9 +125,9 @@ exports.getchatlist = async (req, res) => {
     ];
 
     const userDetailsPromises = uniqueUserIds.map(async (id) => {
-      const user = await User.findById(id).select("fullname profile");
-
+      const user = await User.findById(id).select("fullname profile businessName");
       const unreadMessageCount = await Message.countDocuments({
+        senderId:user._id,
         recepientId: userId,
         viewed: false,
       });
@@ -146,6 +143,7 @@ exports.getchatlist = async (req, res) => {
       return {
         userId: id,
         fullname: user.fullname,
+        businessName: user.businessName,
         image: user.profile,
         lastMessage: lastMessage ? lastMessage.textMessage : "",
         lastMessageTime: lastMessage ? lastMessage.timeStamp : null,

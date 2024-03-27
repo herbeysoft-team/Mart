@@ -12,7 +12,7 @@ import React from "react";
 import Logo from "../../../assets/logo.png";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function SearchBar() {
+export default function SearchBar({navigation}) {
   return (
     <View style={styles.search}>
       <View >
@@ -45,7 +45,7 @@ export default function SearchBar() {
           style={{ ...FONTS.body3, color: COLORS.gray3 }}
         />
       </View>
-      <TouchableOpacity onPress={() => console.log("Cart")}>
+      <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
         <View
           style={{
             width: SIZES.base4,
